@@ -1,34 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import './viewmodels/HomeViewModel.dart';
-import './wigets/app_bar.dart';
-import './wigets/home_body.dart';
-import './wigets/custom_bottom_navigation_bar.dart';
-
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ChangeNotifierProvider(
-        create: (context) => HomeViewModel(),
-        child: Home(),
+      home: FirstPage(),
+    );
+  }
+}
+
+class FirstPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('First Page'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SecondPage()),
+            );
+          },
+          child: Text('Go to Second Page'),
+        ),
       ),
     );
   }
 }
 
-class Home extends StatelessWidget {
+class SecondPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(), //CustomAppBar
-      body: HomeBody(),
-      bottomNavigationBar: CustomBottomNavigationBar(),
+      appBar: AppBar(
+        title: Text('Second Page'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text('Back to First Page'),
+        ),
+      ),
     );
   }
 }
-
-
