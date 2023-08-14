@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
-import '../wigets/top_navigation_fadeable.dart';
-import '../wigets/scroll_body_content_in_dummydata.dart';
 import '../viewmodels/NavigationNotifier.dart';
 import '../animations/bottom_bar_animation.dart';
+import '../wigets/StepListView.dart';
+import '../_dev/data.dart';
 
 
-class MainContent extends StatelessWidget {
+class StepListView extends StatelessWidget {
+  final MachineData machine;
+  final String machineNumber;
+
+  StepListView({required this.machine, required this.machineNumber});
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -19,8 +23,10 @@ class MainContent extends StatelessWidget {
             CustomScrollView(
               controller: notifier.scrollController,
               slivers: <Widget>[
-                TopNavigation(),
-                BodyContent(),
+                StepSliverList(
+                  childSteps: machine.childSteps,
+                  machineNumber: machineNumber,
+                ),
               ],
             ),
             BottomNav(isScrollingDown: notifier.isScrollingDown),

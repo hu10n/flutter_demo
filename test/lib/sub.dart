@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import './viewmodels/HomeViewModel.dart';
-import './ui/main_content.dart';
+import 'body/main_content.dart';
 
 void main() => runApp(MyApp());
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/HomeViewModel.dart';
-import '../ui/body_ui_basic_sample.dart';
+import '../body/body_ui_basic_sample.dart';
 
 class HomeBody extends StatelessWidget {
   @override
