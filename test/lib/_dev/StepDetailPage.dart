@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'data.dart' as myData;
+import 'data.dart';
 
 class StepDetailPage extends StatefulWidget {
-  final myData.SmallStep step;
+  final SmallStep step;
   final String stepTitle;
   final String machineNumber;
 
-  StepDetailPage({
+  const StepDetailPage({
+    super.key,
     required this.step,
     required this.stepTitle,
     required this.machineNumber,
@@ -47,7 +48,7 @@ class _StepDetailPageState extends State<StepDetailPage> {
       appBar:
           AppBar(title: Text("${widget.machineNumber} ${widget.stepTitle}")),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(30.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -71,7 +72,13 @@ class _StepDetailPageState extends State<StepDetailPage> {
                 widget.step.production = productionController.text;
                 widget.step.editedDateTime = editedDateTimeController.text;
                 widget.step.reportDocument = reportController.text;
-                Navigator.pop(context, widget.machineNumber);
+
+                // Change stepStatus to 1
+                widget.step.stepStatus = 1;
+
+                // 前の画面に遷移する処理
+                Navigator.pop(
+                    context, true); // Passing true to indicate data was updated
               },
               child: Text('Save'),
             ),

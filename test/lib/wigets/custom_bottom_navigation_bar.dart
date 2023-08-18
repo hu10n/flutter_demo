@@ -10,7 +10,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
         currentIndex: viewModel.currentIndex,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.star), label: 'Favorites'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.qr_code_scanner), label: 'Favorites'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
         onTap: (index) => viewModel.changeCurrentIndex(index),
@@ -18,4 +19,3 @@ class CustomBottomNavigationBar extends StatelessWidget {
     );
   }
 }
-

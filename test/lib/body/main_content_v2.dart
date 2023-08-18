@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 import '../wigets/top_navigation_fadeable.dart';
 import '../viewmodels/NavigationNotifier.dart';
 import '../animations/bottom_bar_animation.dart';
 import '../_dev/MachineListPage.dart';
-
 
 class MainContent extends StatelessWidget {
   @override
