@@ -35,7 +35,7 @@ class StepSliverList extends StatelessWidget {
                     builder: (context) => StepDetailPage(
                       machineNumber: machineNumber,
                       stepTitle: stepTitle,
-                      step: step,
+                      // step: step,
                     ),
                   ),
                 );

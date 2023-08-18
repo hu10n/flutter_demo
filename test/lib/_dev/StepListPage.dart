@@ -46,7 +46,6 @@ class _StepListPageState extends State<StepListPage> {
         builder: (context) => StepDetailPage(
           machineNumber: widget.machineNumber,
           stepTitle: stepTitle,
-          step: step,
         ),
       ),
     ).then((dataUpdated) {

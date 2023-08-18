@@ -1,6 +1,8 @@
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:test/_dev/StepDetailPage.dart';
 
 class QRViewExample extends StatefulWidget {
   const QRViewExample({Key? key}) : super(key: key);
@@ -20,18 +22,6 @@ class _QRViewExampleState extends State<QRViewExample> {
       body: Column(
         children: <Widget>[
           Expanded(flex: 4, child: _buildQrView(context)),
-          if (result != null)
-            Expanded(
-              flex: 1,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}',
-                  ),
-                ],
-              ),
-            ),
         ],
       ),
     );
@@ -62,6 +52,24 @@ class _QRViewExampleState extends State<QRViewExample> {
       setState(() {
         result = scanData;
       });
+
+      // スキャンデータをJSONとしてパース
+      Map<String, dynamic> parsedData = json.decode(result!.code);
+
+      // パースしたデータから必要な情報を抽出
+      String machineNumber = parsedData['machineNumber'];
+      String stepTitle = parsedData['stepTitle'];
+
+      // 新しい画面に遷移
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => StepDetailPage(
+            machineNumber: machineNumber,
+            stepTitle: stepTitle,
+          ),
+        ),
+      );
     });
   }
 
@@ -69,26 +77,5 @@ class _QRViewExampleState extends State<QRViewExample> {
   void dispose() {
     controller?.dispose();
     super.dispose();
-  }
-}
-
-class QR_Test_Button extends StatelessWidget {
-  const QR_Test_Button({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.qr_code),
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => QRViewExample(),
-          ),
-        );
-      },
-    );
   }
 }
