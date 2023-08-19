@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../_dev/data.dart';
-import '../body/StepListView_v2.dart';
+import '../body/StepListView.dart';
 
 class StepListPage extends StatelessWidget {
   final String machineNumber;
@@ -10,11 +9,9 @@ class StepListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MachineData machine = machineData[machineNumber]!; // マシンデータを取得
-
     return Scaffold(
       appBar: AppBar(title: Text("Machine $machineNumber Steps")),
-      body: StepListView(machine: machine, machineNumber: machineNumber), // ここで新しいウィジェットを使用
+      body: StepListView(machineNumber: machineNumber), // ここで新しいウィジェットを使用
     );
   }
 }

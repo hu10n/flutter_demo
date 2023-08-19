@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'data.dart' as myData;
+import 'data.dart';
 
 class StepDetailPage extends StatefulWidget {
-  final myData.SmallStep step;
   final String stepTitle;
   final String machineNumber;
 
-  StepDetailPage({
-    required this.step,
+  const StepDetailPage({
+    Key? key,
     required this.stepTitle,
     required this.machineNumber,
-  });
+  }) : super(key: key);
 
   @override
   _StepDetailPageState createState() => _StepDetailPageState();
 }
 
 class _StepDetailPageState extends State<StepDetailPage> {
+  late SmallStep step;
   late TextEditingController editorNameController;
   late TextEditingController productionController;
   late TextEditingController editedDateTimeController;
@@ -25,11 +25,15 @@ class _StepDetailPageState extends State<StepDetailPage> {
   @override
   void initState() {
     super.initState();
-    editorNameController = TextEditingController(text: widget.step.editorName);
-    productionController = TextEditingController(text: widget.step.production);
-    editedDateTimeController =
-        TextEditingController(text: widget.step.editedDateTime);
-    reportController = TextEditingController(text: widget.step.reportDocument);
+
+    // Get the step data from machineData using widget properties
+    step = machineData[widget.machineNumber]!.childSteps[widget.stepTitle]!;
+
+    // Initialize text controllers with step data
+    editorNameController = TextEditingController(text: step.editorName);
+    productionController = TextEditingController(text: step.production);
+    editedDateTimeController = TextEditingController(text: step.editedDateTime);
+    reportController = TextEditingController(text: step.reportDocument);
   }
 
   @override
@@ -47,31 +51,43 @@ class _StepDetailPageState extends State<StepDetailPage> {
       appBar:
           AppBar(title: Text("${widget.machineNumber} ${widget.stepTitle}")),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(30.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
-                controller: editorNameController,
-                decoration: InputDecoration(labelText: 'Editor Name')),
+              controller: editorNameController,
+              decoration: InputDecoration(labelText: 'Editor Name'),
+            ),
             TextField(
-                controller: productionController,
-                decoration: InputDecoration(labelText: 'Production Number')),
+              controller: productionController,
+              decoration: InputDecoration(labelText: 'Production Number'),
+            ),
             TextField(
-                controller: editedDateTimeController,
-                decoration: InputDecoration(labelText: 'Edited Date & Time')),
+              controller: editedDateTimeController,
+              decoration: InputDecoration(labelText: 'Edited Date & Time'),
+            ),
             TextField(
-                controller: reportController,
-                decoration: InputDecoration(labelText: 'Report')),
+              controller: reportController,
+              decoration: InputDecoration(labelText: 'Report'),
+            ),
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 // Save Button Action
-                widget.step.editorName = editorNameController.text;
-                widget.step.production = productionController.text;
-                widget.step.editedDateTime = editedDateTimeController.text;
-                widget.step.reportDocument = reportController.text;
-                Navigator.pop(context, widget.machineNumber);
+                step.editorName = editorNameController.text;
+                step.production = productionController.text;
+                step.editedDateTime = editedDateTimeController.text;
+                step.reportDocument = reportController.text;
+
+                // Change stepStatus to 1
+                step.stepStatus = 1;
+
+                // Navigate back to the previous screen
+                Navigator.pop(
+                  context,
+                  true,
+                ); // Passing true to indicate data was updated
               },
               child: Text('Save'),
             ),
