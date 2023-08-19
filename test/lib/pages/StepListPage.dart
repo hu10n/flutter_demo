@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../_dev/data.dart';
-import '../body/StepListView_v2.dart';
+import '../body/StepListView.dart';
 
 class StepListPage extends StatelessWidget {
   final String machineNumber;

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../viewmodels/NavigationNotifier.dart';
 import '../animations/bottom_bar_animation.dart';
-import '../wigets/StepListView.dart';
+import '../wigets/StepListSliverList.dart';
 
 class StepListView extends StatelessWidget {
   final String machineNumber;
@@ -20,7 +20,7 @@ class StepListView extends StatelessWidget {
             CustomScrollView(
               controller: notifier.scrollController,
               slivers: <Widget>[
-                StepSliverList(
+                StepListSliverList(
                   machineNumber: machineNumber,
                 ),
               ],

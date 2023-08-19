@@ -2,33 +2,42 @@ import 'package:flutter/material.dart';
 import '../_dev/StepDetailPage.dart';
 import '../_dev/data.dart';
 
-class StepSliverList extends StatefulWidget {
+class StepListSliverList extends StatefulWidget {
   final String machineNumber;
 
-  const StepSliverList({Key? key, required this.machineNumber})
+  const StepListSliverList({Key? key, required this.machineNumber})
       : super(key: key);
 
   @override
-  State<StepSliverList> createState() => _StepSliverListState();
+  State<StepListSliverList> createState() => _StepListSliverListState();
 }
 
-class _StepSliverListState extends State<StepSliverList> {
+class _StepListSliverListState extends State<StepListSliverList> {
   @override
   Widget build(BuildContext context) {
     final MachineData machine = machineData[widget.machineNumber]!;
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          final stepTitle = machine.childSteps.keys.elementAt(index);
-          final SmallStep step = machine.childSteps[stepTitle]!;
-          return InkWell(
-            child: StepListCard(step: step, stepTitle: stepTitle),
-            onTap: () {
-              _handleStepTap(context, stepTitle, step, machine);
-            },
-          );
+          if (index == 0) {
+            // Summary Card 一番上に挿入する
+            return Card(
+                child: MachineSummaryCard(
+              machine: machine,
+            ));
+          } else {
+            // StepごとのCard
+            final stepTitle = machine.childSteps.keys.elementAt(index - 1);
+            final SmallStep step = machine.childSteps[stepTitle]!;
+            return InkWell(
+              child: StepListCard(step: step, stepTitle: stepTitle),
+              onTap: () {
+                _handleStepTap(context, stepTitle, step, machine);
+              },
+            );
+          }
         },
-        childCount: machine.childSteps.length,
+        childCount: machine.childSteps.length + 1, // 追加した分だけ増やす
       ),
     );
   }
@@ -184,8 +193,8 @@ class StepStatusIcon extends StatelessWidget {
   }
 }
 
-class MachineSummary extends StatelessWidget {
-  const MachineSummary({super.key, required this.machine});
+class MachineSummaryCard extends StatelessWidget {
+  const MachineSummaryCard({super.key, required this.machine});
   final MachineData machine;
 
   @override
@@ -203,7 +212,8 @@ class MachineSummary extends StatelessWidget {
       child: Column(
         children: [
           CircularProgressIndicator(
-            value: progressPercentage / 100,
+            value: progressPercentage / 100, // 0~1の範囲で入力する必要がある
+            backgroundColor: Colors.grey[300],
           ),
           Text("$totalProgress / $stepNumber"),
           Text("$progressPercentage %")
