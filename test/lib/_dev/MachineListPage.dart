@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test/_dev/QR_Reader_Page.dart';
 
 import 'StepListPage.dart';
 import 'data.dart';
@@ -28,9 +29,9 @@ class MachineList extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        StepListPage(machineNumber: machineNumber),
-                  ),
+                      builder: (context) =>
+                          // StepListPage(machineNumber: machineNumber),
+                          QRViewExample()),
                 );
               },
             ),

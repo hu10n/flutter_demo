@@ -17,6 +17,8 @@ dependencies:
   qr_code_scanner: ^1.0.1
   flutter_riverpod: ^2.3.7
   flutter_barcode_scanner: ^2.0.0
+  qrscan: ^0.3.3
+  mobile_scanner: ^3.4.1
 
 dev_dependencies:
   flutter_test:
