@@ -4,14 +4,11 @@ import 'package:provider/provider.dart';
 import '../viewmodels/NavigationNotifier.dart';
 import '../animations/bottom_bar_animation.dart';
 import '../wigets/StepListView.dart';
-import '../_dev/data.dart';
-
 
 class StepListView extends StatelessWidget {
-  final MachineData machine;
   final String machineNumber;
 
-  StepListView({required this.machine, required this.machineNumber});
+  StepListView({required this.machineNumber});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +21,6 @@ class StepListView extends StatelessWidget {
               controller: notifier.scrollController,
               slivers: <Widget>[
                 StepSliverList(
-                  childSteps: machine.childSteps,
                   machineNumber: machineNumber,
                 ),
               ],

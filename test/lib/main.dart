@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:test/pages/StepListPage.dart';
 
 import './viewmodels/HomeViewModel.dart';
 import './pages/home_page.dart';
@@ -12,7 +13,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: ChangeNotifierProvider(
         create: (context) => HomeViewModel(),
-        child: Home(),
+        // StepListのテスト中 0719 -------------
+        child: StepListPage(
+          machineNumber: 'A-2',
+        ),
+        // -----------------------------------
       ),
     );
   }
