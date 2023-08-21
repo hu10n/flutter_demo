@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'data.dart';
+import '../../../LocalData/data.dart';
+import '../StepList/StepListPage.dart';
 
-class StepDetailPage extends StatefulWidget {
+class StepSubmitPage extends StatefulWidget {
   final String stepTitle;
   final String machineNumber;
 
-  const StepDetailPage({
+  const StepSubmitPage({
     Key? key,
     required this.stepTitle,
     required this.machineNumber,
@@ -15,7 +16,7 @@ class StepDetailPage extends StatefulWidget {
   _StepDetailPageState createState() => _StepDetailPageState();
 }
 
-class _StepDetailPageState extends State<StepDetailPage> {
+class _StepDetailPageState extends State<StepSubmitPage> {
   late SmallStep step;
   late TextEditingController editorNameController;
   late TextEditingController productionController;
@@ -48,6 +49,7 @@ class _StepDetailPageState extends State<StepDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar:
           AppBar(title: Text("${widget.machineNumber} ${widget.stepTitle}")),
       body: Padding(
@@ -84,10 +86,15 @@ class _StepDetailPageState extends State<StepDetailPage> {
                 step.stepStatus = 1;
 
                 // Navigate back to the previous screen
-                Navigator.pop(
+                Navigator.push(
                   context,
-                  true,
-                ); // Passing true to indicate data was updated
+                  MaterialPageRoute(
+                    // builder: (context) => Placeholder()
+                    builder: (context) =>
+                        StepListPage(machineNumber: widget.machineNumber),
+                    // QRViewExample(),
+                  ),
+                );
               },
               child: Text('Save'),
             ),

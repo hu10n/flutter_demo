@@ -15,30 +15,36 @@ class SmallStep {
 }
 
 class MachineData {
+  final String machineCategory;
   final String productName;
   final String material;
   final String lotNumber;
   String editedDateTime;
   int progress;
+  int machineStatus;
   Map<String, SmallStep> childSteps; // データの型を指定
 
   MachineData({
+    required this.machineCategory,
     required this.productName,
     required this.material,
     required this.lotNumber,
     required this.editedDateTime,
     required this.progress,
     required this.childSteps,
+    required this.machineStatus,
   });
 }
 
 Map<String, MachineData> machineData = {
   "A-1": MachineData(
+    machineCategory: "A",
     productName: "Product A-1",
     material: "Material A-1",
     lotNumber: "lot A-1",
     editedDateTime: "2023/08/13 10:00",
-    progress: 50,
+    progress: 0,
+    machineStatus: 0,
     childSteps: {
       "Step 1": SmallStep(
         editorName: "Editor[A-1 S1]",
@@ -65,11 +71,13 @@ Map<String, MachineData> machineData = {
     },
   ),
   "A-2": MachineData(
+    machineCategory: "A",
     productName: "Product A-2",
     material: "Material A-2",
     lotNumber: "lot A-2",
     editedDateTime: "2023/08/13 10:00",
-    progress: 50,
+    progress: 0,
+    machineStatus: 0,
     childSteps: {
       "Step 1": SmallStep(
         editorName: "Editor[A-2 S1]",
@@ -96,11 +104,13 @@ Map<String, MachineData> machineData = {
     },
   ),
   "A-3": MachineData(
+    machineCategory: "A",
     productName: "Product A-3",
     material: "Material A-3",
     lotNumber: "lot A-3",
     editedDateTime: "2023/08/13 10:00",
-    progress: 50,
+    progress: 0,
+    machineStatus: 0,
     childSteps: {
       "Step 1": SmallStep(
         editorName: "Editor[A-3 S1]",
@@ -128,11 +138,13 @@ Map<String, MachineData> machineData = {
   ),
 
   "B-1": MachineData(
+    machineCategory: "B",
     productName: "Product B-1",
     material: "Material B-1",
     lotNumber: "lot B-1",
     editedDateTime: "2023/08/13 10:00",
-    progress: 50,
+    progress: 0,
+    machineStatus: 0,
     childSteps: {
       "Step 1": SmallStep(
         editorName: "Editor[B-1 S1]",
@@ -159,11 +171,13 @@ Map<String, MachineData> machineData = {
     },
   ),
   "B-2": MachineData(
+    machineCategory: "B",
     productName: "Product B-2",
     material: "Material B-2",
     lotNumber: "lot B-2",
     editedDateTime: "2023/08/13 10:00",
-    progress: 50,
+    progress: 0,
+    machineStatus: 0,
     childSteps: {
       "Step 1": SmallStep(
         editorName: "Editor[B-2 S1]",
@@ -190,11 +204,13 @@ Map<String, MachineData> machineData = {
     },
   ),
   "B-3": MachineData(
+    machineCategory: "B",
     productName: "Product B-3",
     material: "Material B-3",
     lotNumber: "lot B-3",
     editedDateTime: "2023/08/13 10:00",
-    progress: 50,
+    progress: 0,
+    machineStatus: 0,
     childSteps: {
       "Step 1": SmallStep(
         editorName: "Editor[B-3 S1]",
@@ -221,11 +237,13 @@ Map<String, MachineData> machineData = {
     },
   ),
   "B-34": MachineData(
+    machineCategory: "B",
     productName: "Product B-3",
     material: "Material B-3",
     lotNumber: "lot B-3",
     editedDateTime: "2023/08/13 10:00",
-    progress: 50,
+    progress: 0,
+    machineStatus: 0,
     childSteps: {
       "Step 1": SmallStep(
         editorName: "Editor[B-3 S1]",

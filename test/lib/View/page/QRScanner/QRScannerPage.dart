@@ -1,26 +1,27 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-import 'StepDetailPage.dart';
+import '../StepSubmit/StepSubmitPage.dart';
 
-class QRViewExample extends StatefulWidget {
-  const QRViewExample({Key? key}) : super(key: key);
+class QRScannerPage extends StatefulWidget {
+  const QRScannerPage({Key? key}) : super(key: key);
 
   @override
-  _QRViewExampleState createState() => _QRViewExampleState();
+  _QRScannerPageState createState() => _QRScannerPageState();
 }
 
-class _QRViewExampleState extends State<QRViewExample> {
+class _QRScannerPageState extends State<QRScannerPage> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
+  Barcode? result;
+  String _text = '';
 
   @override
   void dispose() {
-    controller?.dispose();
+    controller?.dispose(); // Dispose the QRViewController
     super.dispose();
   }
 
@@ -28,7 +29,7 @@ class _QRViewExampleState extends State<QRViewExample> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('QR読み取り'),
+        title: Text('QR Scanner'),
         centerTitle: true,
       ),
       body: _buildQrView(context),
@@ -51,43 +52,58 @@ class _QRViewExampleState extends State<QRViewExample> {
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
-    controller.scannedDataStream.listen((scanData) async {
-      final decodedData = jsonDecode(scanData.code!);
-      final machineNumber = decodedData['machineNumber'].toString();
-      final stepTitle = decodedData['stepTitle'].toString();
-
-      // Dispose the current controller
-      controller.dispose();
-
-      // Navigate to detail page
-      _transDetailPage(machineNumber, stepTitle);
+    controller.scannedDataStream.listen((scanData) {
+      result = scanData;
+      final newText = scanData.code.toString();
+      if (newText != _text) {
+        setState(() {
+          _text = newText;
+          _processScannedData(_text);
+        });
+      }
     });
   }
 
-  void _transDetailPage(String machineNumber, String stepTitle) async {
+  void _processScannedData(String text) {
+    try {
+      final decodedData = jsonDecode(text);
+      final machineNumber = decodedData['machineNumber'].toString();
+      final stepTitle = decodedData['stepTitle'].toString();
+
+      _transDetailPage(machineNumber, stepTitle);
+    } catch (e) {
+      // Handle JSON decoding error if necessary
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
+  }
+
+  Future<void> _transDetailPage(String machineNumber, String stepTitle) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => StepDetailPage(
-          machineNumber: machineNumber,
-          stepTitle: stepTitle,
-        ),
+        builder: (context) {
+          // Initialize the instance variables in the new page
+          return StepSubmitPage(
+            machineNumber: machineNumber,
+            stepTitle: stepTitle,
+          );
+        },
       ),
     );
 
-    // After returning from detail page, create a new controller and resume
-    if (mounted) {
-      setState(() {
-        controller?.resumeCamera();
-      });
-    }
+    // Reset the _text value when returning from the detail page
+    setState(() {
+      _text = '';
+    });
   }
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
     log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
     if (!p) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('許可がありません')),
+        SnackBar(content: Text('There is No Permission to Access Camaera')),
       );
     }
   }
