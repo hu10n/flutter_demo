@@ -47,21 +47,23 @@ class _MachineListPageState extends State<MachineListPage> {
         }
         return true;
       },
-      child: Container(
-        color: Colors.grey[200],
-        child: CustomScrollView(
-          controller: scrollController,
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 200.0,
-              floating: true,
-              pinned: false,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text('Machine List'),
+      child: SafeArea(
+        child: Container(
+          color: Colors.grey[200],
+          child: CustomScrollView(
+            controller: scrollController,
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 200.0,
+                floating: true,
+                pinned: false,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Text('Machine List'),
+                ),
               ),
-            ),
-            MachineListSliverList()
-          ],
+              MachineListSliverList()
+            ],
+          ),
         ),
       ),
     );

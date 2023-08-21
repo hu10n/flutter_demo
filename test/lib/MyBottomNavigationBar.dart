@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
-class MyBottomNavigationBar extends StatelessWidget {
+class MyBottomNavigationBar extends StatefulWidget {
   final Function(int) onTap;
 
   MyBottomNavigationBar({required this.onTap});
+
+  @override
+  _MyBottomNavigationBarState createState() => _MyBottomNavigationBarState();
+}
+
+class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
+  int _selectedIndex = 0; // 選択されているアイコンのインデックス
 
   @override
   Widget build(BuildContext context) {
@@ -18,19 +25,39 @@ class MyBottomNavigationBar extends StatelessWidget {
             children: [
               IconButton(
                 icon: Icon(
-                  Icons.home_sharp,
+                  _selectedIndex == 0
+                      ? Icons.home_sharp // 選択されている場合のアイコン
+                      : Icons.home_outlined, // 選択されていない場合のアイコン
                   size: kToolbarHeight * .6,
                 ),
-                onPressed: () => onTap(0),
+                onPressed: () {
+                  widget.onTap(0);
+                  _handleIconSelection(0);
+                },
               ),
               IconButton(
-                icon: Icon(Icons.qr_code_scanner_sharp,
-                    size: kToolbarHeight * .6),
-                onPressed: () => onTap(1),
+                icon: Icon(
+                  _selectedIndex == 1
+                      ? Icons.qr_code_scanner_sharp
+                      : Icons.qr_code_scanner_rounded,
+                  size: kToolbarHeight * .6,
+                ),
+                onPressed: () {
+                  widget.onTap(1);
+                  _handleIconSelection(1);
+                },
               ),
               IconButton(
-                icon: Icon(Icons.settings_sharp, size: kToolbarHeight * .6),
-                onPressed: () => onTap(2),
+                icon: Icon(
+                  _selectedIndex == 2
+                      ? Icons.settings_sharp
+                      : Icons.settings_outlined,
+                  size: kToolbarHeight * .6,
+                ),
+                onPressed: () {
+                  widget.onTap(2);
+                  _handleIconSelection(2);
+                },
               ),
             ],
           ),
@@ -40,5 +67,11 @@ class MyBottomNavigationBar extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _handleIconSelection(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 }
