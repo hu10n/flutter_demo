@@ -26,12 +26,7 @@ class _StepListSliverListState extends State<StepListSliverList> {
           } else {
             final stepTitle = machine.childSteps.keys.elementAt(index - 1);
             final SmallStep step = machine.childSteps[stepTitle]!;
-            return InkWell(
-              child: _buildStepListCard(step, stepTitle),
-              onTap: () {
-                _handleStepCardTap(context, stepTitle, step, machine);
-              },
-            );
+            return StepListCard(step, stepTitle, context, machine);
           }
         },
         childCount: machine.childSteps.length + 1,
@@ -79,6 +74,19 @@ class _StepListSliverListState extends State<StepListSliverList> {
   }
 
   // Card for Each Step ----------
+  Material StepListCard(SmallStep step, String stepTitle, BuildContext context,
+      MachineData machine) {
+    return Material(
+      // InkWellはMaterial Widgetを親に持つ必要がある。
+      child: InkWell(
+        child: _buildStepListCard(step, stepTitle),
+        onTap: () {
+          _handleStepCardTap(context, stepTitle, step, machine);
+        },
+      ),
+    );
+  }
+
   Widget _buildStepListCard(SmallStep step, String stepTitle) {
     return SizedBox(
       height: 70,
