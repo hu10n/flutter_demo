@@ -8,10 +8,10 @@ class MyAnimatedPositioned extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final safePadding = MediaQuery.of(context).padding.bottom;
     return AnimatedPositioned(
       duration: Duration(milliseconds: 300),
-      bottom:
-          showBottomBar ? 0.0 : -(kToolbarHeight + kBottomNavigationBarOffset),
+      bottom: showBottomBar ? 0.0 : -(kToolbarHeight + safePadding),
       left: 0.0,
       right: 0.0,
       child: child,

@@ -7,8 +7,9 @@ class MyBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final safePadding = MediaQuery.of(context).padding.bottom;
     return Container(
-      height: kToolbarHeight + kBottomNavigationBarOffset,
+      height: kToolbarHeight + safePadding,
       color: Colors.grey[100],
       child: Column(
         children: [
@@ -34,7 +35,7 @@ class MyBottomNavigationBar extends StatelessWidget {
             ],
           ),
           SizedBox(
-            height: kBottomNavigationBarOffset,
+            height: safePadding,
           )
         ],
       ),
