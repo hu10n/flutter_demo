@@ -26,6 +26,7 @@ class MachineSummaryCard extends StatelessWidget {
     final productName = machine.productName;
     final material = machine.material;
     final lotNumber = machine.lotNumber;
+    final updateDate = getLatestEditedDateTime(machineNumber);
 
     return Card(
       child: Column(
@@ -36,7 +37,7 @@ class MachineSummaryCard extends StatelessWidget {
             children: [
               _buildMachineStatusBox(context, machineStatus, progressPercentage,
                   totalProgress, stepNumber),
-              _buildProductSpecBox(productName, material, lotNumber)
+              _buildProductSpecBox(productName, material, lotNumber, updateDate)
             ],
           ),
           _buildBottomButtonBox(context, onPressAction)
@@ -69,8 +70,8 @@ class MachineSummaryCard extends StatelessWidget {
     );
   }
 
-  SizedBox _buildProductSpecBox(
-      String productName, String material, String lotNumber) {
+  SizedBox _buildProductSpecBox(String productName, String material,
+      String lotNumber, String updateDate) {
     return SizedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +84,11 @@ class MachineSummaryCard extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          Text("Lot番号:$lotNumber")
+          Text("Lot番号:$lotNumber"),
+          SizedBox(
+            height: 10,
+          ),
+          Text("前回更新:$updateDate")
         ],
       ),
     );
@@ -92,7 +97,7 @@ class MachineSummaryCard extends StatelessWidget {
   Widget _buildMachineStatusBox(BuildContext context, int machineStatus,
       int progressPercentage, int totalProgress, int stepNumber) {
     return SizedBox(
-      width: 200,
+      width: 170,
       child: Column(
         children: [
           _buildMachineStatusText(context, machineStatus),
