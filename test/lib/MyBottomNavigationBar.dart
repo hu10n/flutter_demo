@@ -26,7 +26,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
               IconButton(
                 icon: Icon(
                   _selectedIndex == 0
-                      ? Icons.home_sharp // 選択されている場合のアイコン
+                      ? Icons.home // 選択されている場合のアイコン
                       : Icons.home_outlined, // 選択されていない場合のアイコン
                   size: kToolbarHeight * .6,
                 ),
@@ -38,7 +38,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
               IconButton(
                 icon: Icon(
                   _selectedIndex == 1
-                      ? Icons.qr_code_scanner_sharp
+                      ? Icons.qr_code_scanner
                       : Icons.qr_code_scanner_rounded,
                   size: kToolbarHeight * .6,
                 ),
@@ -50,7 +50,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
               IconButton(
                 icon: Icon(
                   _selectedIndex == 2
-                      ? Icons.settings_sharp
+                      ? Icons.settings
                       : Icons.settings_outlined,
                   size: kToolbarHeight * .6,
                 ),

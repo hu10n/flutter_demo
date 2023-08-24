@@ -16,20 +16,18 @@ class _StepListPageState extends State<StepListPage> {
   @override
   Widget build(BuildContext context) {
     return NotificationListener<ScrollUpdateNotification>(
-      child: SafeArea(
-        child: Container(
-          color: Colors.grey[200],
-          child: CustomScrollView(
-            controller: scrollController,
-            slivers: [
-              SliverAppBar(
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Text('Machine ${widget.machineNumber} Step List'),
-                ),
+      child: Container(
+        color: Colors.grey[200],
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            SliverAppBar(
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text('Machine ${widget.machineNumber} Step List'),
               ),
-              StepListSliverList(machineNumber: widget.machineNumber)
-            ],
-          ),
+            ),
+            StepListSliverList(machineNumber: widget.machineNumber)
+          ],
         ),
       ),
     );

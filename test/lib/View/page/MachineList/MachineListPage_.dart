@@ -47,23 +47,21 @@ class _MachineListPageState extends State<MachineListPage> {
         }
         return true;
       },
-      child: SafeArea(
-        child: Container(
-          color: Colors.grey[200],
-          child: CustomScrollView(
-            controller: scrollController,
-            slivers: [
-              SliverAppBar(
-                expandedHeight: 200.0,
-                floating: true,
-                pinned: false,
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Text('Machine List'),
-                ),
+      child: Container(
+        color: Colors.grey[200],
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 200.0,
+              floating: true,
+              pinned: false,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text('Machine List'),
               ),
-              MachineListSliverList()
-            ],
-          ),
+            ),
+            MachineListSliverList()
+          ],
         ),
       ),
     );
@@ -74,21 +72,5 @@ class _MachineListPageState extends State<MachineListPage> {
     scrollController.removeListener(_onScroll);
     scrollController.dispose();
     super.dispose();
-  }
-}
-
-class SubPage extends StatelessWidget {
-  final String title;
-
-  SubPage({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(
-        child: Text('This is a sub page.'),
-      ),
-    );
   }
 }
