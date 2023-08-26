@@ -4,6 +4,10 @@ import '../StepList/StepListPage.dart';
 import 'MachineListCard.dart';
 
 class MachineListSliverList extends StatefulWidget {
+  final Function onScrollDown;
+  final Function onScrollUp;
+
+  MachineListSliverList({required this.onScrollDown, required this.onScrollUp});
   @override
   State<MachineListSliverList> createState() => _MachineListSliverListState();
 }
@@ -43,7 +47,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(5.0),
                       child: Text(
                         category,
                         style: TextStyle(
@@ -81,12 +85,15 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
 
   void _handleMachineCardTap(
       BuildContext context, String machineNumber, MachineData machine) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => StepListPage(machineNumber: machineNumber),
-      ),
-    ).then((dataUpdated) {
+    widget.onScrollUp();
+    Navigator.of(context)
+        .push(MaterialPageRoute(
+            builder: (context) => StepListPage(
+                  machineNumber: machineNumber,
+                  onScrollDown: widget.onScrollDown,
+                  onScrollUp: widget.onScrollUp,
+                )))
+        .then((dataUpdated) {
       // 遷移先から戻った際に毎回setStateにtrueを渡す
       setState(() {});
     });
