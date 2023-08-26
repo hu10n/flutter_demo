@@ -75,7 +75,7 @@ class MachineListCard extends StatelessWidget {
           child: Align(
             alignment: Alignment.center,
             child: Text(
-              machine.productName,
+              machine.machineRole,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
             ),
           ),
@@ -83,7 +83,7 @@ class MachineListCard extends StatelessWidget {
         SizedBox(
           height: 15,
           child: Text(
-            machine.machineRole,
+            machine.productName,
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
           ),
         ),
