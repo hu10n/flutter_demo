@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../LocalData/data.dart';
 import '../../../common/methods.dart';
+import 'MachineStatusText.dart';
 
 class MachineSummaryCard extends StatelessWidget {
   const MachineSummaryCard(
@@ -100,7 +101,7 @@ class MachineSummaryCard extends StatelessWidget {
       width: 170,
       child: Column(
         children: [
-          _buildMachineStatusText(context, machineStatus),
+          MachineStatusText(context: context, machineStatus: machineStatus),
           SizedBox(
             height: 10,
           ),
@@ -159,59 +160,6 @@ class MachineSummaryCard extends StatelessWidget {
               Text("$progressPercentage %"),
               Text("$totalProgress / $stepNumber"),
             ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMachineStatusText(BuildContext context, int machineStatus) {
-    Color circleColor;
-    String statusText;
-
-    switch (machineStatus) {
-      case 0:
-        circleColor = Colors.grey;
-        statusText = "未稼働";
-        break;
-      case 1:
-        circleColor = Colors.pinkAccent;
-        statusText = "停止中";
-        break;
-      case 2:
-        circleColor = Colors.red;
-        statusText = "異常停止中";
-        break;
-      case 3:
-        circleColor = Colors.yellow;
-        statusText = "メンテナンス中";
-        break;
-      case 4:
-        circleColor = Colors.green;
-        statusText = "稼働中";
-        break;
-      default:
-        circleColor = Colors.black12;
-        statusText = "Error";
-    }
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 13,
-          height: 13,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: circleColor,
-          ),
-        ),
-        SizedBox(width: 5),
-        Text(
-          statusText,
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
           ),
         ),
       ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../LocalData/data.dart';
-import '../../../common/methods.dart';
 import '../StepList/StepListPage.dart';
+import 'MachineListCard.dart';
 
 class MachineListSliverList extends StatefulWidget {
   @override
@@ -12,47 +12,69 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
   @override
   Widget build(BuildContext context) {
     final safePadding = MediaQuery.of(context).padding.bottom;
+
+    // Categorize machines
+    Map<String, List<String>> categorizedMachines = {};
+
+    for (var machineNumber in machineData.keys) {
+      final machine = machineData[machineNumber]!;
+      final category = machine.machineCategory;
+
+      if (!categorizedMachines.containsKey(category)) {
+        categorizedMachines[category] = [];
+      }
+
+      categorizedMachines[category]!.add(machineNumber);
+    }
+
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          if (index != machineData.length) {
-            final machineNumber = machineData.keys.elementAt(index);
-            final MachineData machine = machineData[machineNumber]!;
-            return _MachineListCard(machineNumber, machine, context);
+          final categories = categorizedMachines.keys.toList();
+
+          if (index < categories.length) {
+            final category = categories[index];
+            final machinesInCategory = categorizedMachines[category]!;
+            // マシンカテゴリごとにまとめる
+            return Column(
+              children: [
+                // カテゴリーラベル ex. A
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        category,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).disabledColor),
+                      ),
+                    ),
+                  ],
+                ),
+                // カテゴリーに該当するマシンのカードリスト
+                Column(
+                  children: machinesInCategory.map((machineNumber) {
+                    final machine = machineData[machineNumber]!;
+                    return MachineListCard(
+                      machineNumber: machineNumber,
+                      machine: machine,
+                      context: context,
+                      ontapAction: () => _handleMachineCardTap(
+                          context, machineNumber, machine),
+                    );
+                  }).toList(),
+                ),
+              ],
+            );
           } else {
             return SizedBox(
-              height: safePadding, // 一番下のウィジェットがノッチに食い込むのを防ぐ
+              height: safePadding,
             );
           }
         },
-        childCount: machineData.length + 1,
-      ),
-    );
-  }
-
-  Card _MachineListCard(
-      String machineNumber, MachineData machine, BuildContext context) {
-    // Get Latest Edit Date Time
-    String latestEditedDateTime = getLatestEditedDateTime(machineNumber);
-    return Card(
-      child: Material(
-        child: InkWell(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(machineNumber),
-              Text('Product Name: ${machine.productName}'),
-              Text('Material: ${machine.material}'),
-              Text('Lot Number: ${machine.lotNumber}'),
-              Text('Edited Date & Time: $latestEditedDateTime'),
-              Text(
-                  'Progress: ${calcTotalProgress(machine)} / ${calcStepNumber(machine)}'),
-            ],
-          ),
-          onTap: () {
-            _handleMachineCardTap(context, machineNumber, machine);
-          },
-        ),
+        childCount: categorizedMachines.length + 1,
       ),
     );
   }

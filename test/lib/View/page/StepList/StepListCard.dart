@@ -17,31 +17,27 @@ class StepListCard extends StatelessWidget {
   });
 
   Widget build(BuildContext context) {
-    return Material(
+    return Card(
+      clipBehavior: Clip.hardEdge,
       child: InkWell(
-        child: _buildStepListCard(),
-        onTap: tapAction, // Just use the function reference here
-      ),
-    );
-  }
-
-  Widget _buildStepListCard() {
-    return SizedBox(
-      height: 70,
-      child: Card(
-        child: Row(
-          children: [
-            _buildStepStatusIcon(step.stepStatus),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildStepTitleLabel(stepTitle),
-                _buildStepListSubtitle(step),
-              ],
-            ),
-          ],
+        onTap: tapAction,
+        child: SizedBox(
+          height: 60,
+          child: Row(
+            children: [
+              _buildStepStatusIcon(step.stepStatus),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildStepTitleLabel(stepTitle),
+                  _buildStepListSubtitle(step),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
+      // Just use the function reference here
     );
   }
 
