@@ -43,10 +43,11 @@ class MachineStatusText extends StatelessWidget {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          width: 13,
-          height: 13,
+          width: 12,
+          height: 12,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: circleColor,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../LocalData/data.dart';
 import '../../../common/methods.dart';
-import 'MachineStatusText.dart';
+import '../../../common/MachineStatusText.dart';
 
 class MachineSummaryCard extends StatelessWidget {
   const MachineSummaryCard(
@@ -100,6 +100,7 @@ class MachineSummaryCard extends StatelessWidget {
     return SizedBox(
       width: 170,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           MachineStatusText(context: context, machineStatus: machineStatus),
           SizedBox(

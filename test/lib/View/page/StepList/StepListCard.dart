@@ -17,21 +17,25 @@ class StepListCard extends StatelessWidget {
   });
 
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Card(
       clipBehavior: Clip.hardEdge,
       child: InkWell(
         onTap: tapAction,
         child: SizedBox(
+          width: screenWidth,
           height: 60,
           child: Row(
             children: [
               _buildStepStatusIcon(step.stepStatus),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildStepTitleLabel(stepTitle),
-                  _buildStepListSubtitle(step),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildStepTitleLabel(stepTitle),
+                    _buildStepListSubtitle(step),
+                  ],
+                ),
               ),
             ],
           ),
@@ -71,19 +75,17 @@ class StepListCard extends StatelessWidget {
 
   Widget _buildStepListSubtitle(SmallStep step) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _buildSubtitleWithIcon(Icons.person, step.editorName, 0.32),
-        _buildSubtitleWithIcon(Icons.trending_up, step.production, 0.21),
-        _buildSubtitleWithIcon(Icons.update, step.editedDateTime, 0.32),
+        _buildSubtitleWithIcon(Icons.person, step.editorName),
+        _buildSubtitleWithIcon(Icons.trending_up, step.production),
+        _buildSubtitleWithIcon(Icons.update, step.editedDateTime),
       ],
     );
   }
 
-  Widget _buildSubtitleWithIcon(IconData icon, String text, double ratio) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
+  Widget _buildSubtitleWithIcon(IconData icon, String text) {
     return SizedBox(
-      width: screenWidth * ratio,
       child: Row(
         children: [
           Icon(
