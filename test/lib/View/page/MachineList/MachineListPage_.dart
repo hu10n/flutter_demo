@@ -74,19 +74,3 @@ class _MachineListPageState extends State<MachineListPage> {
     super.dispose();
   }
 }
-
-class SubPage extends StatelessWidget {
-  final String title;
-
-  SubPage({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(
-        child: Text('This is a sub page.'),
-      ),
-    );
-  }
-}

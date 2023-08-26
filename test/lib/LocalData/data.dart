@@ -16,16 +16,20 @@ class SmallStep {
 
 class MachineData {
   final String machineCategory;
+  final String machineRole;
   final String productName;
   final String material;
   final String lotNumber;
   String editedDateTime;
   int progress;
   int machineStatus;
-  Map<String, SmallStep> childSteps; // データの型を指定
+  Map<String, SmallStep> childSteps;
+
+  var machineNumber; // データの型を指定
 
   MachineData({
     required this.machineCategory,
+    required this.machineRole,
     required this.productName,
     required this.material,
     required this.lotNumber,
@@ -39,12 +43,13 @@ class MachineData {
 Map<String, MachineData> machineData = {
   "A-1": MachineData(
     machineCategory: "A",
+    machineRole: "Machine Role A-1",
     productName: "Product A-1",
     material: "Material A-1",
     lotNumber: "lot A-1",
     editedDateTime: "2023/08/13 10:00",
     progress: 0,
-    machineStatus: 0,
+    machineStatus: 4,
     childSteps: {
       "Step 1": SmallStep(
         editorName: "Editor[A-1 S1]",
@@ -72,6 +77,7 @@ Map<String, MachineData> machineData = {
   ),
   "A-2": MachineData(
     machineCategory: "A",
+    machineRole: "Machine Role A-2",
     productName: "Product A-2",
     material: "Material A-2",
     lotNumber: "lot A-2",
@@ -105,12 +111,13 @@ Map<String, MachineData> machineData = {
   ),
   "A-3": MachineData(
     machineCategory: "A",
+    machineRole: "Machine Role A-3",
     productName: "Product A-3",
     material: "Material A-3",
     lotNumber: "lot A-3",
     editedDateTime: "2023/08/13 10:00",
     progress: 0,
-    machineStatus: 0,
+    machineStatus: 100,
     childSteps: {
       "Step 1": SmallStep(
         editorName: "Editor[A-3 S1]",
@@ -136,9 +143,9 @@ Map<String, MachineData> machineData = {
       // 他のステップ
     },
   ),
-
   "B-1": MachineData(
     machineCategory: "B",
+    machineRole: "Machine Role B-1",
     productName: "Product B-1",
     material: "Material B-1",
     lotNumber: "lot B-1",
@@ -172,6 +179,7 @@ Map<String, MachineData> machineData = {
   ),
   "B-2": MachineData(
     machineCategory: "B",
+    machineRole: "Machine Role B-1",
     productName: "Product B-2",
     material: "Material B-2",
     lotNumber: "lot B-2",
@@ -205,6 +213,7 @@ Map<String, MachineData> machineData = {
   ),
   "B-3": MachineData(
     machineCategory: "B",
+    machineRole: "Machine Role B-1",
     productName: "Product B-3",
     material: "Material B-3",
     lotNumber: "lot B-3",
@@ -236,38 +245,106 @@ Map<String, MachineData> machineData = {
       // 他のステップ
     },
   ),
-  "B-34": MachineData(
-    machineCategory: "B",
-    productName: "Product B-3",
-    material: "Material B-3",
-    lotNumber: "lot B-3",
+  "C-1": MachineData(
+    machineCategory: "C",
+    machineRole: "Machine Role C-1",
+    productName: "Product C-1",
+    material: "Material C-1",
+    lotNumber: "lot C-1",
     editedDateTime: "2023/08/13 10:00",
     progress: 0,
     machineStatus: 0,
     childSteps: {
       "Step 1": SmallStep(
-        editorName: "Editor[B-3 S1]",
+        editorName: "Editor[C-1 S1]",
         production: "10,000",
         editedDateTime: "2023/08/13 11:00",
-        reportDocument: "Report B-3 S1",
+        reportDocument: "Report C-1 S1",
         stepStatus: 0,
       ),
       "Step 2": SmallStep(
-        editorName: "Editor[B-3 S2]",
+        editorName: "Editor[C-1 S2]",
         production: "10,000",
         editedDateTime: "2023/08/13 12:00",
-        reportDocument: "Report B-3 S2",
+        reportDocument: "Report C-1 S2",
         stepStatus: 0,
       ),
       "Step 3": SmallStep(
-        editorName: "Editor[B-3 S3]",
+        editorName: "Editor[C-1 S3]",
         production: "10,000",
         editedDateTime: "2023/08/13 13:00",
-        reportDocument: "Report B-3 S3",
+        reportDocument: "Report C-1 S3",
         stepStatus: 0,
       ),
       // 他のステップ
     },
   ),
-  // 他のマシン番号
+  "C-2": MachineData(
+    machineCategory: "C",
+    machineRole: "Machine Role C-1",
+    productName: "Product C-2",
+    material: "Material C-2",
+    lotNumber: "lot C-2",
+    editedDateTime: "2023/08/13 10:00",
+    progress: 0,
+    machineStatus: 0,
+    childSteps: {
+      "Step 1": SmallStep(
+        editorName: "Editor[C-2 S1]",
+        production: "10,000",
+        editedDateTime: "2023/08/13 11:00",
+        reportDocument: "Report C-2 S1",
+        stepStatus: 0,
+      ),
+      "Step 2": SmallStep(
+        editorName: "Editor[C-2 S2]",
+        production: "10,000",
+        editedDateTime: "2023/08/13 12:00",
+        reportDocument: "Report C-2 S2",
+        stepStatus: 0,
+      ),
+      "Step 3": SmallStep(
+        editorName: "Editor[C-2 S3]",
+        production: "10,000",
+        editedDateTime: "2023/08/13 13:00",
+        reportDocument: "Report C-2 S3",
+        stepStatus: 0,
+      ),
+      // 他のステップ
+    },
+  ),
+  "C-3": MachineData(
+    machineCategory: "C",
+    machineRole: "Machine Role C-1",
+    productName: "Product C-3",
+    material: "Material C-3",
+    lotNumber: "lot C-3",
+    editedDateTime: "2023/08/13 10:00",
+    progress: 0,
+    machineStatus: 0,
+    childSteps: {
+      "Step 1": SmallStep(
+        editorName: "Editor[C-3 S1]",
+        production: "10,000",
+        editedDateTime: "2023/08/13 11:00",
+        reportDocument: "Report C-3 S1",
+        stepStatus: 0,
+      ),
+      "Step 2": SmallStep(
+        editorName: "Editor[C-3 S2]",
+        production: "10,000",
+        editedDateTime: "2023/08/13 12:00",
+        reportDocument: "Report C-3 S2",
+        stepStatus: 0,
+      ),
+      "Step 3": SmallStep(
+        editorName: "Editor[C-3 S3]",
+        production: "10,000",
+        editedDateTime: "2023/08/13 13:00",
+        reportDocument: "Report C-3 S3",
+        stepStatus: 0,
+      ),
+      // 他のステップ
+    },
+  ),
 };
