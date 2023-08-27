@@ -8,19 +8,32 @@ class MachineListSliverList extends StatefulWidget {
   final Function onScrollUp;
 
   MachineListSliverList({required this.onScrollDown, required this.onScrollUp});
+
   @override
   State<MachineListSliverList> createState() => _MachineListSliverListState();
 }
 
 class _MachineListSliverListState extends State<MachineListSliverList> {
+  int selectedStatus = -1; // マシンの絞り込み状態を管理する変数
+
+  List<String> getFilteredMachines() {
+    if (selectedStatus == -1) {
+      return machineData.keys.toList();
+    } else {
+      return machineData.entries
+          .where((entry) => entry.value.machineStatus == selectedStatus)
+          .map((entry) => entry.key)
+          .toList();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final safePadding = MediaQuery.of(context).padding.bottom;
 
-    // Categorize machines
     Map<String, List<String>> categorizedMachines = {};
 
-    for (var machineNumber in machineData.keys) {
+    for (var machineNumber in getFilteredMachines()) {
       final machine = machineData[machineNumber]!;
       final category = machine.machineCategory;
 
@@ -36,13 +49,32 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
         (context, index) {
           final categories = categorizedMachines.keys.toList();
 
-          if (index < categories.length) {
-            final category = categories[index];
+          if (index == 0) {
+            return DropdownButton<int>(
+              value: selectedStatus,
+              onChanged: _handleStatusFilterChange,
+              items: <int>[
+                -1, // 全て表示
+                0, // 未稼働
+                1, // 停止中
+                2, // 異常停止中
+                3, // メンテナンス中
+                4 // 稼働中
+              ].map<DropdownMenuItem<int>>(
+                (int value) {
+                  return DropdownMenuItem<int>(
+                    value: value,
+                    child: Text(value == -1 ? '全て表示' : _getStatusText(value)),
+                  );
+                },
+              ).toList(),
+            );
+          } else if (index <= categories.length) {
+            final category = categories[index - 1];
             final machinesInCategory = categorizedMachines[category]!;
-            // マシンカテゴリごとにまとめる
+
             return Column(
               children: [
-                // カテゴリーラベル ex. A
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -57,7 +89,6 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
                     ),
                   ],
                 ),
-                // カテゴリーに該当するマシンのカードリスト
                 Column(
                   children: machinesInCategory.map((machineNumber) {
                     final machine = machineData[machineNumber]!;
@@ -83,6 +114,23 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
     );
   }
 
+  String _getStatusText(int status) {
+    switch (status) {
+      case 0:
+        return '未稼働';
+      case 1:
+        return '停止中';
+      case 2:
+        return '異常停止中';
+      case 3:
+        return 'メンテナンス中';
+      case 4:
+        return '稼働中';
+      default:
+        return '';
+    }
+  }
+
   void _handleMachineCardTap(
       BuildContext context, String machineNumber, MachineData machine) {
     widget.onScrollUp();
@@ -94,8 +142,15 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
                   onScrollUp: widget.onScrollUp,
                 )))
         .then((dataUpdated) {
-      // 遷移先から戻った際に毎回setStateにtrueを渡す
       setState(() {});
     });
+  }
+
+  void _handleStatusFilterChange(int? newStatus) {
+    if (newStatus != null) {
+      setState(() {
+        selectedStatus = newStatus;
+      });
+    }
   }
 }
