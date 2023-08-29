@@ -4,7 +4,7 @@ import 'package:test/View/page/QRScanner/QRScannerPage.dart';
 import 'MyIndexedStack.dart';
 import 'MyAnimatedPositioned.dart';
 import 'MyBottomNavigationBar.dart';
-import 'View/page/MachineList/MachineListPage_.dart';
+import 'View/page/MachineList/MachineListPage.dart';
 import 'View/page/home/HomePage.dart';
 
 void main() {

@@ -90,8 +90,11 @@ class _StepDetailPageState extends State<StepSubmitPage> {
                   context,
                   MaterialPageRoute(
                     // builder: (context) => Placeholder()
-                    builder: (context) =>
-                        StepListPage(machineNumber: widget.machineNumber),
+                    builder: (context) => StepListPage(
+                      machineNumber: widget.machineNumber,
+                      onScrollDown: null,
+                      onScrollUp: null,
+                    ),
                     // QRViewExample(),
                   ),
                 );

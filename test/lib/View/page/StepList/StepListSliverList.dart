@@ -6,9 +6,13 @@ import 'StepListCard.dart';
 
 class StepListSliverList extends StatefulWidget {
   final String machineNumber;
+  final Function onScrollDown;
+  final Function onScrollUp;
 
-  const StepListSliverList({Key? key, required this.machineNumber})
-      : super(key: key);
+  const StepListSliverList(
+      {required this.machineNumber,
+      required this.onScrollDown,
+      required this.onScrollUp});
 
   @override
   State<StepListSliverList> createState() => _StepListSliverListState();

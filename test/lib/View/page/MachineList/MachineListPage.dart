@@ -60,7 +60,10 @@ class _MachineListPageState extends State<MachineListPage> {
                 title: Text('Machine List'),
               ),
             ),
-            MachineListSliverList()
+            MachineListSliverList(
+              onScrollDown: widget.onScrollDown,
+              onScrollUp: widget.onScrollUp,
+            )
           ],
         ),
       ),
