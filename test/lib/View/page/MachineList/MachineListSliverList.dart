@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+//import 'package:provider/provider.dart';
+
+//import '../../../DataClass.dart';
 import '../../../LocalData/data.dart';
 import '../StepList/StepListPage.dart';
 import 'MachineListCard.dart';
@@ -30,6 +33,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
   @override
   Widget build(BuildContext context) {
     final safePadding = MediaQuery.of(context).padding.bottom;
+    //final dataNotifier = context.watch<DataNotifier>();
 
     Map<String, List<String>> categorizedMachines = {};
 
@@ -64,7 +68,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
                 (int value) {
                   return DropdownMenuItem<int>(
                     value: value,
-                    child: Text(value == -1 ? '全て表示' : _getStatusText(value)),
+                    child: Text(value == -1 ? "すべて表示" : _getStatusText(value)),
                   );
                 },
               ).toList(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:test/View/page/QRScanner/QRScannerPage.dart';
 
 import 'MyIndexedStack.dart';
@@ -6,9 +7,15 @@ import 'MyAnimatedPositioned.dart';
 import 'MyBottomNavigationBar.dart';
 import 'View/page/MachineList/MachineListPage.dart';
 import 'View/page/home/HomePage.dart';
+import 'DataClass.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => DataNotifier(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

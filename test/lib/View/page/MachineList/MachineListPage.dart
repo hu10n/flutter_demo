@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'MachineListSliverList.dart';
 
 class MachineListPage extends StatefulWidget {
@@ -27,6 +28,7 @@ class _MachineListPageState extends State<MachineListPage> {
 
   @override
   Widget build(BuildContext context) {
+    
     return NotificationListener<ScrollUpdateNotification>(
       onNotification: (notification) {
         if (notification.metrics.outOfRange) {
