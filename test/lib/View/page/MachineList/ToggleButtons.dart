@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ToggleButtonsWidget extends StatefulWidget {
-
   final Function(int) onToggleSelected;
   ToggleButtonsWidget({required this.onToggleSelected});
 
@@ -25,7 +24,7 @@ class _ToggleButtonsWidgetState extends State<ToggleButtonsWidget> {
         setState(() {
           for (int i = 0; i < isSelected.length; i++) {
             isSelected[i] = i == index;
-            if(isSelected[i]){
+            if (isSelected[i]) {
               switch (i) {
                 case 0:
                   // iが0のときの処理
@@ -48,14 +47,14 @@ class _ToggleButtonsWidgetState extends State<ToggleButtonsWidget> {
                   widget.onToggleSelected(-1);
                   break;
               }
-            }           
+            }
           }
         });
       },
       isSelected: isSelected,
-      color: Colors.grey, // 2. 非選択時のアイコン色
-      selectedColor: Colors.white, // 2. 選択時のアイコン色
-      fillColor: Colors.blue, // 2. 選択時の背景色
+      color: Theme.of(context).canvasColor, // 2. 非選択時のアイコン色
+      selectedColor: Theme.of(context).canvasColor, // 2. 選択時のアイコン色
+      fillColor: Theme.of(context).disabledColor, // 2. 選択時の背景色
       borderWidth: 2, // 2. 非選択時のボーダーの幅
       constraints: BoxConstraints(minHeight: 30, minWidth: 70),
       borderRadius: BorderRadius.circular(10),
