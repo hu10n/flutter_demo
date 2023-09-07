@@ -62,7 +62,30 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           MyAnimatedPositioned(
             showBottomBar: showBottomBar,
-            child: MyBottomNavigationBar(onTap: _onTap),
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // 最小限のサイズを取るように設定
+              children: [
+                if (_currentIndex == 0)// currentIndexが2でない場合のみウィジェットを表示
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // 更新ボタンのアクションを記述
+                        },
+                        child: Icon(Icons.refresh),
+                        style: ElevatedButton.styleFrom(
+                          shape: CircleBorder(),
+                          fixedSize: Size(50, 50),
+                          padding: EdgeInsets.all(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                MyBottomNavigationBar(onTap: _onTap),
+              ],
+            ),
           ),
         ],
       ),

@@ -5,26 +5,32 @@ import 'package:flutter/material.dart';
 import '../../../LocalData/data.dart';
 import '../StepList/StepListPage.dart';
 import 'MachineListCard.dart';
+//import '../../../api/TestAPI.dart';
 
 class MachineListSliverList extends StatefulWidget {
+  final int selectedStatus;
   final Function onScrollDown;
   final Function onScrollUp;
 
-  MachineListSliverList({required this.onScrollDown, required this.onScrollUp});
+  MachineListSliverList({
+    required this.selectedStatus,
+    required this.onScrollDown,
+    required this.onScrollUp,
+  });
 
   @override
   State<MachineListSliverList> createState() => _MachineListSliverListState();
 }
 
 class _MachineListSliverListState extends State<MachineListSliverList> {
-  int selectedStatus = -1; // マシンの絞り込み状態を管理する変数
-
+  //int selectedStatus = -1; // マシンの絞り込み状態を管理する変数
+  
   List<String> getFilteredMachines() {
-    if (selectedStatus == -1) {
+    if (widget.selectedStatus == -1) {
       return machineData.keys.toList();
     } else {
       return machineData.entries
-          .where((entry) => entry.value.machineStatus == selectedStatus)
+          .where((entry) => entry.value.machineStatus == widget.selectedStatus)
           .map((entry) => entry.key)
           .toList();
     }
@@ -53,28 +59,8 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
         (context, index) {
           final categories = categorizedMachines.keys.toList();
 
-          if (index == 0) {
-            return DropdownButton<int>(
-              value: selectedStatus,
-              onChanged: _handleStatusFilterChange,
-              items: <int>[
-                -1, // 全て表示
-                0, // 未稼働
-                1, // 停止中
-                2, // 異常停止中
-                3, // メンテナンス中
-                4 // 稼働中
-              ].map<DropdownMenuItem<int>>(
-                (int value) {
-                  return DropdownMenuItem<int>(
-                    value: value,
-                    child: Text(value == -1 ? "すべて表示" : _getStatusText(value)),
-                  );
-                },
-              ).toList(),
-            );
-          } else if (index <= categories.length) {
-            final category = categories[index - 1];
+          if (index <= categories.length) {
+            final category = categories[index];
             final machinesInCategory = categorizedMachines[category]!;
 
             return Column(
@@ -113,7 +99,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
             );
           }
         },
-        childCount: categorizedMachines.length + 1,
+        childCount: categorizedMachines.length,
       ),
     );
   }
@@ -153,7 +139,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
   void _handleStatusFilterChange(int? newStatus) {
     if (newStatus != null) {
       setState(() {
-        selectedStatus = newStatus;
+        //widget.selectedStatus = newStatus;
       });
     }
   }

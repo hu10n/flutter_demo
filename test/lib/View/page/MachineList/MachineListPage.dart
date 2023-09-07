@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'MachineListSliverList.dart';
+import 'ToggleButtons.dart';
+import 'AlphabetCarousel.dart';
+
 
 class MachineListPage extends StatefulWidget {
   final Function onScrollDown;
@@ -15,6 +18,13 @@ class MachineListPage extends StatefulWidget {
 class _MachineListPageState extends State<MachineListPage> {
   final ScrollController scrollController = ScrollController();
   double lastOffset = 0.0;
+  int selectedStatus = -1;
+
+  _onToggleSelected(int index) {
+    setState(() {
+      selectedStatus = index;
+    });
+  }
 
   @override
   void initState() {
@@ -31,6 +41,11 @@ class _MachineListPageState extends State<MachineListPage> {
     
     return NotificationListener<ScrollUpdateNotification>(
       onNotification: (notification) {
+
+        if (notification.depth != 0) {
+          return true;
+        }
+
         if (notification.metrics.outOfRange) {
           // オーバースクロールの場合、何もしない
           return true;
@@ -55,14 +70,33 @@ class _MachineListPageState extends State<MachineListPage> {
           controller: scrollController,
           slivers: [
             SliverAppBar(
-              expandedHeight: 200.0,
+              title: null,
+              expandedHeight: 50.0,
               floating: true,
               pinned: false,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text('Machine List'),
+              actions: <Widget>[
+                Spacer(),
+                ToggleButtonsWidget(onToggleSelected: _onToggleSelected),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Icon(Icons.menu), // ハンバーガーメニュー
+                ),
+                Spacer(),
+              ],
+            ),
+            SliverPadding(
+              padding: EdgeInsets.all(6.0), // ここで所望のスペースの量を設定します
+            ),
+            SliverToBoxAdapter(
+              child: AlphabetCarousel(
+                onAlphabetSelected: (alphabet) {
+                // ここにアルファベットが選択されたときの処理を追加
+                },
               ),
             ),
+            
             MachineListSliverList(
+              selectedStatus: selectedStatus,
               onScrollDown: widget.onScrollDown,
               onScrollUp: widget.onScrollUp,
             )
