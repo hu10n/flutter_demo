@@ -44,8 +44,6 @@ class _StepListSliverListState extends State<StepListSliverList> {
               tapAction: () =>
                   _handleStepCardTap(context, stepTitle, step, machineNumber),
             );
-          } else {
-            // return SizedBox(height: safePadding + kToolbarHeight);
           }
         },
         childCount: machine.childSteps.length + 2,
