@@ -24,6 +24,8 @@ class _StepListSliverListState extends State<StepListSliverList> {
   Widget build(BuildContext context) {
     final machineNumber = widget.machineNumber;
     final MachineData machine = machineData[machineNumber]!;
+
+    final safePadding = MediaQuery.of(context).padding.bottom;
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -33,20 +35,21 @@ class _StepListSliverListState extends State<StepListSliverList> {
               machineNumber: machineNumber,
               onPressAction: () => _handleIssueButton(context),
             );
-          } else {
-            // StepごとにCardを生成
+          } else if (index <= machine.childSteps.length) {
             final stepTitle = machine.childSteps.keys.elementAt(index - 1);
             final SmallStep step = machine.childSteps[stepTitle]!;
             return StepListCard(
               step: step,
               stepTitle: stepTitle,
               context: context,
-              tapAction: () => _handleStepCardTap(context, stepTitle, step,
-                  machineNumber), // Wrap the function call in a closure
+              tapAction: () =>
+                  _handleStepCardTap(context, stepTitle, step, machineNumber),
             );
+          } else {
+            return SizedBox(height: safePadding + kToolbarHeight);
           }
         },
-        childCount: machine.childSteps.length + 1,
+        childCount: machine.childSteps.length + 2,
       ),
     );
   }
