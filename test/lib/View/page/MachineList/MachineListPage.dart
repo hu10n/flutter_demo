@@ -4,7 +4,6 @@ import 'MachineListSliverList.dart';
 import 'ToggleButtons.dart';
 import 'AlphabetCarousel.dart';
 
-
 class MachineListPage extends StatefulWidget {
   final Function onScrollDown;
   final Function onScrollUp;
@@ -38,10 +37,9 @@ class _MachineListPageState extends State<MachineListPage> {
 
   @override
   Widget build(BuildContext context) {
-    
+    final safePadding = MediaQuery.of(context).padding.bottom;
     return NotificationListener<ScrollUpdateNotification>(
       onNotification: (notification) {
-
         if (notification.depth != 0) {
           return true;
         }
@@ -85,21 +83,24 @@ class _MachineListPageState extends State<MachineListPage> {
               ],
             ),
             SliverPadding(
-              padding: EdgeInsets.all(6.0), // ここで所望のスペースの量を設定します
+              padding: EdgeInsets.all(6), // ここで所望のスペースの量を設定します
             ),
             SliverToBoxAdapter(
               child: AlphabetCarousel(
                 onAlphabetSelected: (alphabet) {
-                // ここにアルファベットが選択されたときの処理を追加
+                  // ここにアルファベットが選択されたときの処理を追加
                 },
               ),
             ),
-            
             MachineListSliverList(
               selectedStatus: selectedStatus,
               onScrollDown: widget.onScrollDown,
               onScrollUp: widget.onScrollUp,
-            )
+            ),
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(
+                  0, safePadding + kToolbarHeight, 0, 0), // ここで所望のスペースの量を設定します
+            ),
           ],
         ),
       ),

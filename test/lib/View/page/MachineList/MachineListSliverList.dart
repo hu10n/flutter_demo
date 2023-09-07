@@ -24,7 +24,7 @@ class MachineListSliverList extends StatefulWidget {
 
 class _MachineListSliverListState extends State<MachineListSliverList> {
   //int selectedStatus = -1; // マシンの絞り込み状態を管理する変数
-  
+
   List<String> getFilteredMachines() {
     if (widget.selectedStatus == -1) {
       return machineData.keys.toList();
@@ -38,7 +38,6 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
 
   @override
   Widget build(BuildContext context) {
-    final safePadding = MediaQuery.of(context).padding.bottom;
     //final dataNotifier = context.watch<DataNotifier>();
 
     Map<String, List<String>> categorizedMachines = {};
@@ -93,32 +92,11 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
                 ),
               ],
             );
-          } else {
-            return SizedBox(
-              height: safePadding,
-            );
           }
         },
         childCount: categorizedMachines.length,
       ),
     );
-  }
-
-  String _getStatusText(int status) {
-    switch (status) {
-      case 0:
-        return '未稼働';
-      case 1:
-        return '停止中';
-      case 2:
-        return '異常停止中';
-      case 3:
-        return 'メンテナンス中';
-      case 4:
-        return '稼働中';
-      default:
-        return '';
-    }
   }
 
   void _handleMachineCardTap(
@@ -134,13 +112,5 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
         .then((dataUpdated) {
       setState(() {});
     });
-  }
-
-  void _handleStatusFilterChange(int? newStatus) {
-    if (newStatus != null) {
-      setState(() {
-        //widget.selectedStatus = newStatus;
-      });
-    }
   }
 }

@@ -31,6 +31,7 @@ class _StepListPageState extends State<StepListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final safePadding = MediaQuery.of(context).padding.bottom;
     return NotificationListener<ScrollUpdateNotification>(
       onNotification: (notification) {
         if (notification.metrics.outOfRange) {
@@ -57,7 +58,7 @@ class _StepListPageState extends State<StepListPage> {
           controller: scrollController,
           slivers: [
             SliverAppBar(
-              expandedHeight: 200.0,
+              expandedHeight: 50.0,
               floating: true,
               pinned: false,
               flexibleSpace: FlexibleSpaceBar(
@@ -68,7 +69,11 @@ class _StepListPageState extends State<StepListPage> {
               machineNumber: widget.machineNumber,
               onScrollDown: widget.onScrollDown,
               onScrollUp: widget.onScrollUp,
-            )
+            ),
+            SliverPadding(
+              padding:
+                  EdgeInsets.fromLTRB(0, safePadding + kToolbarHeight, 0, 0),
+            ),
           ],
         ),
       ),

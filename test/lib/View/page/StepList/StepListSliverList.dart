@@ -25,7 +25,6 @@ class _StepListSliverListState extends State<StepListSliverList> {
     final machineNumber = widget.machineNumber;
     final MachineData machine = machineData[machineNumber]!;
 
-    final safePadding = MediaQuery.of(context).padding.bottom;
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -46,7 +45,7 @@ class _StepListSliverListState extends State<StepListSliverList> {
                   _handleStepCardTap(context, stepTitle, step, machineNumber),
             );
           } else {
-            return SizedBox(height: safePadding + kToolbarHeight);
+            // return SizedBox(height: safePadding + kToolbarHeight);
           }
         },
         childCount: machine.childSteps.length + 2,
