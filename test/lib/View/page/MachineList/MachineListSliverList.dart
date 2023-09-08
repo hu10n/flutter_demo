@@ -23,14 +23,18 @@ class MachineListSliverList extends StatefulWidget {
 }
 
 class _MachineListSliverListState extends State<MachineListSliverList> {
-  //int selectedStatus = -1; // マシンの絞り込み状態を管理する変数
-
   List<String> getFilteredMachines() {
     if (widget.selectedStatus == -1) {
       return machineData.keys.toList();
-    } else {
+    } else if (widget.selectedStatus == 0 || widget.selectedStatus == 1) {
       return machineData.entries
           .where((entry) => entry.value.machineStatus == widget.selectedStatus)
+          .map((entry) => entry.key)
+          .toList();
+    } else {
+      return machineData.entries
+          .where((entry) =>
+              entry.value.machineStatus != 0 && entry.value.machineStatus != 1)
           .map((entry) => entry.key)
           .toList();
     }

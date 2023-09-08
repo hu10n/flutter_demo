@@ -17,24 +17,24 @@ class MachineStatusText extends StatelessWidget {
 
     switch (machineStatus) {
       case 0:
+        circleColor = Colors.green;
+        statusText = "稼働中";
+        break;
+      case 1:
         circleColor = Colors.grey;
         statusText = "未稼働";
         break;
-      case 1:
+      case 2:
         circleColor = Colors.pinkAccent;
         statusText = "停止中";
         break;
-      case 2:
+      case 3:
         circleColor = Colors.red;
         statusText = "異常停止中";
         break;
-      case 3:
-        circleColor = Colors.yellow;
-        statusText = "メンテナンス中";
-        break;
       case 4:
-        circleColor = Colors.green;
-        statusText = "稼働中";
+        circleColor = Colors.yellow;
+        statusText = "メンテ中";
         break;
       default:
         circleColor = Colors.black12;
