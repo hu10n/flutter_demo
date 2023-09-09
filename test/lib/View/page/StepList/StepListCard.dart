@@ -41,7 +41,6 @@ class StepListCard extends StatelessWidget {
           ),
         ),
       ),
-      // Just use the function reference here
     );
   }
 
