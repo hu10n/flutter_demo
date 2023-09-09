@@ -143,23 +143,46 @@ class MachineSummaryCard extends StatelessWidget {
       int totalProgress, int stepNumber, double circleRadius) {
     return Stack(
       children: [
+        // Circle
         SizedBox(
           height: circleRadius,
           width: circleRadius,
           child: CircularProgressIndicator(
             value: progressPercentage / 100,
             backgroundColor: Theme.of(context).disabledColor,
-            strokeWidth: 10,
+            strokeWidth: 9,
           ),
         ),
+        // Indicator Text
         SizedBox(
           height: circleRadius,
           width: circleRadius,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("$progressPercentage %"),
-              Text("$totalProgress / $stepNumber"),
+              Text(
+                "$progressPercentage%",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              Container(
+                width: 60, // Width of Divider
+                child: Divider(
+                  color: Theme.of(context).disabledColor,
+                  thickness: 2,
+                  height: 10, // space on the top / bot of divider
+                ),
+              ),
+              Text(
+                "$totalProgress / $stepNumber",
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: Theme.of(context).colorScheme.primary),
+              ),
             ],
           ),
         ),
