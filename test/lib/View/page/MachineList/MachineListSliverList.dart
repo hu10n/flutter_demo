@@ -102,11 +102,6 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
                 ),
               ],
             );
-          } else if (index == categories.length) {  // 最後のインデックスをチェック
-            return ElevatedButton(
-              onPressed: () => scrollToCategory("A"), // 例として最初のカテゴリにスクロール
-              child: Text("Scroll to first category"),
-            );
           }
         },
         childCount: categorizedMachines.length + 1,
@@ -139,6 +134,6 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
     
     // スクロール位置を計算する
     var offset = index * 60.0;  // 仮の計算
-    widget.controller?.animateTo(offset, duration: Duration(seconds: 1), curve: Curves.easeInOut);
+    widget.controller?.animateTo(offset, duration: Duration(milliseconds: 500,), curve: Curves.easeInOut);
   }
 }
