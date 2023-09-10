@@ -24,7 +24,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         // useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 255, 255)),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 255, 255, 255)),
       ),
       home: MyHomePage(),
     );
@@ -71,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisSize: MainAxisSize.min, // 最小限のサイズを取るように設定
               children: [
-                if (_currentIndex == 0)// currentIndexが2でない場合のみウィジェットを表示
+                if (_currentIndex == 0) // currentIndexが2でない場合のみウィジェットを表示
                   Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
