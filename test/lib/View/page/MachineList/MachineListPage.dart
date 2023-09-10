@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'MachineListSliverList.dart';
-import 'ToggleButtons.dart';
 import 'AlphabetCarousel.dart';
+import 'ToggleButtonSliver.dart';
+import '../../../DataClass.dart';
+
 
 class MachineListPage extends StatefulWidget {
   final Function onScrollDown;
@@ -37,9 +40,10 @@ class _MachineListPageState extends State<MachineListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final safePadding = MediaQuery.of(context).padding.bottom;
+    
     return NotificationListener<ScrollUpdateNotification>(
       onNotification: (notification) {
+
         if (notification.depth != 0) {
           return true;
         }
@@ -67,40 +71,37 @@ class _MachineListPageState extends State<MachineListPage> {
         child: CustomScrollView(
           controller: scrollController,
           slivers: [
+            SliverPersistentHeader(
+              delegate: YourHeaderDelegate(onToggleSelected: _onToggleSelected),
+              pinned: false,
+              floating: true,
+            ),
             SliverAppBar(
               title: null,
-              expandedHeight: 50.0,
-              floating: true,
-              pinned: false,
+              backgroundColor: Colors.white,
+              expandedHeight: 30.0,
+              floating: false,
+              pinned: true,
               actions: <Widget>[
-                Spacer(),
-                ToggleButtonsWidget(onToggleSelected: _onToggleSelected),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Icon(Icons.menu), // ハンバーガーメニュー
-                ),
-                Spacer(),
+                AlphabetCarousel(
+                  onAlphabetSelected: (alphabet) {
+                  // ここにアルファベットが選択されたときの処理を追加
+                  Provider.of<DataNotifier>(context, listen: false).turnSelectedFlag(true);
+                  Provider.of<DataNotifier>(context, listen: false).selectAlphabet(alphabet);
+                  },
+                ),               
               ],
             ),
             SliverPadding(
-              padding: EdgeInsets.all(6), // ここで所望のスペースの量を設定します
-            ),
-            SliverToBoxAdapter(
-              child: AlphabetCarousel(
-                onAlphabetSelected: (alphabet) {
-                  // ここにアルファベットが選択されたときの処理を追加
-                },
-              ),
+              padding: EdgeInsets.all(6.0), // ここで所望のスペースの量を設定します
             ),
             MachineListSliverList(
               selectedStatus: selectedStatus,
               onScrollDown: widget.onScrollDown,
               onScrollUp: widget.onScrollUp,
+              controller: scrollController,
             ),
-            SliverPadding(
-              padding: EdgeInsets.fromLTRB(
-                  0, safePadding + kToolbarHeight, 0, 0), // ここで所望のスペースの量を設定します
-            ),
+
           ],
         ),
       ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-//import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 
-//import '../../../DataClass.dart';
+import '../../../DataClass.dart';
 import '../../../LocalData/data.dart';
 import '../StepList/StepListPage.dart';
 import 'MachineListCard.dart';
@@ -12,10 +12,13 @@ class MachineListSliverList extends StatefulWidget {
   final Function onScrollDown;
   final Function onScrollUp;
 
+  final ScrollController? controller;
+
   MachineListSliverList({
     required this.selectedStatus,
     required this.onScrollDown,
     required this.onScrollUp,
+    this.controller,
   });
 
   @override
@@ -23,28 +26,31 @@ class MachineListSliverList extends StatefulWidget {
 }
 
 class _MachineListSliverListState extends State<MachineListSliverList> {
+  //int selectedStatus = -1; // マシンの絞り込み状態を管理する変数
+
   List<String> getFilteredMachines() {
     if (widget.selectedStatus == -1) {
       return machineData.keys.toList();
-    } else if (widget.selectedStatus == 0 || widget.selectedStatus == 1) {
-      return machineData.entries
-          .where((entry) => entry.value.machineStatus == widget.selectedStatus)
-          .map((entry) => entry.key)
-          .toList();
     } else {
       return machineData.entries
-          .where((entry) =>
-              entry.value.machineStatus != 0 && entry.value.machineStatus != 1)
+          .where((entry) => entry.value.machineStatus == widget.selectedStatus)
           .map((entry) => entry.key)
           .toList();
     }
   }
 
+  late Map<String, List<String>> categorizedMachines;
+
   @override
   Widget build(BuildContext context) {
+    final alphabetProvider = Provider.of<DataNotifier>(context);
     //final dataNotifier = context.watch<DataNotifier>();
 
-    Map<String, List<String>> categorizedMachines = {};
+    if (alphabetProvider.isSelectedAlphabet) {
+      scrollToCategory(alphabetProvider.selectedAlphabet);
+    }
+
+    categorizedMachines = {};
 
     for (var machineNumber in getFilteredMachines()) {
       final machine = machineData[machineNumber]!;
@@ -59,10 +65,10 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-        (context, index) {
+        (context, index){
           final categories = categorizedMachines.keys.toList();
 
-          if (index <= categories.length) {
+          if (index < categories.length) {
             final category = categories[index];
             final machinesInCategory = categorizedMachines[category]!;
 
@@ -96,9 +102,14 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
                 ),
               ],
             );
+          } else if (index == categories.length) {  // 最後のインデックスをチェック
+            return ElevatedButton(
+              onPressed: () => scrollToCategory("A"), // 例として最初のカテゴリにスクロール
+              child: Text("Scroll to first category"),
+            );
           }
         },
-        childCount: categorizedMachines.length,
+        childCount: categorizedMachines.length + 1,
       ),
     );
   }
@@ -116,5 +127,18 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
         .then((dataUpdated) {
       setState(() {});
     });
+  }
+
+  void scrollToCategory(String categoryName) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<DataNotifier>(context, listen: false).turnSelectedFlag(false);
+    });
+    
+    var categories = categorizedMachines.keys.toList();
+    var index = categories.indexOf(categoryName);
+    
+    // スクロール位置を計算する
+    var offset = index * 60.0;  // 仮の計算
+    widget.controller?.animateTo(offset, duration: Duration(seconds: 1), curve: Curves.easeInOut);
   }
 }
