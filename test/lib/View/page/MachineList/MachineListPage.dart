@@ -6,7 +6,6 @@ import 'AlphabetCarousel.dart';
 import 'ToggleButtonSliver.dart';
 import '../../../DataClass.dart';
 
-
 class MachineListPage extends StatefulWidget {
   final Function onScrollDown;
   final Function onScrollUp;
@@ -40,10 +39,9 @@ class _MachineListPageState extends State<MachineListPage> {
 
   @override
   Widget build(BuildContext context) {
-    
+    final safePadding = MediaQuery.of(context).padding.bottom;
     return NotificationListener<ScrollUpdateNotification>(
       onNotification: (notification) {
-
         if (notification.depth != 0) {
           return true;
         }
@@ -85,15 +83,17 @@ class _MachineListPageState extends State<MachineListPage> {
               actions: <Widget>[
                 AlphabetCarousel(
                   onAlphabetSelected: (alphabet) {
-                  // ここにアルファベットが選択されたときの処理を追加
-                  Provider.of<DataNotifier>(context, listen: false).turnSelectedFlag(true);
-                  Provider.of<DataNotifier>(context, listen: false).selectAlphabet(alphabet);
+                    // ここにアルファベットが選択されたときの処理を追加
+                    Provider.of<DataNotifier>(context, listen: false)
+                        .turnSelectedFlag(true);
+                    Provider.of<DataNotifier>(context, listen: false)
+                        .selectAlphabet(alphabet);
                   },
-                ),               
+                ),
               ],
             ),
             SliverPadding(
-              padding: EdgeInsets.all(6.0), // ここで所望のスペースの量を設定します
+              padding: EdgeInsets.only(top: 0), // ここで所望のスペースの量を設定します
             ),
             MachineListSliverList(
               selectedStatus: selectedStatus,
@@ -101,7 +101,9 @@ class _MachineListPageState extends State<MachineListPage> {
               onScrollUp: widget.onScrollUp,
               controller: scrollController,
             ),
-
+            SliverPadding(
+              padding: EdgeInsets.only(bottom: safePadding + kToolbarHeight),
+            ),
           ],
         ),
       ),

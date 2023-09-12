@@ -65,7 +65,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-        (context, index){
+        (context, index) {
           final categories = categorizedMachines.keys.toList();
 
           if (index < categories.length) {
@@ -77,13 +77,17 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Text(
-                        category,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).disabledColor),
+                    SizedBox(
+                      height: 25,
+                      width: 25,
+                      child: Center(
+                        child: Text(
+                          category,
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).disabledColor),
+                        ),
                       ),
                     ),
                   ],
@@ -103,6 +107,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
               ],
             );
           }
+          return null;
         },
         childCount: categorizedMachines.length + 1,
       ),
@@ -128,12 +133,16 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<DataNotifier>(context, listen: false).turnSelectedFlag(false);
     });
-    
+
     var categories = categorizedMachines.keys.toList();
     var index = categories.indexOf(categoryName);
-    
+
     // スクロール位置を計算する
-    var offset = index * 60.0;  // 仮の計算
-    widget.controller?.animateTo(offset, duration: Duration(milliseconds: 500,), curve: Curves.easeInOut);
+    var offset = index * 60.0; // 仮の計算
+    widget.controller?.animateTo(offset,
+        duration: Duration(
+          milliseconds: 500,
+        ),
+        curve: Curves.easeInOut);
   }
 }

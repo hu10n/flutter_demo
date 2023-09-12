@@ -24,6 +24,7 @@ class MachineListCard extends StatelessWidget {
     // Get Current Status
     final machineStatus = machine.machineStatus;
     return Card(
+      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
       clipBehavior: Clip.hardEdge,
       child: InkWell(
         child: SizedBox(

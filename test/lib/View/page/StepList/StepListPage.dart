@@ -71,8 +71,7 @@ class _StepListPageState extends State<StepListPage> {
               onScrollUp: widget.onScrollUp,
             ),
             SliverPadding(
-              padding:
-                  EdgeInsets.fromLTRB(0, safePadding + kToolbarHeight, 0, 0),
+              padding: EdgeInsets.only(bottom: safePadding + kToolbarHeight),
             ),
           ],
         ),
