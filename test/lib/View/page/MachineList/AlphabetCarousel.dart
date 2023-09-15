@@ -16,7 +16,7 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
   final CarouselController _carouselController = CarouselController();
 
   final List<String> alphabetList =
-      List.generate(3, (index) => String.fromCharCode(65 + index));
+      List.generate(5, (index) => String.fromCharCode(65 + index));
 
   @override
   Widget build(BuildContext context) {

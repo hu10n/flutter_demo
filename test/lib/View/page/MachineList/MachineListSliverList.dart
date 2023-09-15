@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:test/common/methods.dart';
 
 import '../../../DataClass.dart';
 import '../../../LocalData/data.dart';
@@ -21,24 +22,33 @@ class MachineListSliverList extends StatefulWidget {
     this.controller,
   });
 
+  // renderされたCardのカウント ----------------------------------------------
+  final Map<String, int> machineCardCount = {};
+  // ----------------------------------------------------------------------
+
   @override
   State<MachineListSliverList> createState() => _MachineListSliverListState();
 }
 
 class _MachineListSliverListState extends State<MachineListSliverList> {
-  //int selectedStatus = -1; // マシンの絞り込み状態を管理する変数
-
   List<String> getFilteredMachines() {
     if (widget.selectedStatus == -1) {
       return machineData.keys.toList();
-    } else {
+    } else if (widget.selectedStatus == 0 || widget.selectedStatus == 1) {
       return machineData.entries
           .where((entry) => entry.value.machineStatus == widget.selectedStatus)
+          .map((entry) => entry.key)
+          .toList();
+    } else {
+      return machineData.entries
+          .where((entry) =>
+              entry.value.machineStatus != 0 && entry.value.machineStatus != 1)
           .map((entry) => entry.key)
           .toList();
     }
   }
 
+  // Filtering用のMap
   late Map<String, List<String>> categorizedMachines;
 
   @override
@@ -63,6 +73,15 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
       categorizedMachines[category]!.add(machineNumber);
     }
 
+    // ビルドが完了した後に中身を取得----------------(Debug用)--------------------
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Map<String, double> scrollAmount =
+          calculateScrollAmount(widget.machineCardCount);
+      print('machineCardCount: ${widget.machineCardCount}');
+      print('scrollAmount: $scrollAmount');
+    }); // Check Debug Console
+    // ----------------------------------------------------------------------
+
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -72,26 +91,16 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
             final category = categories[index];
             final machinesInCategory = categorizedMachines[category]!;
 
+            // カテゴリごとのカードのカウント-------------------------------------
+            int categoryMachineCount = machinesInCategory.length;
+
+            // カウントをmachineCardCountマップに格納
+            widget.machineCardCount[category] = categoryMachineCount;
+            // --------------------------------------------------------------
+
             return Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 25,
-                      width: 25,
-                      child: Center(
-                        child: Text(
-                          category,
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).disabledColor),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                CategoryTitle(category: category),
                 Column(
                   children: machinesInCategory.map((machineNumber) {
                     final machine = machineData[machineNumber]!;
@@ -144,5 +153,36 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
           milliseconds: 500,
         ),
         curve: Curves.easeInOut);
+  }
+}
+
+class CategoryTitle extends StatelessWidget {
+  const CategoryTitle({
+    super.key,
+    required this.category,
+  });
+
+  final String category;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 25,
+          width: 25,
+          child: Center(
+            child: Text(
+              category,
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).disabledColor),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

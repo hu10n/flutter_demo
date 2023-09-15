@@ -35,3 +35,19 @@ String getLatestEditedDateTime(String machineNumber) {
 
   return latestEditedDateTime;
 }
+
+Map<String, double> calculateScrollAmount(Map<String, int> machineCardCount) {
+  double totalHeight = 0.0;
+  Map<String, double> scrollAmount = {};
+
+  for (var entry in machineCardCount.entries) {
+    String category = entry.key;
+    int count = entry.value;
+    double categoryHeight = count * 78.0 + 25.0;
+
+    totalHeight += categoryHeight;
+    scrollAmount[category] = totalHeight;
+  }
+
+  return scrollAmount;
+}

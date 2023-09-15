@@ -125,7 +125,7 @@ Map<String, MachineData> machineData = {
     lotNumber: "lot A-2",
     editedDateTime: "2023/08/13 10:00",
     progress: 0,
-    machineStatus: 1,
+    machineStatus: 4,
     childSteps: {
       "Step 1": SmallStep(
         editorName: "Editor[A-2 S1]",
@@ -295,7 +295,7 @@ Map<String, MachineData> machineData = {
     lotNumber: "lot C-1",
     editedDateTime: "2023/08/13 10:00",
     progress: 0,
-    machineStatus: 0,
+    machineStatus: 2,
     childSteps: {
       "Step 1": SmallStep(
         editorName: "Editor[C-1 S1]",
