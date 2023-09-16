@@ -52,7 +52,7 @@ class _ToggleButtonsWidgetState extends State<ToggleButtonsWidget> {
         });
       },
       isSelected: isSelected,
-      color: Theme.of(context).canvasColor, // 2. 非選択時のアイコン色
+      color: Theme.of(context).hintColor, // 2. 非選択時のアイコン色
       selectedColor: Theme.of(context).canvasColor, // 2. 選択時のアイコン色
       fillColor: Theme.of(context).disabledColor, // 2. 選択時の背景色
       borderWidth: 2, // 2. 非選択時のボーダーの幅

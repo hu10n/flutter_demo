@@ -6,6 +6,7 @@ import 'AlphabetCarousel.dart';
 import 'ToggleButtonSliver.dart';
 import '../../../DataClass.dart';
 
+import 'package:carousel_slider/carousel_slider.dart';
 
 class MachineListPage extends StatefulWidget {
   final Function onScrollDown;
@@ -18,16 +19,11 @@ class MachineListPage extends StatefulWidget {
 }
 
 class _MachineListPageState extends State<MachineListPage> {
-  final ScrollController scrollController = ScrollController();
 
-  double lastOffset = 0.0;
-  int selectedStatus = -1;
+  // スクロールアニメーション用----------------------------------------
+  final ScrollController scrollController = ScrollController(); 
 
-  _onToggleSelected(int index) {
-    setState(() {
-      selectedStatus = index;
-    });
-  }
+  double lastOffset = 0.0; // スクロール状況監視用
 
   @override
   void initState() {
@@ -38,31 +34,73 @@ class _MachineListPageState extends State<MachineListPage> {
   void _onScroll() {
     lastOffset = scrollController.offset; // オフセットを更新
   }
+  //---------------------------------------------------------------
+  final CarouselController carouselController = CarouselController();
+  int carouselIndex = 0;
+  // フィルタリング用-------------------------------------------------
+  int selectedStatus = -1;
+
+  _onToggleSelected(int index) {
+    setState(() {
+      selectedStatus = index;
+    });
+  }
+  //---------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
-    
-    return NotificationListener<ScrollUpdateNotification>(
+    final safePadding = MediaQuery.of(context).padding.bottom;
+    return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
 
-        if (notification.depth != 0) {
+        if (notification.metrics.outOfRange) {// オーバースクロールの場合、何もしない
           return true;
         }
-
-        if (notification.metrics.outOfRange) {
-          // オーバースクロールの場合、何もしない
+        if (notification.depth != 0) { // カルーセルのスクロールでも、何もしない
           return true;
         }
 
         double threshold = 5.0; // ここで閾値を設定
 
-        if (notification.scrollDelta!.abs() > threshold) {
-          if (notification.scrollDelta! > 0) {
-            // ユーザーが下にスクロールしている場合
-            widget.onScrollDown();
-          } else if (notification.scrollDelta! < 0) {
-            // ユーザーが上にスクロールしている場合
-            widget.onScrollUp();
+        int index = Provider.of<DataNotifier>(context, listen: false).selectedAlphabet;
+        print(index);
+        print(Provider.of<DataNotifier>(context, listen: false).machineCardCount);
+        print(scrollController.offset);
+
+        if(scrollController.offset > Provider.of<DataNotifier>(context, listen: false)
+        .machineCardCount.entries.toList()[index].value){
+          carouselController.animateToPage(index + 1);
+          _onAlphabetSelected(index + 1);
+        }
+
+        if(index != 0){
+          if(scrollController.offset < Provider.of<DataNotifier>(context, listen: false)
+          .machineCardCount.entries.toList()[index - 1].value){
+            carouselController.animateToPage(index - 1);
+            _onAlphabetSelected(index - 1);
+          }
+        }
+
+
+        if (notification is ScrollStartNotification) { // スクロール開始時の動作
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Provider.of<DataNotifier>(context, listen: false).turnScrollFlag(true);
+            //print("start");
+          });
+        } else if (notification is ScrollEndNotification) { // スクロール終了時の動作
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Provider.of<DataNotifier>(context, listen: false).turnScrollFlag(false);
+            //print("end");
+          });         
+        } else if (notification is ScrollUpdateNotification) { // スクロール時
+          if (notification.scrollDelta!.abs() > threshold) { // 閾値を超えた時
+            if (notification.scrollDelta! > 0) {
+              // ユーザーが下にスクロールしている場合
+              widget.onScrollDown();
+            } else if (notification.scrollDelta! < 0) {
+              // ユーザーが上にスクロールしている場合
+              widget.onScrollUp();
+            }
           }
         }
         return true;
@@ -72,12 +110,12 @@ class _MachineListPageState extends State<MachineListPage> {
         child: CustomScrollView(
           controller: scrollController,
           slivers: [
-            SliverPersistentHeader(
+            SliverPersistentHeader( //SliverAppBarの上段
               delegate: YourHeaderDelegate(onToggleSelected: _onToggleSelected),
               pinned: false,
               floating: true,
             ),
-            SliverAppBar(
+            SliverAppBar( //SliverAppBarの下段
               title: null,
               backgroundColor: Colors.white,
               expandedHeight: 30.0,
@@ -85,24 +123,23 @@ class _MachineListPageState extends State<MachineListPage> {
               pinned: true,
               actions: <Widget>[
                 AlphabetCarousel(
-                  onAlphabetSelected: (alphabet) {
-                  // ここにアルファベットが選択されたときの処理を追加
-                  Provider.of<DataNotifier>(context, listen: false).turnSelectedFlag(true);
-                  Provider.of<DataNotifier>(context, listen: false).selectAlphabet(alphabet);
-                  },
-                ),               
+                  onAlphabetSelected: _onAlphabetSelected,
+                  controller: carouselController,
+                ),
               ],
             ),
-            SliverPadding(
-              padding: EdgeInsets.all(6.0), // ここで所望のスペースの量を設定します
+            SliverPadding( //padding
+              padding: EdgeInsets.only(top: 0), // ここで所望のスペースの量を設定します
             ),
-            MachineListSliverList(
+            MachineListSliverList( //一覧のコンテンツ部分
               selectedStatus: selectedStatus,
               onScrollDown: widget.onScrollDown,
               onScrollUp: widget.onScrollUp,
               controller: scrollController,
             ),
-
+            SliverPadding( //padding
+              padding: EdgeInsets.only(bottom: safePadding + kToolbarHeight),
+            ),
           ],
         ),
       ),
@@ -114,5 +151,21 @@ class _MachineListPageState extends State<MachineListPage> {
     scrollController.removeListener(_onScroll);
     scrollController.dispose();
     super.dispose();
+  }
+
+  void _onAlphabetSelected(alphabet) { //カルーセルでアルファベット選択時
+    Provider.of<DataNotifier>(context, listen: false).selectAlphabet(alphabet);
+    if(!Provider.of<DataNotifier>(context, listen: false).isScrollView){ //スクロールによるカルーセル遷移では発火しない。
+      Provider.of<DataNotifier>(context, listen: false).turnSelectedFlag(true);
+      
+    }
+  }
+  void updateCurrentIndex(int index) {
+    setState(() {
+      carouselIndex = index;
+    });
+
+    //widget.onAlphabetSelected(alphabetList[index]);
+    _onAlphabetSelected(index);
   }
 }

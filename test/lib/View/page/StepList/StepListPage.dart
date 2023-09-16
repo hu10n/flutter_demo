@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'StepListSliverList.dart';
+import '../MachineList/MachineListSliverList.dart';
 
 class StepListPage extends StatefulWidget {
   final String machineNumber;
@@ -71,8 +72,7 @@ class _StepListPageState extends State<StepListPage> {
               onScrollUp: widget.onScrollUp,
             ),
             SliverPadding(
-              padding:
-                  EdgeInsets.fromLTRB(0, safePadding + kToolbarHeight, 0, 0),
+              padding: EdgeInsets.only(bottom: safePadding + kToolbarHeight),
             ),
           ],
         ),

@@ -24,7 +24,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         // useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 255, 255)),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 255, 255, 255)),
       ),
       home: MyHomePage(),
     );
@@ -37,23 +38,27 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
-  bool showBottomBar = true;
+
+  // タブナビゲーション管理用------------------------------------
+  int _currentIndex = 0; 
 
   final _pageKeys = [
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
   ];
+  //---------------------------------------------------------
+
+  bool showBottomBar = true; // ボトムナビゲーションのアニメ制御用
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: false, // キーパッド表示時のレイアウト制御
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0.0), // ここで高さを設定
         child: AppBar(
-          elevation: 0,
+          elevation: 0, // AppBarの影の濃さ
         ),
       ),
       body: Stack(
@@ -71,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               mainAxisSize: MainAxisSize.min, // 最小限のサイズを取るように設定
               children: [
-                if (_currentIndex == 0)// currentIndexが2でない場合のみウィジェットを表示
+                if (_currentIndex == 0) // currentIndexが2でない場合のみウィジェットを表示
                   Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
@@ -106,21 +111,21 @@ class _MyHomePageState extends State<MyHomePage> {
         switch (index) {
           case 0:
             return MaterialPageRoute(
-              builder: (context) => MachineListPage(
+              builder: (context) => MachineListPage( // 一覧ページ
                 onScrollDown: _hideBottomBar,
                 onScrollUp: _showBottomBar,
               ),
             );
           case 1:
             return MaterialPageRoute(
-              builder: (context) => QRScannerPage(
+              builder: (context) => QRScannerPage( // QRスキャナー
                   // onScrollDown: _hideBottomBar,
                   // onScrollUp: _showBottomBar,
                   ),
             );
           case 2:
             return MaterialPageRoute(
-              builder: (context) => Placeholder(
+              builder: (context) => Placeholder( // 未実装
                   // onScrollDown: _hideBottomBar,
                   // onScrollUp: _showBottomBar,
                   ),
@@ -137,20 +142,22 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // ボトムナビゲーションのアニメーション制御---------------------------------
   void _hideBottomBar() {
     setState(() {
       showBottomBar = false;
     });
   }
-
   void _showBottomBar() {
     setState(() {
       showBottomBar = true;
     });
   }
+  // ------------------------------------------------------------------
 
+  // タブ動作-----------------------------------------------------------
   void _onTap(int index) {
-    if (index == _currentIndex) {
+    if (index == _currentIndex) { // 選択済みのタブ選択でルートに戻る
       _pageKeys[index].currentState!.popUntil((route) => route.isFirst);
     } else {
       setState(() {

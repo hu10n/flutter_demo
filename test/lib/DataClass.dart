@@ -4,14 +4,17 @@ import 'package:flutter/material.dart';
 class DataNotifier extends ChangeNotifier {
   String _data = '1';
   List _alphabetList = []; //データタグリスト
-  String _selectedAlphabet = "A"; //カルーセルで選択されているアルファベット
+  Map<String, double> machineCardCount = {"A": 259.0, "B": 518.0, "C": 777.0}; //各タグの終了位置
+  int _selectedAlphabet = 0; //カルーセルで選択されているインデックス
   bool _isSelectedAlphabet = false; //カルーセル選択フラグ
+  bool _isScrollView = false;
 
 
   String get data => _data;
   List get alphabetList => _alphabetList;
-  String get selectedAlphabet => _selectedAlphabet;
+  int get selectedAlphabet => _selectedAlphabet;
   bool get isSelectedAlphabet => _isSelectedAlphabet;
+  bool get isScrollView => _isScrollView;
 
   set data(String newValue) {
     _data = newValue;
@@ -21,12 +24,16 @@ class DataNotifier extends ChangeNotifier {
     _alphabetList = alphabets;
     notifyListeners();
   }
-  void selectAlphabet(String alphabet) {
+  void selectAlphabet(int alphabet) {
     _selectedAlphabet = alphabet;
     notifyListeners();
   }
   void turnSelectedFlag(bool flag) {
     _isSelectedAlphabet = flag;
+    notifyListeners();
+  }
+  void turnScrollFlag(bool flag) {
+    _isScrollView = flag;
     notifyListeners();
   }
 }
