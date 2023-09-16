@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class DataNotifier extends ChangeNotifier {
   String _data = '1';
-  List _alphabetList = [];
-  String _selectedAlphabet = "A";
-  bool _isSelectedAlphabet = false;
+  List _alphabetList = []; //データタグリスト
+  String _selectedAlphabet = "A"; //カルーセルで選択されているアルファベット
+  bool _isSelectedAlphabet = false; //カルーセル選択フラグ
 
 
   String get data => _data;

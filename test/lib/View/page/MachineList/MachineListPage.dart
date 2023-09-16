@@ -19,6 +19,7 @@ class MachineListPage extends StatefulWidget {
 
 class _MachineListPageState extends State<MachineListPage> {
   final ScrollController scrollController = ScrollController();
+
   double lastOffset = 0.0;
   int selectedStatus = -1;
 
