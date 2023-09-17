@@ -16,11 +16,14 @@ class AlphabetCarousel extends StatefulWidget {
 class _AlphabetCarouselState extends State<AlphabetCarousel> {
   int _current = 0; // カルーセルの選択インデックス
 
-  final List<String> alphabetList = // 暫定リスト。あとで変更
-      List.generate(3, (index) => String.fromCharCode(65 + index));
-
   @override
   Widget build(BuildContext context) {
+    // ProviderのCount MapからAkphabetListを取得 ---------------------------
+    final machineCardCount =
+        Provider.of<DataNotifier>(context).machineCardCount;
+    final List<String> alphabetList = machineCardCount.keys.toList();
+    // -------------------------------------------------------------------
+
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width, // スクリーンの幅を制約として使用
@@ -74,10 +77,13 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<DataNotifier>(context, listen: false).selectAlphabet(index); // 現在のスクロール位置更新
-      if(!Provider.of<DataNotifier>(context, listen: false).isScrollView){ //スクロールによるカルーセル遷移では発火しない。
-        Provider.of<DataNotifier>(context, listen: false).turnSelectedFlag(true); 
+      Provider.of<DataNotifier>(context, listen: false)
+          .selectAlphabet(index); // 現在のスクロール位置更新
+      if (!Provider.of<DataNotifier>(context, listen: false).isScrollView) {
+        //スクロールによるカルーセル遷移では発火しない。
+        Provider.of<DataNotifier>(context, listen: false)
+            .turnSelectedFlag(true);
       }
-    }); 
+    });
   }
 }
