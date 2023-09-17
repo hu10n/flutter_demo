@@ -22,15 +22,12 @@ class MachineListSliverList extends StatefulWidget {
     this.controller,
   });
 
-  // renderされたCardのカウント ----------------------------------------------
-  final Map<String, int> machineCardCount = {};
-  // ----------------------------------------------------------------------
-
   @override
   State<MachineListSliverList> createState() => _MachineListSliverListState();
 }
 
 class _MachineListSliverListState extends State<MachineListSliverList> {
+  // Filtering ex.)[A-1, A-2, A-3, B-3, C-1, C-2, C-3]
   List<String> getFilteredMachines() {
     if (widget.selectedStatus == -1) {
       return machineData.keys.toList();
@@ -48,22 +45,12 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
     }
   }
 
-  // Filtering用のMap
-  late Map<String, List<String>> categorizedMachines;
-  
-
-  @override
-  Widget build(BuildContext context) {
-    final alphabetProvider = Provider.of<DataNotifier>(context);
-    //final dataNotifier = context.watch<DataNotifier>();
-
-    if (alphabetProvider.isSelectedAlphabet) {
-      scrollToCategory(alphabetProvider.selectedAlphabet);
-    }
-
-    categorizedMachines = {};
-
-    for (var machineNumber in getFilteredMachines()) {
+// ex. {B: {machines: [B-2], count: 1, height: 103}, C: {machines: [C-2], count: 1, height: 206}}
+  Map<String, Map<String, dynamic>> calculateMachineStats(
+      List<String> filteredMachines) {
+    final Map<String, List<String>> categorizedMachines = {};
+    final Map<String, Map<String, dynamic>> machineCardCount = {};
+    for (var machineNumber in filteredMachines) {
       final machine = machineData[machineNumber]!;
       final category = machine.machineCategory;
 
@@ -74,36 +61,75 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
       categorizedMachines[category]!.add(machineNumber);
     }
 
-    // ビルドが完了した後に中身を取得----------------(Debug用)--------------------
-    //WidgetsBinding.instance.addPostFrameCallback((_) {
-      //Map<String, double> scrollAmount =
-          //calculateScrollAmount(widget.machineCardCount);
-      //print('machineCardCount: ${widget.machineCardCount}');
-      //print('scrollAmount: $scrollAmount');
-    //}); // Check Debug Console
-    // ----------------------------------------------------------------------
+    int accumulatedHeight = 0;
+
+    for (var category in categorizedMachines.keys) {
+      final machines = categorizedMachines[category]!;
+      final count = machines.length;
+      final height = 78 * count + 25;
+
+      accumulatedHeight += height;
+
+      machineCardCount[category] = {
+        'machines': machines,
+        'count': count,
+        'height': accumulatedHeight
+      };
+    }
+
+    return machineCardCount;
+  }
+
+//
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      final machineCardCount = calculateMachineStats(getFilteredMachines());
+      final dataNotifier = Provider.of<DataNotifier>(context, listen: false);
+      dataNotifier.updateMachineCardCount(machineCardCount);
+    });
+  }
+
+// selectedStatusが更新された際に計算しProviderをアップデート
+  @override
+  void didUpdateWidget(covariant MachineListSliverList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.selectedStatus != oldWidget.selectedStatus) {
+      Future.microtask(() {
+        final machineCardCount = calculateMachineStats(getFilteredMachines());
+        final dataNotifier = Provider.of<DataNotifier>(context, listen: false);
+        dataNotifier.updateMachineCardCount(machineCardCount);
+      });
+    }
+  }
+
+// 最初期build時に計算しProviderをアップデート
+  @override
+  Widget build(BuildContext context) {
+    final machineCardCount = calculateMachineStats(getFilteredMachines());
+
+    // final alphabetProvider = Provider.of<DataNotifier>(context);
+    // if (alphabetProvider.isSelectedAlphabet) {
+    //   scrollToCategory(alphabetProvider.selectedAlphabet);
+    // }
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          final categories = categorizedMachines.keys.toList();
+          final categories = machineCardCount.keys.toList();
 
           if (index < categories.length) {
-            final category = categories[index];
-            final machinesInCategory = categorizedMachines[category]!;
-
-            // カテゴリごとのカードのカウント-------------------------------------
-            int categoryMachineCount = machinesInCategory.length;
-
-            // カウントをmachineCardCountマップに格納
-            widget.machineCardCount[category] = categoryMachineCount;
-            // --------------------------------------------------------------
+            final category = categories[index]; //カテゴリ[A,B,C,...]
+            final machinesInCategory = machineCardCount[category]![
+                "machines"]!; //カテゴリに属する[A-1,A-2,...]
 
             return Column(
               children: [
                 CategoryTitle(category: category),
                 Column(
-                  children: machinesInCategory.map((machineNumber) {
+                  children: machinesInCategory.map<Widget>((machineNumber) {
                     final machine = machineData[machineNumber]!;
                     return MachineListCard(
                       machineNumber: machineNumber,
@@ -119,7 +145,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
           }
           return null;
         },
-        childCount: categorizedMachines.length + 1,
+        childCount: machineCardCount.length + 1,
       ),
     );
   }
@@ -139,36 +165,39 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
     });
   }
 
-  void scrollToCategory(int categoryIndex) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<DataNotifier>(context, listen: false).turnSelectedFlag(false);
-    });
+  // void scrollToCategory(int categoryIndex) {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     Provider.of<DataNotifier>(context, listen: false).turnSelectedFlag(false);
+  //   });
 
-    print(Provider.of<DataNotifier>(context, listen: false).selectedAlphabet);
-    print(Provider.of<DataNotifier>(context, listen: false).machineCardCount.entries.toList()[1].value);
-    //var categories = categorizedMachines.keys.toList();
-    //var index = categories.indexOf(categoryName);
+  //   print(Provider.of<DataNotifier>(context, listen: false).selectedAlphabet);
+  //   print(Provider.of<DataNotifier>(context, listen: false)
+  //       .machineCardCount
+  //       .entries
+  //       .toList()[1]
+  //       .value);
 
-    // スクロール位置を計算する
-    //var offset = index * 60.0;  // 仮の計算
-    //widget.controller?.animateTo(
-      //offset, duration: Duration(milliseconds: 500,), curve: Curves.easeInOut
-    //);
-    var offset = 0.0;
-    if (Provider.of<DataNotifier>(context, listen: false).selectedAlphabet != 0){
-      offset = Provider.of<DataNotifier>(context, listen: false).machineCardCount.entries.toList()[categoryIndex - 1].value + 1.0;
-    }
+  //   var offset = 0.0;
+  //   if (Provider.of<DataNotifier>(context, listen: false).selectedAlphabet !=
+  //       0) {
+  //     offset = Provider.of<DataNotifier>(context, listen: false)
+  //             .machineCardCount
+  //             .entries
+  //             .toList()[categoryIndex - 1]
+  //             .value +
+  //         1.0;
+  //   }
 
-    widget.controller?.animateTo(
-      offset, duration: Duration(milliseconds: 500,), curve: Curves.easeInOut
-    );
-    
-  }
+  //   widget.controller?.animateTo(offset,
+  //       duration: Duration(
+  //         milliseconds: 500,
+  //       ),
+  //       curve: Curves.easeInOut);
+  // }
 }
 
 class CategoryTitle extends StatelessWidget {
   const CategoryTitle({
-    super.key,
     required this.category,
   });
 
@@ -176,6 +205,7 @@ class CategoryTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print("A");
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [

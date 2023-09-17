@@ -9,7 +9,8 @@ class AlphabetCarousel extends StatefulWidget {
 
   final CarouselController controller;
 
-  AlphabetCarousel({required this.onAlphabetSelected,required this.controller});
+  AlphabetCarousel(
+      {required this.onAlphabetSelected, required this.controller});
 
   @override
   _AlphabetCarouselState createState() => _AlphabetCarouselState();
@@ -26,6 +27,9 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    final machineCardCount =
+        Provider.of<DataNotifier>(context).machineCardCount;
+    print(machineCardCount);
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width, // スクリーンの幅を制約として使用
@@ -75,7 +79,6 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
               _wasTapped = false; // フラグをリセット
               return; // ここで終了
             }
-            print(index);
             updateCurrentIndex(index);
           },
         ),
@@ -89,9 +92,9 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
     });
 
     //WidgetsBinding.instance.addPostFrameCallback((_) {
-            //Provider.of<DataNotifier>(context, listen: false).selectAlphabet(index);
-            //print("start");
-          //});
+    //Provider.of<DataNotifier>(context, listen: false).selectAlphabet(index);
+    //print("start");
+    //});
     //widget.onAlphabetSelected(alphabetList[index]);
     widget.onAlphabetSelected(index);
   }
