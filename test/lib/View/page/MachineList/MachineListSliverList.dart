@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test/common/methods.dart';
 
 import '../../../DataClass.dart';
 import '../../../LocalData/data.dart';
 import '../StepList/StepListPage.dart';
 import 'MachineListCard.dart';
-//import '../../../api/TestAPI.dart';
 
 class MachineListSliverList extends StatefulWidget {
   final int selectedStatus;

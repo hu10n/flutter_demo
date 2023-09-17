@@ -44,7 +44,7 @@ class _MachineListPageState extends State<MachineListPage> {
   _onToggleSelected(int index) {
     // フィルタリング時にページ上部にジャンプ
     scrollController.animateTo(
-      0.0, duration: Duration(milliseconds: 200,), curve: Curves.easeOut
+      -0.1, duration: Duration(milliseconds: 200,), curve: Curves.easeOut
     );
     setState(() {
       selectedStatus = index;
