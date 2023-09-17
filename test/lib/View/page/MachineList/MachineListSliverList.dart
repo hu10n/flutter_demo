@@ -110,10 +110,10 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
   Widget build(BuildContext context) {
     final machineCardCount = calculateMachineStats(getFilteredMachines());
 
-    // final alphabetProvider = Provider.of<DataNotifier>(context);
-    // if (alphabetProvider.isSelectedAlphabet) {
-    //   scrollToCategory(alphabetProvider.selectedAlphabet);
-    // }
+    final alphabetProvider = Provider.of<DataNotifier>(context);
+    if (alphabetProvider.isSelectedAlphabet) {
+      scrollToCategory(alphabetProvider.selectedAlphabet);
+    }
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
@@ -165,35 +165,30 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
     });
   }
 
-  // void scrollToCategory(int categoryIndex) {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     Provider.of<DataNotifier>(context, listen: false).turnSelectedFlag(false);
-  //   });
+  void scrollToCategory(int categoryIndex) {
+    
 
-  //   print(Provider.of<DataNotifier>(context, listen: false).selectedAlphabet);
-  //   print(Provider.of<DataNotifier>(context, listen: false)
-  //       .machineCardCount
-  //       .entries
-  //       .toList()[1]
-  //       .value);
+    print(Provider.of<DataNotifier>(context, listen: false).selectedAlphabet);
+    print(Provider.of<DataNotifier>(context, listen: false).machineCardCount.entries.toList()[1].value);
+    //var categories = categorizedMachines.keys.toList();
+    //var index = categories.indexOf(categoryName);
 
-  //   var offset = 0.0;
-  //   if (Provider.of<DataNotifier>(context, listen: false).selectedAlphabet !=
-  //       0) {
-  //     offset = Provider.of<DataNotifier>(context, listen: false)
-  //             .machineCardCount
-  //             .entries
-  //             .toList()[categoryIndex - 1]
-  //             .value +
-  //         1.0;
-  //   }
+    // スクロール位置を計算する
+    //var offset = index * 60.0;  // 仮の計算
+    //widget.controller?.animateTo(
+      //offset, duration: Duration(milliseconds: 500,), curve: Curves.easeInOut
+    //);
+    var offset = 0.0;
+    if (Provider.of<DataNotifier>(context, listen: false).selectedAlphabet != 0){
+      offset = Provider.of<DataNotifier>(context, listen: false).machineCardCount.entries.toList()[categoryIndex - 1].value["height"] + 1.0;
+    }
 
-  //   widget.controller?.animateTo(offset,
-  //       duration: Duration(
-  //         milliseconds: 500,
-  //       ),
-  //       curve: Curves.easeInOut);
-  // }
+    widget.controller?.animateTo(
+      offset, duration: Duration(milliseconds: 200,), curve: Curves.easeOut
+    );
+
+    
+  }
 }
 
 class CategoryTitle extends StatelessWidget {

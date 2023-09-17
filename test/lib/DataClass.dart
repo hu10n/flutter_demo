@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 class DataNotifier extends ChangeNotifier {
   String _data = '1';
   List _alphabetList = [];
-  int _selectedAlphabet = 0;
-  bool _isSelectedAlphabet = false;
-  bool _isScrollView = false;
-  Map<String, Map<String, dynamic>> _machineCardCount = {};
+  int _selectedAlphabet = 0;        //カルーセルで選択されているインデックス
+  bool _isSelectedAlphabet = false; //カルーセル選択フラグ
+  bool _isScrollView = false;       //スクロールフラグ
+  Map<String, Map<String, dynamic>> _machineCardCount = {}; // カードリスト ex.{A: {machines: [A-1, A-2], count: 3, height: 259}, B:..}
 
   String get data => _data;
   List get alphabetList => _alphabetList;
