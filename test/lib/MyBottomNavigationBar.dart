@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 class MyBottomNavigationBar extends StatefulWidget {
   final Function(int) onTap;
+  final int selectedIndex;
 
-  MyBottomNavigationBar({required this.onTap});
+  MyBottomNavigationBar({required this.onTap, required this.selectedIndex});
 
   @override
   _MyBottomNavigationBarState createState() => _MyBottomNavigationBarState();
 }
 
 class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
-  int _selectedIndex = 0; // 選択されているアイコンのインデックス
 
   @override
   Widget build(BuildContext context) {
@@ -25,38 +25,35 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
             children: [
               IconButton(
                 icon: Icon(
-                  _selectedIndex == 0
+                  widget.selectedIndex == 0
                       ? Icons.home // 選択されている場合のアイコン
                       : Icons.home_outlined, // 選択されていない場合のアイコン
                   size: kToolbarHeight * .6,
                 ),
                 onPressed: () {
                   widget.onTap(0);
-                  _handleIconSelection(0);
                 },
               ),
               IconButton(
                 icon: Icon(
-                  _selectedIndex == 1
+                  widget.selectedIndex == 1
                       ? Icons.qr_code_scanner
                       : Icons.qr_code_scanner_rounded,
                   size: kToolbarHeight * .6,
                 ),
                 onPressed: () {
                   widget.onTap(1);
-                  _handleIconSelection(1);
                 },
               ),
               IconButton(
                 icon: Icon(
-                  _selectedIndex == 2
+                  widget.selectedIndex == 2
                       ? Icons.settings
                       : Icons.settings_outlined,
                   size: kToolbarHeight * .6,
                 ),
                 onPressed: () {
                   widget.onTap(2);
-                  _handleIconSelection(2);
                 },
               ),
             ],
@@ -67,11 +64,5 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
         ],
       ),
     );
-  }
-
-  void _handleIconSelection(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 }

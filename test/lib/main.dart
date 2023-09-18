@@ -57,6 +57,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return NavigationData(
       currentIndex: _currentIndex,
       pageKeys: _pageKeys,
+      onTabChange: (index) {
+        setState(() {
+          _currentIndex = index;
+        });
+      },
       child: Scaffold(
         resizeToAvoidBottomInset: false, // キーパッド表示時のレイアウト制御
         appBar: PreferredSize(
@@ -98,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ),
-                  MyBottomNavigationBar(onTap: _onTap),
+                  MyBottomNavigationBar(onTap: _onTap, selectedIndex:_currentIndex),
                 ],
               ),
             ),

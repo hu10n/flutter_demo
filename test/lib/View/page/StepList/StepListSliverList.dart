@@ -79,8 +79,10 @@ class _StepListSliverListState extends State<StepListSliverList> {
                   
                   if (navigatorState != null && navigatorState.canPop()) {
                     navigatorState.popUntil((route) => route.isFirst);
+                    navigationData.onTabChange(2);
                   }
                 }
+
                 //-------------------------------------------------------------
               },
               child: Text('Close'),
