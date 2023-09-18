@@ -8,6 +8,7 @@ import 'MyBottomNavigationBar.dart';
 import 'View/page/MachineList/MachineListPage.dart';
 import 'View/page/home/HomePage.dart';
 import 'DataClass.dart';
+import 'NavigationData.dart';
 
 void main() {
   runApp(
@@ -53,53 +54,57 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false, // キーパッド表示時のレイアウト制御
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(0.0), // ここで高さを設定
-        child: AppBar(
-          elevation: 0, // AppBarの影の濃さ
-        ),
-      ),
-      body: Stack(
-        children: [
-          MyIndexedStack(
-            currentIndex: _currentIndex,
-            children: [
-              _buildNavigatorPage(0),
-              _buildNavigatorPage(1),
-              _buildNavigatorPage(2),
-            ],
+    return NavigationData(
+      currentIndex: _currentIndex,
+      pageKeys: _pageKeys,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false, // キーパッド表示時のレイアウト制御
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(0.0), // ここで高さを設定
+          child: AppBar(
+            elevation: 0, // AppBarの影の濃さ
           ),
-          MyAnimatedPositioned(
-            showBottomBar: showBottomBar,
-            child: Column(
-              mainAxisSize: MainAxisSize.min, // 最小限のサイズを取るように設定
+        ),
+        body: Stack(
+          children: [
+            MyIndexedStack(
+              currentIndex: _currentIndex,
               children: [
-                if (_currentIndex == 0) // currentIndexが2でない場合のみウィジェットを表示
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // 更新ボタンのアクションを記述
-                        },
-                        child: Icon(Icons.refresh),
-                        style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          fixedSize: Size(50, 50),
-                          padding: EdgeInsets.all(8),
+                _buildNavigatorPage(0),
+                _buildNavigatorPage(1),
+                _buildNavigatorPage(2),
+              ],
+            ),
+            MyAnimatedPositioned(
+              showBottomBar: showBottomBar,
+              child: Column(
+                mainAxisSize: MainAxisSize.min, // 最小限のサイズを取るように設定
+                children: [
+                  if (_currentIndex == 0) // currentIndexが2でない場合のみウィジェットを表示
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // 更新ボタンのアクションを記述
+                          },
+                          child: Icon(Icons.refresh),
+                          style: ElevatedButton.styleFrom(
+                            shape: CircleBorder(),
+                            fixedSize: Size(50, 50),
+                            padding: EdgeInsets.all(8),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                MyBottomNavigationBar(onTap: _onTap),
-              ],
+                  MyBottomNavigationBar(onTap: _onTap),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      ), 
     );
   }
 
