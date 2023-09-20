@@ -1,0 +1,113 @@
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+
+import 'api/TestAPI.dart';
+
+class DatabaseHelper {
+  static final _dbName = 'Database.db';
+  static final _dbVersion = 1;
+
+  DatabaseHelper._privateConstructor();
+  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+
+  static Database? _database;
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await _initDatabase();
+    return _database!;
+  }
+
+  _initDatabase() async {
+    String path = join(await getDatabasesPath(), _dbName);
+    return await openDatabase(path,
+        version: _dbVersion, onCreate: _onCreate);
+  }
+
+  Future _onCreate(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE machine (
+        machine_id TEXT PRIMARY KEY,
+        machine_group TEXT NOT NULL,
+        machine_num INTEGER NOT NULL,
+        machine_name TEXT NOT NULL,
+        machine_status INTEGER NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE project (
+        project_id TEXT PRIMARY KEY,
+        project_status INTEGER NOT NULL,
+        client_name TEXT,
+        product_name TEXT,
+        product_num TEXT,
+        material TEXT,
+        lot_num TEXT,
+        supervisor TEXT,
+        production_volume INTEGER,
+        cycle_time INTEGER,
+        box_sequence INTEGER,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        machine_id TEXT REFERENCES machine(machine_id),
+        FOREIGN KEY (machine_id) REFERENCES machine(machine_id)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE step (
+        step_id TEXT PRIMARY KEY,
+        step_name TEXT,
+        finished_at TEXT,
+        started_at TEXT,
+        project_status INTEGER NOT NULL,
+        worker TEXT,
+        free_text TEXT,
+        step_num INTEGER NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        project_id TEXT REFERENCES project(project_id),
+        FOREIGN KEY (project_id) REFERENCES project(project_id)
+      )
+    ''');
+  }
+
+  Future<int> insert(String tableName ,Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    return await db.insert(
+      tableName,
+      row,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> queryAll(String tableName) async {
+    Database db = await instance.database;
+    return await db.query(tableName);
+  }
+
+  Future<List<int>> update(String tableName) async {
+    final result = await fetchJSONData();
+    //print(result);
+    Database db = await instance.database;
+    List<int> resultIds = [];
+
+    for (var row in result) {
+      var id = await db.insert(
+        tableName,
+        row,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      resultIds.add(id);
+    }
+    return resultIds;
+  }
+  // 他のCRUD操作（更新、削除など）もここに追加できます
+  Future<void> delete_database() async {
+    String path = join(await getDatabasesPath(), _dbName);
+    await deleteDatabase(path);
+    _database = null;  // _database のリファレンスを削除
+  }
+}

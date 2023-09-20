@@ -5,6 +5,7 @@ import 'MachineListSliverList.dart';
 import 'AlphabetCarousel.dart';
 import 'ToggleButtonSliver.dart';
 import '../../../DataClass.dart';
+import '../../../DataBase.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -19,6 +20,9 @@ class MachineListPage extends StatefulWidget {
 }
 
 class _MachineListPageState extends State<MachineListPage> {
+  // ローカルデータベースデバッグ用------------------------------------
+  final dbHelper = DatabaseHelper.instance;
+  //--------------------------------------------------------------
 
   // スクロールアニメーション用----------------------------------------
   final ScrollController scrollController = ScrollController(); 
@@ -41,11 +45,18 @@ class _MachineListPageState extends State<MachineListPage> {
   // フィルタリング用-------------------------------------------------
   int selectedStatus = -1;
 
-  _onToggleSelected(int index) {
+  _onToggleSelected(int index) async{
+    
+    // ローカルデータベースデバッグ用-----------------------------------
+    final allRows = await dbHelper.queryAll('machine');
+    allRows.forEach((row) => print(row));
+    //-------------------------------------------------------------
+
     // フィルタリング時にページ上部にジャンプ
     scrollController.animateTo(
       -0.1, duration: Duration(milliseconds: 200,), curve: Curves.easeOut
     );
+    widget.onScrollUp();
     setState(() {
       selectedStatus = index;
     });
@@ -145,7 +156,7 @@ class _MachineListPageState extends State<MachineListPage> {
               controller: scrollController,
             ),
             SliverPadding( //padding
-              padding: EdgeInsets.only(bottom: safePadding + kToolbarHeight),
+              padding: EdgeInsets.only(bottom: safePadding + kToolbarHeight + 500),
             ),
           ],
         ),
