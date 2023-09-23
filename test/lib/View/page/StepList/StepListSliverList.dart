@@ -26,7 +26,6 @@ class _StepListSliverListState extends State<StepListSliverList> {
   Widget build(BuildContext context) {
     final machineNumber = widget.machineNumber;
     final MachineData machine = machineData[machineNumber]!;
-                
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
@@ -56,7 +55,6 @@ class _StepListSliverListState extends State<StepListSliverList> {
 
   // カード発行ボタンのアクション
   Future<void> _handleIssueButton(BuildContext context) async {
-
     // デバッグ用---------------------------------------------------------------
     final navigationData = NavigationData.of(context);
     print(navigationData);
@@ -74,12 +72,12 @@ class _StepListSliverListState extends State<StepListSliverList> {
                 Navigator.of(context).pop();
                 // 画面遷移管理のデバッグ用----------------------------------------
                 if (navigationData != null) {
-                  
-                  final navigatorState = navigationData.pageKeys[0].currentState;
-                  
+                  final navigatorState =
+                      navigationData.pageKeys[0].currentState;
+
                   if (navigatorState != null && navigatorState.canPop()) {
                     navigatorState.popUntil((route) => route.isFirst);
-                    navigationData.onTabChange(2);
+                    navigationData.onTabChange(0);
                   }
                 }
 

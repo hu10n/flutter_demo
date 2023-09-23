@@ -95,6 +95,10 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
     super.didUpdateWidget(oldWidget);
 
     if (widget.selectedStatus != oldWidget.selectedStatus) {
+      final alphabetProvider =
+          Provider.of<DataNotifier>(context, listen: false);
+      alphabetProvider.getAllData();
+
       Future.microtask(() {
         final machineCardCount = calculateMachineStats(getFilteredMachines());
         final dataNotifier = Provider.of<DataNotifier>(context, listen: false);
@@ -106,10 +110,10 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
 // 最初期build時に計算しProviderをアップデート
   @override
   Widget build(BuildContext context) {
+    // print(dataList);
     final machineCardCount = calculateMachineStats(getFilteredMachines());
-
     final alphabetProvider = Provider.of<DataNotifier>(context);
-    alphabetProvider.getAllData();
+    // alphabetProvider.getAllData();  //無限buildに繋がる didUpdateWidgetに移動
     if (alphabetProvider.isSelectedAlphabet) {
       scrollToCategory(alphabetProvider.selectedAlphabet);
     }
@@ -165,28 +169,36 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
   }
 
   void scrollToCategory(int categoryIndex) {
-    
-
     print(Provider.of<DataNotifier>(context, listen: false).selectedAlphabet);
-    print(Provider.of<DataNotifier>(context, listen: false).machineCardCount.entries.toList()[1].value);
+    print(Provider.of<DataNotifier>(context, listen: false)
+        .machineCardCount
+        .entries
+        .toList()[1]
+        .value);
     //var categories = categorizedMachines.keys.toList();
     //var index = categories.indexOf(categoryName);
 
     // スクロール位置を計算する
     //var offset = index * 60.0;  // 仮の計算
     //widget.controller?.animateTo(
-      //offset, duration: Duration(milliseconds: 500,), curve: Curves.easeInOut
+    //offset, duration: Duration(milliseconds: 500,), curve: Curves.easeInOut
     //);
     var offset = 0.0;
-    if (Provider.of<DataNotifier>(context, listen: false).selectedAlphabet != 0){
-      offset = Provider.of<DataNotifier>(context, listen: false).machineCardCount.entries.toList()[categoryIndex - 1].value["height"] + 1.0;
+    if (Provider.of<DataNotifier>(context, listen: false).selectedAlphabet !=
+        0) {
+      offset = Provider.of<DataNotifier>(context, listen: false)
+              .machineCardCount
+              .entries
+              .toList()[categoryIndex - 1]
+              .value["height"] +
+          1.0;
     }
 
-    widget.controller?.animateTo(
-      offset, duration: Duration(milliseconds: 200,), curve: Curves.easeOut
-    );
-
-    
+    widget.controller?.animateTo(offset,
+        duration: Duration(
+          milliseconds: 200,
+        ),
+        curve: Curves.easeOut);
   }
 }
 

@@ -21,6 +21,7 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
     // ProviderのCount MapからAkphabetListを取得 ---------------------------
     final machineCardCount =
         Provider.of<DataNotifier>(context).machineCardCount;
+    // print("object");
     final List<String> alphabetList = machineCardCount.keys.toList();
     // -------------------------------------------------------------------
 
