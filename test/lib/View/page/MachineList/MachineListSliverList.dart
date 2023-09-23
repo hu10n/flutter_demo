@@ -109,6 +109,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
     final machineCardCount = calculateMachineStats(getFilteredMachines());
 
     final alphabetProvider = Provider.of<DataNotifier>(context);
+    alphabetProvider.getAllData();
     if (alphabetProvider.isSelectedAlphabet) {
       scrollToCategory(alphabetProvider.selectedAlphabet);
     }
@@ -150,7 +151,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
 
   void _handleMachineCardTap(
       BuildContext context, String machineNumber, MachineData machine) {
-    widget.onScrollUp();
+    widget.onScrollUp(0);
     Navigator.of(context)
         .push(MaterialPageRoute(
             builder: (context) => StepListPage(

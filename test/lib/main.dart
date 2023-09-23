@@ -51,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //---------------------------------------------------------
 
   bool showBottomBar = true; // ボトムナビゲーションのアニメ制御用
+  int scrollValue = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             MyAnimatedPositioned(
               showBottomBar: showBottomBar,
+              scrollValue: scrollValue,
               child: Column(
                 mainAxisSize: MainAxisSize.min, // 最小限のサイズを取るように設定
                 children: [
@@ -91,8 +93,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Padding(
                         padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async{
                             // 更新ボタンのアクションを記述
+                            Provider.of<DataNotifier>(context, listen: false).updateLocalDB(); //ローカルdbをrdsと同期
+                            print("更新");
                           },
                           child: Icon(Icons.refresh),
                           style: ElevatedButton.styleFrom(
@@ -153,13 +157,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // ボトムナビゲーションのアニメーション制御---------------------------------
-  void _hideBottomBar() {
+  void _hideBottomBar(int value) {
     setState(() {
+      scrollValue = value;
       showBottomBar = false;
     });
   }
-  void _showBottomBar() {
+  void _showBottomBar(int value) {
     setState(() {
+      scrollValue = value;
       showBottomBar = true;
     });
   }

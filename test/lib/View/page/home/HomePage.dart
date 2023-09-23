@@ -39,10 +39,10 @@ class _PageWithCustomScrollState extends State<PageWithCustomScroll> {
         if (notification.scrollDelta!.abs() > threshold) {
           if (notification.scrollDelta! > 0) {
             // ユーザーが下にスクロールしている場合
-            widget.onScrollDown();
+            widget.onScrollDown(0);
           } else if (notification.scrollDelta! < 0) {
             // ユーザーが上にスクロールしている場合
-            widget.onScrollUp();
+            widget.onScrollUp(0);
           }
         }
         return true;
@@ -64,7 +64,7 @@ class _PageWithCustomScrollState extends State<PageWithCustomScroll> {
                 return ListTile(
                   title: Text('Item $index'),
                   onTap: () {
-                    widget.onScrollUp();
+                    widget.onScrollUp(0);
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => SubPage(title: 'Sub Page from Custom Scroll')));
                   },
                 );

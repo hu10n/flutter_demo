@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
-import 'StepListSliverList.dart';
-import '../HistoryList/HistoryListPage.dart';
 
-class StepListPage extends StatefulWidget {
+class HistoryListPage extends StatefulWidget {
   final String machineNumber;
   final onScrollDown;
   final onScrollUp;
 
-  StepListPage(
+  HistoryListPage(
       {required this.machineNumber,
       required this.onScrollDown,
       required this.onScrollUp});
 
   @override
-  _StepListPageState createState() => _StepListPageState();
+  _HistoryListPageState createState() => _HistoryListPageState();
 }
 
-class _StepListPageState extends State<StepListPage> {
+class _HistoryListPageState extends State<HistoryListPage> {
   final ScrollController scrollController = ScrollController();
   double lastOffset = 0.0;
 
@@ -63,24 +61,11 @@ class _StepListPageState extends State<StepListPage> {
               expandedHeight: 50.0,
               floating: true,
               pinned: false,
-              actions: [
-                IconButton(
-                  icon: Icon(Icons.history),
-                  onPressed: () {
-                    // アイコンを押したときの処理（ここではSnackBarを表示）
-                    _handleHistoryIconTap(context, widget.machineNumber);
-                  },
-                ),
-              ],
               flexibleSpace: FlexibleSpaceBar(
-                title: Text('Machine ${widget.machineNumber} Step List'),
+                title: Text('Machine ${widget.machineNumber} History List'),
               ),
             ),
-            StepListSliverList(
-              machineNumber: widget.machineNumber,
-              onScrollDown: widget.onScrollDown,
-              onScrollUp: widget.onScrollUp,
-            ),
+            
             SliverPadding(
               padding: EdgeInsets.only(bottom: safePadding + kToolbarHeight),
             ),
@@ -88,19 +73,5 @@ class _StepListPageState extends State<StepListPage> {
         ),
       ),
     );
-  }
-
-  void _handleHistoryIconTap(BuildContext context,String machineNumber) {
-    widget.onScrollUp();
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => HistoryListPage(
-          machineNumber: machineNumber,
-          onScrollDown: widget.onScrollDown,
-          onScrollUp: widget.onScrollUp,
-    )))
-    .then((dataUpdated) {
-      setState(() {});
-    });
   }
 }

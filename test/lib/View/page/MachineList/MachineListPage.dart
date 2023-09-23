@@ -5,7 +5,7 @@ import 'MachineListSliverList.dart';
 import 'AlphabetCarousel.dart';
 import 'ToggleButtonSliver.dart';
 import '../../../DataClass.dart';
-import '../../../DataBase.dart';
+
 
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -20,9 +20,6 @@ class MachineListPage extends StatefulWidget {
 }
 
 class _MachineListPageState extends State<MachineListPage> {
-  // ローカルデータベースデバッグ用------------------------------------
-  final dbHelper = DatabaseHelper.instance;
-  //--------------------------------------------------------------
 
   // スクロールアニメーション用----------------------------------------
   final ScrollController scrollController = ScrollController(); 
@@ -47,16 +44,11 @@ class _MachineListPageState extends State<MachineListPage> {
 
   _onToggleSelected(int index) async{
     
-    // ローカルデータベースデバッグ用-----------------------------------
-    final allRows = await dbHelper.queryAll('machine');
-    allRows.forEach((row) => print(row));
-    //-------------------------------------------------------------
-
     // フィルタリング時にページ上部にジャンプ
     scrollController.animateTo(
       -0.1, duration: Duration(milliseconds: 200,), curve: Curves.easeOut
     );
-    widget.onScrollUp();
+    widget.onScrollUp(0);
     setState(() {
       selectedStatus = index;
     });
@@ -81,10 +73,10 @@ class _MachineListPageState extends State<MachineListPage> {
           if (notification.scrollDelta!.abs() > threshold) { // 閾値を超えた時
             if (notification.scrollDelta! > 0) {
               // ユーザーが下にスクロールしている場合
-              widget.onScrollDown();
+              widget.onScrollDown(0);
             } else if (notification.scrollDelta! < 0) {
               // ユーザーが上にスクロールしている場合
-              widget.onScrollUp();
+              widget.onScrollUp(0);
             }
           }
         }
@@ -130,7 +122,11 @@ class _MachineListPageState extends State<MachineListPage> {
           controller: scrollController,
           slivers: [
             SliverPersistentHeader( //SliverAppBarの上段
-              delegate: YourHeaderDelegate(onToggleSelected: _onToggleSelected),
+              delegate: YourHeaderDelegate(
+                onToggleSelected: _onToggleSelected,
+                onScrollDown: widget.onScrollDown,
+                onScrollUp: widget.onScrollUp,
+              ),
               pinned: false,
               floating: true,
             ),

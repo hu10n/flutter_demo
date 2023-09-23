@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api/TestAPI.dart';
 
@@ -88,21 +89,38 @@ class DatabaseHelper {
     return await db.query(tableName);
   }
 
-  Future<List<int>> update(String tableName) async {
-    final result = await fetchJSONData();
-    //print(result);
+  Future<void> update() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
+    
+    final result = await postJSONData(value);
+    print(result);
     Database db = await instance.database;
-    List<int> resultIds = [];
-
-    for (var row in result) {
-      var id = await db.insert(
-        tableName,
+    
+    
+    for (var row in result["machine"]) {
+      await db.insert(
+        "machine",
         row,
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      resultIds.add(id);
     }
-    return resultIds;
+    for (var row in result["project"]) {
+      await db.insert(
+        "project",
+        row,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    for (var row in result["step"]) {
+      await db.insert(
+        "step",
+        row,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    
+    await prefs.setString('last_updated', result["current"]); // int値の保存
   }
   // 他のCRUD操作（更新、削除など）もここに追加できます
   Future<void> delete_database() async {
@@ -111,3 +129,5 @@ class DatabaseHelper {
     _database = null;  // _database のリファレンスを削除
   }
 }
+
+//TODOメモ 更新時に完了操作終了済みのproject-stepデータは削除するようにする。

@@ -32,6 +32,32 @@ Future<List<dynamic>> fetchJSONData() async {
   }
 }
 
+Future<Map<String,dynamic>> postJSONData(lastUpdated) async {
+  final response = await http.post(
+      Uri.parse('https://2kwgnatgue.execute-api.ap-northeast-1.amazonaws.com/testconnectDB'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
+        // 'Authorization': 'Bearer YOUR_API_TOKEN',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'last_updated': lastUpdated,
+      }),
+    );
+
+  if (response.statusCode == 200) {
+    // If server returns an OK response, parse the JSON
+    //print(json.decode(utf8.decode(response.bodyBytes)));
+    
+    return json.decode(utf8.decode(response.bodyBytes));// as List<Map<String, dynamic>>;
+  } else {
+    // If server did not return a 200 OK response,
+    // throw an exception.
+    print(response.body);
+    print(response.statusCode);
+    throw Exception('Failed to load data from the server');
+  }
+}
+
 
 
 Object structuredData(List records) {
