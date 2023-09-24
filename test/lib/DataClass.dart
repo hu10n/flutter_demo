@@ -10,12 +10,10 @@ class DataNotifier extends ChangeNotifier {
   bool _isScrollView = false;
   Map<String, Map<String, dynamic>> _machineCardCount = {};
 
-  // 新しく追加したフィールド
-  bool _isLoading = false;
-
   //ローカルデータベース用
   List<Map<String, dynamic>> _dataList = [];
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
+  bool _isLoading = false;
 
   // getter
   List<Map<String, dynamic>> get dataList => _dataList;
@@ -25,7 +23,7 @@ class DataNotifier extends ChangeNotifier {
   bool get isSelectedAlphabet => _isSelectedAlphabet;
   bool get isScrollView => _isScrollView;
   Map<String, Map<String, dynamic>> get machineCardCount => _machineCardCount;
-  bool get isLoading => _isLoading; // 新しく追加したgetter
+  bool get isLoading => _isLoading;
 
   DataNotifier() {
     // このNotifierが生成されたときにデータのロードを行う

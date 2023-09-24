@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../DataClass.dart';
 import '../../../common/MachineStatusText.dart';
+import '../../../common/methods.dart';
 
 class MachineListCard extends StatelessWidget {
   const MachineListCard({
@@ -18,22 +19,20 @@ class MachineListCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final dataList = Provider.of<DataNotifier>(context).dataList;
 
-    Map<String, dynamic> machine =
-        dataList.firstWhere((element) => element['machine_id'] == machineId,
-            orElse: () => {
-                  'machine_id': '',
-                  'machine_num': 'N/A',
-                  'machine_status': 0,
-                  'updated_at': 'N/A',
-                  'project': []
-                });
+    Map<String, dynamic> machine = dataList.firstWhere(
+      (element) => element['machine_id'] == machineId,
+    );
 
-    String machineNum = machine['machine_num'].toString();
-    String category = machine['machine_group'];
-    String machineNumber = "$category-$machineNum";
+    String machineNumber =
+        "${machine['machine_group']}-${machine['machine_num'].toString()}";
     int machineStatus = machine['machine_status'] ?? 0;
+    String latestEditedDateTime = formatTime(machine['updated_at']);
+    String machineName = machine['machine_name'];
+    String productName = getProductName(machine);
 
-    String latestEditedDateTime = machine['updated_at'];
+    int totalSteps = calculateTotalSteps(machine);
+    int totalProgress = calculateTotalProgress(machine);
+    // print("$sumOfProjectStatus/$totalSteps");
 
     return Card(
       margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
@@ -50,13 +49,13 @@ class MachineListCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildMachineNameBox(
-                            machine['machine_name'], "dummy-Product-Name"),
+                        _buildMachineNameBox(machineName, productName!),
                         _buildMachineStatusBox(
                             context, machineStatus, latestEditedDateTime),
                       ],
                     ),
-                    _buildMachineProgressBox(context, machine),
+                    _buildMachineProgressBox(
+                        context, totalProgress, totalSteps),
                   ],
                 ),
               ),
@@ -83,6 +82,7 @@ class MachineListCard extends StatelessWidget {
 
   Widget _buildMachineNameBox(String machineName, String productName) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           height: 30,
@@ -127,19 +127,12 @@ class MachineListCard extends StatelessWidget {
   }
 
   Widget _buildMachineProgressBox(
-      BuildContext context, Map<String, dynamic> machine) {
-    final List<dynamic> projects = machine['project'] ?? [];
-
-    final int totalProgress = projects.fold(
-        0, (sum, project) => sum + (project['project_status'] as int));
-
-    final int stepNumber = projects.length;
-
+      BuildContext context, totalProgress, totalSteps) {
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: Row(
         children: [
-          for (int i = 0; i < stepNumber; i++)
+          for (int i = 0; i < totalSteps; i++)
             Row(
               children: [
                 Container(

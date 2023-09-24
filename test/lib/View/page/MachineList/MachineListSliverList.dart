@@ -78,12 +78,13 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final dataNotifier = Provider.of<DataNotifier>(context, listen: false);
       final dataList = dataNotifier.dataList;
       final machineCardCount =
           getMachineCardCount(dataList, widget.selectedStatus);
       dataNotifier.updateMachineCardCount(machineCardCount);
+      // print("#initState/cardcount: ${machineCardCount['A']}");
     });
   }
 
@@ -91,13 +92,15 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
   @override
   void didUpdateWidget(covariant MachineListSliverList oldWidget) {
     super.didUpdateWidget(oldWidget);
-
     if (widget.selectedStatus != oldWidget.selectedStatus) {
-      final dataNotifier = Provider.of<DataNotifier>(context, listen: false);
-      final dataList = dataNotifier.dataList;
-      final machineCardCount =
-          getMachineCardCount(dataList, widget.selectedStatus);
-      dataNotifier.updateMachineCardCount(machineCardCount);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final dataNotifier = Provider.of<DataNotifier>(context, listen: false);
+        final dataList = dataNotifier.dataList;
+        final machineCardCount =
+            getMachineCardCount(dataList, widget.selectedStatus);
+        dataNotifier.updateMachineCardCount(machineCardCount);
+        // print("#didupdate/cardcount: ${machineCardCount['A']}");
+      });
     }
   }
 
@@ -107,8 +110,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
     final dataList = dataNotifier.dataList;
     final machineCardCount =
         getMachineCardCount(dataList, widget.selectedStatus);
-    print("machineCardCount $machineCardCount");
-
+    // print("#build/cardcount: ${machineCardCount['A']}");
     if (dataNotifier.isSelectedAlphabet) {
       scrollToCategory(dataNotifier.selectedAlphabet);
     }
@@ -117,7 +119,6 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           final categories = machineCardCount.keys.toList();
-          print("categories ${categories.length}");
 
           if (index < categories.length && categories[index] != null) {
             final category = categories[index];
@@ -153,10 +154,11 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
     Navigator.of(context)
         .push(MaterialPageRoute(
             builder: (context) => StepListPage(
-                  machineNumber: machineId,
+                  machineId: machineId,
                   onScrollDown: widget.onScrollDown,
                   onScrollUp: widget.onScrollUp,
                 )))
+        // .push(MaterialPageRoute(builder: (context) => Placeholder()))
         .then((dataUpdated) {
       setState(() {});
     });

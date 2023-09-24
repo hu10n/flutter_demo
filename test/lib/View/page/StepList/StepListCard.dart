@@ -1,39 +1,63 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:test/common/methods.dart';
 
-import '../../../LocalData/data.dart';
+import '../../../DataClass.dart';
 
 class StepListCard extends StatelessWidget {
-  final SmallStep step;
-  final String stepTitle;
-  final BuildContext context;
+  final String machineId; // 追加されたプロパティ
+  final String stepId; // 追加されたプロパティ
   final VoidCallback tapAction;
 
   const StepListCard({
-    required this.step,
-    required this.stepTitle,
-    required this.context,
+    required this.machineId, // コンストラクタでmachineIdを要求
+    required this.stepId, // コンストラクタでstepIdを要求
     required this.tapAction,
   });
 
+  @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+
+    final dataList = Provider.of<DataNotifier>(context).dataList;
+    Map<String, dynamic> machine = dataList.firstWhere(
+      (element) => element['machine_id'] == machineId,
+    );
+
+    String stepTitle = '';
+    int? stepStatus;
+    String worker = '';
+    String updatedAt = '';
+
+    for (var project in (machine['project'] as List)) {
+      for (var s in (project['step'] as List)) {
+        if (s['step_id'] == stepId) {
+          stepTitle = s['step_name'] ?? '';
+          stepStatus = s['project_status'] as int?;
+          // stepStatus = 1; //test
+          worker = s['worker'] ?? '';
+          updatedAt = formatTime(s['updated_at'] ?? '');
+        }
+      }
+    }
+
     return Card(
       clipBehavior: Clip.hardEdge,
       child: InkWell(
         onTap: tapAction,
         child: SizedBox(
           width: screenWidth,
-          height: 60,
+          height: 70,
           child: Row(
             children: [
-              _buildStepStatusIcon(step.stepStatus),
+              _buildStepStatusIcon(context, stepStatus!),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildStepTitleLabel(stepTitle),
-                    _buildStepListSubtitle(step),
+                    _buildStepListSubtitle(worker, updatedAt),
                   ],
                 ),
               ),
@@ -44,7 +68,7 @@ class StepListCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStepStatusIcon(int status) {
+  Widget _buildStepStatusIcon(context, int status) {
     Color iconColor = status == 0
         ? Theme.of(context).disabledColor
         : Theme.of(context).colorScheme.primary;
@@ -66,19 +90,19 @@ class StepListCard extends StatelessWidget {
         stepTitle,
         style: const TextStyle(
           fontSize: 20,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
   }
 
-  Widget _buildStepListSubtitle(SmallStep step) {
+  Widget _buildStepListSubtitle(String worker, String updatedAt) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildSubtitleWithIcon(Icons.person, step.editorName),
-        _buildSubtitleWithIcon(Icons.trending_up, step.production),
-        _buildSubtitleWithIcon(Icons.update, step.editedDateTime),
+        _buildSubtitleWithIcon(Icons.person, worker),
+        _buildSubtitleWithIcon(Icons.update, updatedAt),
       ],
     );
   }

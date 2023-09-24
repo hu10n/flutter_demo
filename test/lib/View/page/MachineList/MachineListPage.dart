@@ -6,7 +6,6 @@ import 'AlphabetCarousel.dart';
 import 'ToggleButtonSliver.dart';
 import '../../../DataClass.dart';
 
-
 import 'package:carousel_slider/carousel_slider.dart';
 
 class MachineListPage extends StatefulWidget {
@@ -20,9 +19,8 @@ class MachineListPage extends StatefulWidget {
 }
 
 class _MachineListPageState extends State<MachineListPage> {
-
   // スクロールアニメーション用----------------------------------------
-  final ScrollController scrollController = ScrollController(); 
+  final ScrollController scrollController = ScrollController();
   final CarouselController carouselController = CarouselController();
 
   double lastOffset = 0.0; // スクロール状況監視用
@@ -38,16 +36,17 @@ class _MachineListPageState extends State<MachineListPage> {
     lastOffset = scrollController.offset; // オフセットを更新
   }
   //---------------------------------------------------------------
-  
+
   // フィルタリング用-------------------------------------------------
   int selectedStatus = -1;
 
-  _onToggleSelected(int index) async{
-    
+  _onToggleSelected(int index) async {
     // フィルタリング時にページ上部にジャンプ
-    scrollController.animateTo(
-      -0.1, duration: Duration(milliseconds: 200,), curve: Curves.easeOut
-    );
+    scrollController.animateTo(-0.1,
+        duration: Duration(
+          milliseconds: 200,
+        ),
+        curve: Curves.easeOut);
     widget.onScrollUp(0);
     setState(() {
       selectedStatus = index;
@@ -60,17 +59,20 @@ class _MachineListPageState extends State<MachineListPage> {
     final safePadding = MediaQuery.of(context).padding.bottom;
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
-
-        if (notification.metrics.outOfRange) {// オーバースクロールの場合、何もしない
+        if (notification.metrics.outOfRange) {
+          // オーバースクロールの場合、何もしない
           return true;
         }
-        if (notification.depth != 0) { // カルーセルのスクロールでも、何もしない
+        if (notification.depth != 0) {
+          // カルーセルのスクロールでも、何もしない
           return true;
         }
 
         // ボトムナビゲーション用のスクロール制御-----------------------------------------------
-        if (notification is ScrollUpdateNotification) { // スクロール時
-          if (notification.scrollDelta!.abs() > threshold) { // 閾値を超えた時
+        if (notification is ScrollUpdateNotification) {
+          // スクロール時
+          if (notification.scrollDelta!.abs() > threshold) {
+            // 閾値を超えた時
             if (notification.scrollDelta! > 0) {
               // ユーザーが下にスクロールしている場合
               widget.onScrollDown(0);
@@ -82,38 +84,49 @@ class _MachineListPageState extends State<MachineListPage> {
         }
         //--------------------------------------------------------------------------------
 
-        
         // カルーセル同期用のスクロール制御-----------------------------------------------------
         final provider = Provider.of<DataNotifier>(context, listen: false);
         int index = provider.selectedAlphabet;
 
-        if(!provider.isSelectedAlphabet){ // カルーセル選択フラグがtrueの時
-          if(scrollController.offset > provider.machineCardCount.entries.toList()[index].value["height"]){
-            carouselController.animateToPage(index + 1);
-          }
-          if(index != 0){
-            if(scrollController.offset < provider.machineCardCount.entries.toList()[index - 1].value["height"]){
-              carouselController.animateToPage(index - 1);
+        if (!provider.isSelectedAlphabet) {
+          // カルーセル選択フラグがtrueの時
+          List<MapEntry> entries = provider.machineCardCount.entries.toList();
+
+          // Ensure that the list isn't empty and the desired index is valid.
+          if (entries.isNotEmpty && index < entries.length) {
+            if (scrollController.offset > entries[index].value["height"]) {
+              carouselController.animateToPage(index + 1);
+            }
+
+            if (index != 0 && index - 1 < entries.length) {
+              if (scrollController.offset <
+                  entries[index - 1].value["height"]) {
+                carouselController.animateToPage(index - 1);
+              }
             }
           }
 
-          if (notification is ScrollStartNotification) { // スクロール開始時の動作
+          if (notification is ScrollStartNotification) {
+            // スクロール開始時の動作
             WidgetsBinding.instance.addPostFrameCallback((_) {
               provider.turnScrollFlag(true);
             });
-          } else if (notification is ScrollEndNotification) { // スクロール終了時の動作
+          } else if (notification is ScrollEndNotification) {
+            // スクロール終了時の動作
             WidgetsBinding.instance.addPostFrameCallback((_) {
               provider.turnScrollFlag(false);
-            });         
+            });
           }
-        }else{ //カルーセル選択フラグがfalseの時
-          if (notification is ScrollEndNotification) { // スクロール終了時の動作
+        } else {
+          //カルーセル選択フラグがfalseの時
+          if (notification is ScrollEndNotification) {
+            // スクロール終了時の動作
             WidgetsBinding.instance.addPostFrameCallback((_) {
               provider.turnSelectedFlag(false);
-            });   
-          } 
+            });
+          }
         }
-        //------------------------------------------------------------------------------ 
+        //------------------------------------------------------------------------------
         return true;
       },
       child: Container(
@@ -121,7 +134,8 @@ class _MachineListPageState extends State<MachineListPage> {
         child: CustomScrollView(
           controller: scrollController,
           slivers: [
-            SliverPersistentHeader( //SliverAppBarの上段
+            SliverPersistentHeader(
+              //SliverAppBarの上段
               delegate: YourHeaderDelegate(
                 onToggleSelected: _onToggleSelected,
                 onScrollDown: widget.onScrollDown,
@@ -130,7 +144,8 @@ class _MachineListPageState extends State<MachineListPage> {
               pinned: false,
               floating: true,
             ),
-            SliverAppBar( //SliverAppBarの下段
+            SliverAppBar(
+              //SliverAppBarの下段
               title: null,
               backgroundColor: Colors.white,
               expandedHeight: 30.0,
@@ -142,17 +157,21 @@ class _MachineListPageState extends State<MachineListPage> {
                 ),
               ],
             ),
-            SliverPadding( //padding
+            SliverPadding(
+              //padding
               padding: EdgeInsets.only(top: 0), // ここで所望のスペースの量を設定します
             ),
-            MachineListSliverList( //一覧のコンテンツ部分
+            MachineListSliverList(
+              //一覧のコンテンツ部分
               selectedStatus: selectedStatus,
               onScrollDown: widget.onScrollDown,
               onScrollUp: widget.onScrollUp,
               controller: scrollController,
             ),
-            SliverPadding( //padding
-              padding: EdgeInsets.only(bottom: safePadding + kToolbarHeight + 500),
+            SliverPadding(
+              //padding
+              padding:
+                  EdgeInsets.only(bottom: safePadding + kToolbarHeight + 500),
             ),
           ],
         ),

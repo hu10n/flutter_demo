@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class HistoryListPage extends StatefulWidget {
-  final String machineNumber;
+  final String machineId;
   final onScrollDown;
   final onScrollUp;
 
   HistoryListPage(
-      {required this.machineNumber,
+      {required this.machineId,
       required this.onScrollDown,
       required this.onScrollUp});
 
@@ -62,10 +62,9 @@ class _HistoryListPageState extends State<HistoryListPage> {
               floating: true,
               pinned: false,
               flexibleSpace: FlexibleSpaceBar(
-                title: Text('Machine ${widget.machineNumber} History List'),
+                title: Text('Machine ${widget.machineId} History List'),
               ),
             ),
-            
             SliverPadding(
               padding: EdgeInsets.only(bottom: safePadding + kToolbarHeight),
             ),
