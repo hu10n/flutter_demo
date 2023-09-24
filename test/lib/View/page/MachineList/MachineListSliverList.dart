@@ -80,11 +80,13 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dataNotifier = Provider.of<DataNotifier>(context, listen: false);
+      dataNotifier.getAllData();
+      print("initState Timing");
       final dataList = dataNotifier.dataList;
       final machineCardCount =
           getMachineCardCount(dataList, widget.selectedStatus);
       dataNotifier.updateMachineCardCount(machineCardCount);
-      // print("#initState/cardcount: ${machineCardCount['A']}");
+      print("#initState/cardcount: ${machineCardCount['A']}"); // []が返ってくる
     });
   }
 

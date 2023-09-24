@@ -26,6 +26,7 @@ class DataNotifier extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   DataNotifier() {
+    print("DataNotifier Init.");
     // このNotifierが生成されたときにデータのロードを行う
     getAllData();
   }
@@ -66,6 +67,7 @@ class DataNotifier extends ChangeNotifier {
 
   void updateDataList(List<Map<String, dynamic>> dataList) {
     _dataList = dataList;
+    print("updateDataList Timig");
     notifyListeners();
   }
 
