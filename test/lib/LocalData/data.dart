@@ -25,7 +25,7 @@ class MachineData {
   int machineStatus;
   Map<String, SmallStep> childSteps;
 
-  var machineNumber; // データの型を指定
+  // var machineNumber; // データの型を指定
 
   MachineData({
     required this.machineCategory,
