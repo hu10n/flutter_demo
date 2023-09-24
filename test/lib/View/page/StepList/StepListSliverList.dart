@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../DataClass.dart';
 import '../../../LocalData/data.dart';
 import '../StepPreview/StepPreviewPage.dart';
 import 'MachineSummaryCard.dart';
@@ -7,12 +9,12 @@ import 'StepListCard.dart';
 import "../../../NavigationData.dart";
 
 class StepListSliverList extends StatefulWidget {
-  final String machineNumber;
+  final String machineId;
   final Function onScrollDown;
   final Function onScrollUp;
 
   const StepListSliverList(
-      {required this.machineNumber,
+      {required this.machineId,
       required this.onScrollDown,
       required this.onScrollUp});
 
@@ -24,39 +26,48 @@ class _StepListSliverListState extends State<StepListSliverList> {
   // SliverListを返す ----------------------------------------------
   @override
   Widget build(BuildContext context) {
-    final machineNumber = widget.machineNumber;
-    final MachineData machine = machineData[machineNumber]!;
-                
+    final dataList = Provider.of<DataNotifier>(context).dataList;
+
+    Map<String, dynamic> machine = dataList.firstWhere(
+        (element) => element['machine_id'] == widget.machineId,
+        orElse: () => {
+              'machine_id': '',
+              'machine_num': 'N/A',
+              'machine_status': 0,
+              'updated_at': 'N/A',
+              'project': []
+            });
+    String machineNum = machine['machine_num'].toString();
+    String category = machine['machine_group'];
+    String machineNumber = "$category-$machineNum";
+
+    List<String> stepIds = _getAllStepIds(machine);
 
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           if (index == 0) {
             return MachineSummaryCard(
-              machine: machine,
-              machineNumber: machineNumber,
+              machineId: widget.machineId,
               onPressAction: () => _handleIssueButton(context),
             );
-          } else if (index <= machine.childSteps.length) {
-            final stepTitle = machine.childSteps.keys.elementAt(index - 1);
-            final SmallStep step = machine.childSteps[stepTitle]!;
+          } else if (index <= stepIds.length) {
+            String stepId = stepIds[index - 1];
             return StepListCard(
-              step: step,
-              stepTitle: stepTitle,
-              context: context,
-              tapAction: () =>
-                  _handleStepCardTap(context, stepTitle, step, machineNumber),
+              machineId: widget.machineId,
+              stepId: stepId,
+              tapAction: () => _handleStepCardTap(context, stepId),
             );
           }
+          return null;
         },
-        childCount: machine.childSteps.length + 2,
+        childCount: stepIds.length + 1, // Adjusted childCount
       ),
     );
   }
 
   // カード発行ボタンのアクション
   Future<void> _handleIssueButton(BuildContext context) async {
-
     // デバッグ用---------------------------------------------------------------
     final navigationData = NavigationData.of(context);
     print(navigationData);
@@ -74,12 +85,12 @@ class _StepListSliverListState extends State<StepListSliverList> {
                 Navigator.of(context).pop();
                 // 画面遷移管理のデバッグ用----------------------------------------
                 if (navigationData != null) {
-                  
-                  final navigatorState = navigationData.pageKeys[0].currentState;
-                  
+                  final navigatorState =
+                      navigationData.pageKeys[0].currentState;
+
                   if (navigatorState != null && navigatorState.canPop()) {
                     navigatorState.popUntil((route) => route.isFirst);
-                    navigationData.onTabChange(2);
+                    navigationData.onTabChange(0);
                   }
                 }
 
@@ -94,18 +105,38 @@ class _StepListSliverListState extends State<StepListSliverList> {
   }
 
 // Step Card Listをtapした時の動作
-  void _handleStepCardTap(BuildContext context, String stepTitle,
-      SmallStep step, String machineNumber) {
+  void _handleStepCardTap(
+    BuildContext context,
+    String stepId,
+  ) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => StepPreviewPage(
-          machineNumber: machineNumber,
-          stepTitle: stepTitle,
-        ),
-      ),
+      MaterialPageRoute(builder: (context) => Placeholder()
+          // StepPreviewPage(
+          //   machineNumber: machineNumber,
+          //   stepId: stepId,
+          // ),
+          ),
     ).then((dataUpdated) {
       setState(() {}); // 常にtrueを渡して、再レンダリングさせる
     });
+  }
+
+  List<String> _getAllStepIds(Map<String, dynamic> machine) {
+    List<String> stepIds = [];
+
+    if (machine['project'] is List) {
+      for (var project in machine['project']) {
+        if (project['step'] is List) {
+          for (var step in project['step']) {
+            if (step['step_id'] is String) {
+              stepIds.add(step['step_id']);
+            }
+          }
+        }
+      }
+    }
+
+    return stepIds;
   }
 }

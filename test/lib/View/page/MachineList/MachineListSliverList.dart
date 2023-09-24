@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../DataClass.dart';
-import '../../../LocalData/data.dart';
+// import '../../../LocalData/data.dart';
 import '../StepList/StepListPage.dart';
 import 'MachineListCard.dart';
 
@@ -25,67 +25,68 @@ class MachineListSliverList extends StatefulWidget {
 }
 
 class _MachineListSliverListState extends State<MachineListSliverList> {
-  // Filtering ex.)[A-1, A-2, A-3, B-3, C-1, C-2, C-3]
-  List<String> getFilteredMachines() {
-    if (widget.selectedStatus == -1) {
-      return machineData.keys.toList();
-    } else if (widget.selectedStatus == 0 || widget.selectedStatus == 1) {
-      return machineData.entries
-          .where((entry) => entry.value.machineStatus == widget.selectedStatus)
-          .map((entry) => entry.key)
-          .toList();
-    } else {
-      return machineData.entries
-          .where((entry) =>
-              entry.value.machineStatus != 0 && entry.value.machineStatus != 1)
-          .map((entry) => entry.key)
-          .toList();
-    }
-  }
-
-// ex. {B: {machines: [B-2], count: 1, height: 103}, C: {machines: [C-2], count: 1, height: 206}}
-  Map<String, Map<String, dynamic>> calculateMachineStats(
-      List<String> filteredMachines) {
+  Map<String, Map<String, dynamic>> getMachineCardCount(
+      List<Map<String, dynamic>> dataList, int selectedStatus) {
     final Map<String, List<String>> categorizedMachines = {};
     final Map<String, Map<String, dynamic>> machineCardCount = {};
-    for (var machineNumber in filteredMachines) {
-      final machine = machineData[machineNumber]!;
-      final category = machine.machineCategory;
+
+    // Filtering step
+    List<Map<String, dynamic>> filteredMachines = dataList;
+    if (selectedStatus != -1) {
+      if (selectedStatus == 0 || selectedStatus == 1) {
+        filteredMachines = dataList
+            .where((machine) => machine['machine_status'] == selectedStatus)
+            .toList();
+      } else {
+        filteredMachines = dataList
+            .where((machine) =>
+                machine['machine_status'] != 0 &&
+                machine['machine_status'] != 1)
+            .toList();
+      }
+    }
+
+    for (var machine in filteredMachines) {
+      final machineId = machine['machine_id']; // machine_idを取得
+      final category = machine['machine_group'];
 
       if (!categorizedMachines.containsKey(category)) {
         categorizedMachines[category] = [];
       }
 
-      categorizedMachines[category]!.add(machineNumber);
+      categorizedMachines[category]!.add(machineId); // machine_idをリストに追加
     }
 
     int accumulatedHeight = 0;
-
     for (var category in categorizedMachines.keys) {
-      final machines = categorizedMachines[category]!;
-      final count = machines.length;
+      final machineIds = categorizedMachines[category]!;
+      final count = machineIds.length;
       final height = 78 * count + 25;
 
       accumulatedHeight += height;
-
       machineCardCount[category] = {
-        'machines': machines,
+        'machines': machineIds, // machineIdsを格納
         'count': count,
-        'height': accumulatedHeight
+        'height': accumulatedHeight,
       };
     }
 
     return machineCardCount;
   }
 
-//
+// 最初期build時に計算しProviderをアップデート
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      final machineCardCount = calculateMachineStats(getFilteredMachines());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final dataNotifier = Provider.of<DataNotifier>(context, listen: false);
+      dataNotifier.getAllData();
+      print("initState Timing");
+      final dataList = dataNotifier.dataList;
+      final machineCardCount =
+          getMachineCardCount(dataList, widget.selectedStatus);
       dataNotifier.updateMachineCardCount(machineCardCount);
+      print("#initState/cardcount: ${machineCardCount['A']}"); // []が返ってくる
     });
   }
 
@@ -93,25 +94,27 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
   @override
   void didUpdateWidget(covariant MachineListSliverList oldWidget) {
     super.didUpdateWidget(oldWidget);
-
     if (widget.selectedStatus != oldWidget.selectedStatus) {
-      Future.microtask(() {
-        final machineCardCount = calculateMachineStats(getFilteredMachines());
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         final dataNotifier = Provider.of<DataNotifier>(context, listen: false);
+        final dataList = dataNotifier.dataList;
+        final machineCardCount =
+            getMachineCardCount(dataList, widget.selectedStatus);
         dataNotifier.updateMachineCardCount(machineCardCount);
+        // print("#didupdate/cardcount: ${machineCardCount['A']}");
       });
     }
   }
 
-// 最初期build時に計算しProviderをアップデート
   @override
   Widget build(BuildContext context) {
-    final machineCardCount = calculateMachineStats(getFilteredMachines());
-
-    final alphabetProvider = Provider.of<DataNotifier>(context);
-    alphabetProvider.getAllData();
-    if (alphabetProvider.isSelectedAlphabet) {
-      scrollToCategory(alphabetProvider.selectedAlphabet);
+    final dataNotifier = Provider.of<DataNotifier>(context, listen: true);
+    final dataList = dataNotifier.dataList;
+    final machineCardCount =
+        getMachineCardCount(dataList, widget.selectedStatus);
+    // print("#build/cardcount: ${machineCardCount['A']}");
+    if (dataNotifier.isSelectedAlphabet) {
+      scrollToCategory(dataNotifier.selectedAlphabet);
     }
 
     return SliverList(
@@ -119,74 +122,67 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
         (context, index) {
           final categories = machineCardCount.keys.toList();
 
-          if (index < categories.length) {
-            final category = categories[index]; //カテゴリ[A,B,C,...]
-            final machinesInCategory = machineCardCount[category]![
-                "machines"]!; //カテゴリに属する[A-1,A-2,...]
-
-            return Column(
-              children: [
-                CategoryTitle(category: category),
-                Column(
-                  children: machinesInCategory.map<Widget>((machineNumber) {
-                    final machine = machineData[machineNumber]!;
-                    return MachineListCard(
-                      machineNumber: machineNumber,
-                      machine: machine,
-                      context: context,
-                      ontapAction: () => _handleMachineCardTap(
-                          context, machineNumber, machine),
-                    );
-                  }).toList(),
-                ),
-              ],
-            );
+          if (index < categories.length && categories[index] != null) {
+            final category = categories[index];
+            final machineIdsInCategory =
+                machineCardCount[category]?["machines"];
+            if (machineIdsInCategory != null) {
+              return Column(
+                children: [
+                  CategoryTitle(category: category),
+                  Column(
+                    children: machineIdsInCategory.map<Widget>((machineId) {
+                      return MachineListCard(
+                        machineId: machineId,
+                        ontapAction: () =>
+                            _handleMachineCardTap(context, machineId),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              );
+            }
           }
+
           return null;
         },
-        childCount: machineCardCount.length + 1,
+        childCount: machineCardCount.length,
       ),
     );
   }
 
-  void _handleMachineCardTap(
-      BuildContext context, String machineNumber, MachineData machine) {
+  void _handleMachineCardTap(BuildContext context, String machineId) {
     widget.onScrollUp(0);
     Navigator.of(context)
         .push(MaterialPageRoute(
             builder: (context) => StepListPage(
-                  machineNumber: machineNumber,
+                  machineId: machineId,
                   onScrollDown: widget.onScrollDown,
                   onScrollUp: widget.onScrollUp,
                 )))
+        // .push(MaterialPageRoute(builder: (context) => Placeholder()))
         .then((dataUpdated) {
       setState(() {});
     });
   }
 
   void scrollToCategory(int categoryIndex) {
-    
-
-    print(Provider.of<DataNotifier>(context, listen: false).selectedAlphabet);
-    print(Provider.of<DataNotifier>(context, listen: false).machineCardCount.entries.toList()[1].value);
-    //var categories = categorizedMachines.keys.toList();
-    //var index = categories.indexOf(categoryName);
-
-    // スクロール位置を計算する
-    //var offset = index * 60.0;  // 仮の計算
-    //widget.controller?.animateTo(
-      //offset, duration: Duration(milliseconds: 500,), curve: Curves.easeInOut
-    //);
     var offset = 0.0;
-    if (Provider.of<DataNotifier>(context, listen: false).selectedAlphabet != 0){
-      offset = Provider.of<DataNotifier>(context, listen: false).machineCardCount.entries.toList()[categoryIndex - 1].value["height"] + 1.0;
+    if (Provider.of<DataNotifier>(context, listen: false).selectedAlphabet !=
+        0) {
+      offset = Provider.of<DataNotifier>(context, listen: false)
+              .machineCardCount
+              .entries
+              .toList()[categoryIndex - 1]
+              .value["height"] +
+          1.0;
     }
 
-    widget.controller?.animateTo(
-      offset, duration: Duration(milliseconds: 200,), curve: Curves.easeOut
-    );
-
-    
+    widget.controller?.animateTo(offset,
+        duration: Duration(
+          milliseconds: 200,
+        ),
+        curve: Curves.easeOut);
   }
 }
 
@@ -199,7 +195,6 @@ class CategoryTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print("A");
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [

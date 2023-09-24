@@ -3,12 +3,12 @@ import 'StepListSliverList.dart';
 import '../HistoryList/HistoryListPage.dart';
 
 class StepListPage extends StatefulWidget {
-  final String machineNumber;
+  final String machineId;
   final onScrollDown;
   final onScrollUp;
 
   StepListPage(
-      {required this.machineNumber,
+      {required this.machineId,
       required this.onScrollDown,
       required this.onScrollUp});
 
@@ -68,16 +68,16 @@ class _StepListPageState extends State<StepListPage> {
                   icon: Icon(Icons.history),
                   onPressed: () {
                     // アイコンを押したときの処理（ここではSnackBarを表示）
-                    _handleHistoryIconTap(context, widget.machineNumber);
+                    _handleHistoryIconTap(context, widget.machineId);
                   },
                 ),
               ],
               flexibleSpace: FlexibleSpaceBar(
-                title: Text('Machine ${widget.machineNumber} Step List'),
+                title: Text('Step List'),
               ),
             ),
             StepListSliverList(
-              machineNumber: widget.machineNumber,
+              machineId: widget.machineId,
               onScrollDown: widget.onScrollDown,
               onScrollUp: widget.onScrollUp,
             ),
@@ -90,16 +90,16 @@ class _StepListPageState extends State<StepListPage> {
     );
   }
 
-  void _handleHistoryIconTap(BuildContext context,String machineNumber) {
+  void _handleHistoryIconTap(BuildContext context, String machineId) {
     widget.onScrollUp();
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => HistoryListPage(
-          machineNumber: machineNumber,
-          onScrollDown: widget.onScrollDown,
-          onScrollUp: widget.onScrollUp,
-    )))
-    .then((dataUpdated) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(
+            builder: (context) => HistoryListPage(
+                  machineId: machineId,
+                  onScrollDown: widget.onScrollDown,
+                  onScrollUp: widget.onScrollUp,
+                )))
+        .then((dataUpdated) {
       setState(() {});
     });
   }

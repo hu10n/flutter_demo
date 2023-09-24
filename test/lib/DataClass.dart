@@ -1,30 +1,35 @@
 import 'package:flutter/material.dart';
-
 import 'DataBase.dart';
 
 class DataNotifier extends ChangeNotifier {
   String _data = '1';
   List _alphabetList = [];
 
+  int _selectedAlphabet = 0;
+  bool _isSelectedAlphabet = false;
+  bool _isScrollView = false;
+  Map<String, Map<String, dynamic>> _machineCardCount = {};
 
-  int _selectedAlphabet = 0;        //カルーセルで選択されているインデックス
-  bool _isSelectedAlphabet = false; //カルーセル選択フラグ
-  bool _isScrollView = false;       //スクロールフラグ
-  Map<String, Map<String, dynamic>> _machineCardCount = {}; // カードリスト ex.{A: {machines: [A-1, A-2], count: 3, height: 259}, B:..}
-
-  //ローカルデータベース用----------------------------------------
+  //ローカルデータベース用
   List<Map<String, dynamic>> _dataList = [];
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
+  bool _isLoading = false;
 
+  // getter
   List<Map<String, dynamic>> get dataList => _dataList;
-  //------------------------------------------------
-
   String get data => _data;
   List get alphabetList => _alphabetList;
   int get selectedAlphabet => _selectedAlphabet;
   bool get isSelectedAlphabet => _isSelectedAlphabet;
   bool get isScrollView => _isScrollView;
   Map<String, Map<String, dynamic>> get machineCardCount => _machineCardCount;
+  bool get isLoading => _isLoading;
+
+  DataNotifier() {
+    print("DataNotifier Init.");
+    // このNotifierが生成されたときにデータのロードを行う
+    getAllData();
+  }
 
   set data(String newValue) {
     _data = newValue;
@@ -37,13 +42,17 @@ class DataNotifier extends ChangeNotifier {
   }
 
   void selectAlphabet(int alphabet) {
-    _selectedAlphabet = alphabet;
-    notifyListeners();
+    if (_selectedAlphabet != alphabet) {
+      _selectedAlphabet = alphabet;
+      notifyListeners();
+    }
   }
 
   void turnSelectedFlag(bool flag) {
-    _isSelectedAlphabet = flag;
-    notifyListeners();
+    if (_isSelectedAlphabet != flag) {
+      _isSelectedAlphabet = flag;
+      notifyListeners();
+    }
   }
 
   void turnScrollFlag(bool flag) {
@@ -56,14 +65,16 @@ class DataNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  //ローカルデータベース用-------------------------------------------------------
   void updateDataList(List<Map<String, dynamic>> dataList) {
     _dataList = dataList;
+    print("updateDataList Timig");
     notifyListeners();
   }
 
-  //ローカルデータベースから全データを引っ張り更新
-  void getAllData() async{
+  void getAllData() async {
+    _isLoading = true;
+    notifyListeners();
+
     List<Map<String, dynamic>> machine = await _dbHelper.queryAll("machine");
     List<Map<String, dynamic>> project = await _dbHelper.queryAll("project");
     List<Map<String, dynamic>> step = await _dbHelper.queryAll("step");
@@ -71,33 +82,37 @@ class DataNotifier extends ChangeNotifier {
     List<Map<String, dynamic>> allData = structuredData(machine, project, step);
 
     updateDataList(allData);
+
+    _isLoading = false;
+    notifyListeners();
   }
 
-  //構造化したデータを返す
-  List<Map<String, dynamic>> structuredData(List<Map<String, dynamic>> machine,List<Map<String, dynamic>> project,List<Map<String, dynamic>> step) {
-    List<Map<String, dynamic>> _project = []; //引数のMap以降が読み取り専用のため、仕方なく定義
+  List<Map<String, dynamic>> structuredData(List<Map<String, dynamic>> machine,
+      List<Map<String, dynamic>> project, List<Map<String, dynamic>> step) {
+    List<Map<String, dynamic>> _project = [];
     List<Map<String, dynamic>> _machine = [];
 
-    for (var p in project){
+    for (var p in project) {
       var _p = Map.of(p);
-      _p["step"] = step.where((element) => element["project_id"] == p["project_id"]).toList();
+      _p["step"] = step
+          .where((element) => element["project_id"] == p["project_id"])
+          .toList();
       _project.add(_p);
     }
 
-    for (var m in machine){
+    for (var m in machine) {
       var _m = Map.of(m);
-      _m["project"] = _project.where((element) => element["machine_id"] == m["machine_id"]).toList();
+      _m["project"] = _project
+          .where((element) => element["machine_id"] == m["machine_id"])
+          .toList();
       _machine.add(_m);
     }
 
-    //print(_machine);
     return _machine;
   }
 
-  //ローカルデータベースをRDSと同期
-  void updateLocalDB() async{
+  void updateLocalDB() async {
     await _dbHelper.update();
-    notifyListeners(); //これで周知されるかは未検証
+    notifyListeners();
   }
-  //---------------------------------------------------------------------------------
 }

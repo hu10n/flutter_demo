@@ -1,42 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../LocalData/data.dart';
+// import '../../../LocalData/data.dart';
+import '../../../DataClass.dart';
 import '../../../common/methods.dart';
 import '../../../common/MachineStatusText.dart';
 
 class MachineSummaryCard extends StatelessWidget {
   const MachineSummaryCard(
-      {required this.machine,
-      required this.machineNumber,
-      required this.onPressAction});
+      {required this.machineId, required this.onPressAction});
 
-  final MachineData machine;
-  final String machineNumber;
+  final machineId;
   final VoidCallback onPressAction;
-
   @override
   Widget build(BuildContext context) {
-    final totalProgress = calcTotalProgress(machine);
-    final stepNumber = calcStepNumber(machine);
+    final dataList = Provider.of<DataNotifier>(context).dataList;
+    Map<String, dynamic> machine = dataList.firstWhere(
+      (element) => element['machine_id'] == machineId,
+      orElse: () => {},
+    );
+    List<dynamic> projects = machine['project'] ?? [];
+
+    int totalProgress = calculateTotalProgress(machine);
+    int totalSteps = calculateTotalSteps(machine);
+
     final progressPercentage =
-        calcpProgressPercentage(totalProgress, stepNumber);
+        calcpProgressPercentage(totalProgress, totalSteps);
 
-    final machineStatus = machine.machineStatus;
-
-    final productName = machine.productName;
-    final material = machine.material;
-    final lotNumber = machine.lotNumber;
-    final updateDate = getLatestEditedDateTime(machineNumber);
+    String updateDate = formatTime(machine['updated_at'] ?? '');
+    final machineStatus = machine['machine_status'] ?? 0;
+    String machineName = machine['machine_name'] ?? '';
+    String machineNumber =
+        "${machine['machine_group']}-${machine['machine_num'].toString()}";
+    String productName =
+        projects.isNotEmpty ? projects[0]['product_name'] ?? '' : '';
+    String material = projects.isNotEmpty ? projects[0]['material'] ?? '' : '';
+    String lotNumber = projects.isNotEmpty ? projects[0]['lot_num'] ?? '' : '';
 
     return Card(
       child: Column(
         children: [
-          _buildTitleBox(),
+          _buildTitleBox(machineNumber, machineName),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               _buildMachineStatusBox(context, machineStatus, progressPercentage,
-                  totalProgress, stepNumber),
+                  totalProgress, totalSteps),
               _buildProductSpecBox(productName, material, lotNumber, updateDate)
             ],
           ),
@@ -95,7 +104,7 @@ class MachineSummaryCard extends StatelessWidget {
   }
 
   Widget _buildMachineStatusBox(BuildContext context, int machineStatus,
-      int progressPercentage, int totalProgress, int stepNumber) {
+      int progressPercentage, int totalProgress, int totalSteps) {
     return SizedBox(
       width: 170,
       child: Column(
@@ -106,13 +115,13 @@ class MachineSummaryCard extends StatelessWidget {
             height: 10,
           ),
           _buildProgressCircle(
-              context, progressPercentage, totalProgress, stepNumber, 100),
+              context, progressPercentage, totalProgress, totalSteps, 100),
         ],
       ),
     );
   }
 
-  Widget _buildTitleBox() {
+  Widget _buildTitleBox(machineNumber, machineName) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Stack(
@@ -120,7 +129,7 @@ class MachineSummaryCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(child: Text(machineNumber)),
+              SizedBox(child: Text("$machineNumber")),
             ],
           ),
           Row(
@@ -128,7 +137,7 @@ class MachineSummaryCard extends StatelessWidget {
             children: [
               SizedBox(
                   child: Text(
-                machine.machineRole,
+                machineName,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               )),
             ],
@@ -139,7 +148,7 @@ class MachineSummaryCard extends StatelessWidget {
   }
 
   Widget _buildProgressCircle(BuildContext context, int progressPercentage,
-      int totalProgress, int stepNumber, double circleRadius) {
+      int totalProgress, int totalSteps, double circleRadius) {
     return Stack(
       children: [
         // Circle
@@ -176,7 +185,7 @@ class MachineSummaryCard extends StatelessWidget {
                 ),
               ),
               Text(
-                "$totalProgress / $stepNumber",
+                "$totalProgress / $totalSteps",
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
