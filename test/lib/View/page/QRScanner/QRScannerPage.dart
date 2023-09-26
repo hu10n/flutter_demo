@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+import '../../../DataClass.dart';
 import '../StepSubmit/StepSubmitPage.dart';
 
 class QRScannerPage extends StatefulWidget {
@@ -67,16 +69,62 @@ class _QRScannerPageState extends State<QRScannerPage> {
   void _processScannedData(String text) {
     try {
       final decodedData = jsonDecode(text);
-      final machineNumber = decodedData['machineNumber'].toString();
-      final stepTitle = decodedData['stepTitle'].toString();
+      final key = decodedData['key'].toString();
+      final projectId = decodedData['projectId'].toString();
+      print(decodedData);
 
-      _transDetailPage(machineNumber, stepTitle);
+      final dataList =
+          Provider.of<DataNotifier>(context, listen: false).dataList;
+      final project = findProject(dataList, projectId);
+
+      showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            // height: 300,
+            padding: EdgeInsets.only(bottom: 100),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text("key: $key"),
+                Text("ID: $projectId"),
+                if (project != null) ...[
+                  Text("Project ID: ${project['project_id']}"),
+                  Text("Client Name: ${project['client_name']}"),
+                  Text("Product Name: ${project['product_name']}"),
+                  Text("Material: ${project['material']}"),
+                  Text("Supervisor: ${project['supervisor']}"),
+                  Text("lot_num: ${project['lot_num']}"),
+                  Text("steps: ${project['step']}"),
+                ],
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the modal bottom sheet
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+          );
+        },
+      );
     } catch (e) {
       // Handle JSON decoding error if necessary
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error: $e")),
       );
     }
+  }
+
+  Map? findProject(List dataList, String projectId) {
+    for (var machine in dataList) {
+      for (var project in machine['project']) {
+        if (project['project_id'] == projectId) {
+          return project;
+        }
+      }
+    }
+    return null;
   }
 
   Future<void> _transDetailPage(String machineNumber, String stepTitle) async {

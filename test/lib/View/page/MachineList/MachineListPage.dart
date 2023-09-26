@@ -42,11 +42,13 @@ class _MachineListPageState extends State<MachineListPage> {
 
   _onToggleSelected(int index) async {
     // フィルタリング時にページ上部にジャンプ
-    scrollController.animateTo(-0.1,
+    await scrollController.animateTo(-0.1,
         duration: Duration(
-          milliseconds: 200,
+          milliseconds: 1000,
         ),
         curve: Curves.easeOut);
+    //scrollController.jumpTo(-0.1);
+
     widget.onScrollUp(0);
     setState(() {
       selectedStatus = index;
@@ -109,12 +111,18 @@ class _MachineListPageState extends State<MachineListPage> {
           if (notification is ScrollStartNotification) {
             // スクロール開始時の動作
             WidgetsBinding.instance.addPostFrameCallback((_) {
+              print("srart");
               provider.turnScrollFlag(true);
             });
           } else if (notification is ScrollEndNotification) {
             // スクロール終了時の動作
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              provider.turnScrollFlag(false);
+              print("end");
+              Future.delayed(Duration(milliseconds: 1000), () {
+                provider.turnScrollFlag(false);
+              });
+              //Future.delayed(Duration(milliseconds: 1000));
+              //provider.turnScrollFlag(false);
             });
           }
         } else {

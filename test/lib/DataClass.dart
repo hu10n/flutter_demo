@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:flutter/services.dart' show rootBundle;
 import 'DataBase.dart';
 
 class DataNotifier extends ChangeNotifier {
   String _data = '1';
   List _alphabetList = [];
+
+  pw.Font? _jpaneseFont;
 
   int _selectedAlphabet = 0;
   bool _isSelectedAlphabet = false;
@@ -19,17 +23,18 @@ class DataNotifier extends ChangeNotifier {
   List<Map<String, dynamic>> get dataList => _dataList;
   String get data => _data;
   List get alphabetList => _alphabetList;
+  pw.Font? get japaneseFont => _jpaneseFont; //日本語フォント、pdf用
   int get selectedAlphabet => _selectedAlphabet;
   bool get isSelectedAlphabet => _isSelectedAlphabet;
   bool get isScrollView => _isScrollView;
   Map<String, Map<String, dynamic>> get machineCardCount => _machineCardCount;
   bool get isLoading => _isLoading;
 
-  DataNotifier() {
-    print("DataNotifier Init.");
+  //DataNotifier() {
+    //print("DataNotifier Init.");
     // このNotifierが生成されたときにデータのロードを行う
-    getAllData();
-  }
+    //getAllData();
+  //}
 
   set data(String newValue) {
     _data = newValue;
@@ -39,6 +44,13 @@ class DataNotifier extends ChangeNotifier {
   void setAlphabetList(List alphabets) {
     _alphabetList = alphabets;
     notifyListeners();
+  }
+
+  Future<void> loadFont() async {
+    final fontData = await rootBundle.load('assets/fonts/NotoSansJP-Medium.ttf');
+    pw.Font? yourJapaneseFont = pw.Font.ttf(fontData);
+    _jpaneseFont = yourJapaneseFont;
+    print("ok");
   }
 
   void selectAlphabet(int alphabet) {
@@ -56,6 +68,7 @@ class DataNotifier extends ChangeNotifier {
   }
 
   void turnScrollFlag(bool flag) {
+    print(flag);
     _isScrollView = flag;
     notifyListeners();
   }
@@ -71,7 +84,7 @@ class DataNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getAllData() async {
+  Future<void> getAllData() async {
     _isLoading = true;
     notifyListeners();
 
@@ -80,6 +93,7 @@ class DataNotifier extends ChangeNotifier {
     List<Map<String, dynamic>> step = await _dbHelper.queryAll("step");
 
     List<Map<String, dynamic>> allData = structuredData(machine, project, step);
+    print(allData);
 
     updateDataList(allData);
 

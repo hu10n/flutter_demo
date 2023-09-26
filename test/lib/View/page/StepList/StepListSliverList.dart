@@ -5,8 +5,11 @@ import '../../../LocalData/data.dart';
 import '../StepPreview/StepPreviewPage.dart';
 import 'MachineSummaryCard.dart';
 import 'StepListCard.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 import "../../../NavigationData.dart";
+import '../JobCard/PrintingJob.dart';
 
 class StepListSliverList extends StatefulWidget {
   final String machineId;
@@ -95,6 +98,8 @@ class _StepListSliverListState extends State<StepListSliverList> {
                 }
 
                 //-------------------------------------------------------------
+                final pdf = pw.Document();
+                createAndPrintPdf(pdf, Provider.of<DataNotifier>(context, listen: false).japaneseFont);
               },
               child: Text('Close'),
             ),

@@ -78,9 +78,10 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
   @override
   void initState() {
     super.initState();
+  
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dataNotifier = Provider.of<DataNotifier>(context, listen: false);
-      dataNotifier.getAllData();
+      //dataNotifier.getAllData();
       print("initState Timing");
       final dataList = dataNotifier.dataList;
       final machineCardCount =

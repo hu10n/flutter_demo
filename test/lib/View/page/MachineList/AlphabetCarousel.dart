@@ -80,8 +80,10 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<DataNotifier>(context, listen: false)
           .selectAlphabet(index); // 現在のスクロール位置更新
+      print("update");
       if (!Provider.of<DataNotifier>(context, listen: false).isScrollView) {
         //スクロールによるカルーセル遷移では発火しない。
+        print("do");
         Provider.of<DataNotifier>(context, listen: false)
             .turnSelectedFlag(true);
       }

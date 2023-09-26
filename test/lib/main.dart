@@ -28,7 +28,41 @@ class MyApp extends StatelessWidget {
         colorScheme:
             ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 255, 255, 255)),
       ),
-      home: MyHomePage(),
+      //home: MyHomePage(),
+      home: SplashScreen(),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _loadDataAndNavigate();
+  }
+
+  Future<void> _loadDataAndNavigate() async {
+    // デモのため、2秒のディレイを追加
+    print("load start");
+    await Future.delayed(Duration(milliseconds: 1000));
+    await Provider.of<DataNotifier>(context, listen: false).loadFont();
+    await Provider.of<DataNotifier>(context, listen: false).getAllData();
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => MyHomePage()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }
