@@ -81,7 +81,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
         context: context,
         builder: (context) {
           return Container(
-            // height: 300,
             padding: EdgeInsets.only(bottom: 100),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -94,24 +93,42 @@ class _QRScannerPageState extends State<QRScannerPage> {
                   Text("Product Name: ${project['product_name']}"),
                   Text("Material: ${project['material']}"),
                   Text("Supervisor: ${project['supervisor']}"),
-                  Text("lot_num: ${project['lot_num']}"),
-                  Text("steps: ${project['step']}"),
                 ],
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context); // Close the modal bottom sheet
+                    return;
                   },
                   child: Text('OK'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the modal bottom sheet
+                    Future.delayed(Duration(milliseconds: 1000), () {
+                      controller
+                          ?.resumeCamera(); // Restart scanner after delay.
+                    });
+
+                    setState(() {
+                      _text = '';
+                    });
+                  },
+                  child: Text('やり直す'),
                 ),
               ],
             ),
           );
         },
-      );
+      ).whenComplete(() {
+        // showModalBottomSheetが閉じたらスキャンを再開
+        controller?.resumeCamera();
+        setState(() {
+          _text = '';
+        });
+      });
     } catch (e) {
       // Handle JSON decoding error if necessary
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
+        SnackBar(content: Text("不正なQRコードです\n$e")),
       );
     }
   }
