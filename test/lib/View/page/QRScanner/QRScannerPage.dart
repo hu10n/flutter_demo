@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:test/common/methods.dart';
 
 import '../../../DataClass.dart';
 import '../StepSubmit/StepSubmitPage.dart';
@@ -71,66 +72,95 @@ class _QRScannerPageState extends State<QRScannerPage> {
       final decodedData = jsonDecode(text);
       final key = decodedData['key'].toString();
       final projectId = decodedData['projectId'].toString();
-      print(decodedData);
 
       final dataList =
           Provider.of<DataNotifier>(context, listen: false).dataList;
-      final project = findProject(dataList, projectId);
 
-      showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Container(
-            padding: EdgeInsets.only(bottom: 100),
+      _showModalBottomSheet(key, projectId, dataList).whenComplete(() {
+        // Proc when swipe down showModalBottomSheet
+        _resumeScan();
+      });
+    } catch (e) {
+      // Handle JSON decoding error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("不正なQRコードです\n$e")),
+      );
+    }
+  }
+
+  Future<dynamic> _showModalBottomSheet(
+      String key, String projectId, dataList) {
+    final project = findProject(dataList, projectId);
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.only(bottom: 100),
+          // height: MediaQuery.of(context).size.height * 0.9,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text("key: $key"),
-                Text("ID: $projectId"),
                 if (project != null) ...[
-                  Text("Project ID: ${project['project_id']}"),
-                  Text("Client Name: ${project['client_name']}"),
-                  Text("Product Name: ${project['product_name']}"),
-                  Text("Material: ${project['material']}"),
-                  Text("Supervisor: ${project['supervisor']}"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "担当する作業を確認してください",
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                  _buildNonEditableTextField(
+                      "発行日", formatTime(project['created_at']), context),
+                  _buildNonEditableTextField("作業機",
+                      findMachineNumByProjectId(dataList, projectId)!, context),
+                  _buildNonEditableTextField(
+                      "担当者", project['supervisor'], context),
+                  _buildNonEditableTextField(
+                      "客先", project['client_name'], context),
+                  _buildNonEditableTextField(
+                      "品番", project['product_num'], context),
+                  _buildNonEditableTextField(
+                      "品名", project['product_name'], context),
+                  _buildNonEditableTextField(
+                      "材料", project['material'], context),
+                  _buildNonEditableTextField(
+                      "ロット番号", project['lot_num'], context),
                 ],
                 ElevatedButton(
                   onPressed: () {
-                    return;
+                    // ここにOKボタンを押した時の処理を記述して
                   },
                   child: Text('OK'),
                 ),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context); // Close the modal bottom sheet
-                    Future.delayed(Duration(milliseconds: 1000), () {
-                      controller
-                          ?.resumeCamera(); // Restart scanner after delay.
-                    });
-
-                    setState(() {
-                      _text = '';
-                    });
+                    _resumeScan();
                   },
                   child: Text('やり直す'),
                 ),
               ],
             ),
-          );
-        },
-      ).whenComplete(() {
-        // showModalBottomSheetが閉じたらスキャンを再開
-        controller?.resumeCamera();
-        setState(() {
-          _text = '';
-        });
-      });
-    } catch (e) {
-      // Handle JSON decoding error if necessary
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("不正なQRコードです\n$e")),
-      );
-    }
+          ),
+        );
+      },
+    );
+  }
+
+  void _resumeScan() {
+    Future.delayed(Duration(milliseconds: 1000), () {
+      controller?.resumeCamera(); // Restart scanner after delay.
+    });
+
+    setState(() {
+      _text = '';
+    });
   }
 
   Map? findProject(List dataList, String projectId) {
@@ -144,24 +174,27 @@ class _QRScannerPageState extends State<QRScannerPage> {
     return null;
   }
 
-  Future<void> _transDetailPage(String machineNumber, String stepTitle) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          // Initialize the instance variables in the new page
-          return StepSubmitPage(
-            machineNumber: machineNumber,
-            stepTitle: stepTitle,
-          );
-        },
-      ),
+  Widget _buildNonEditableTextField(
+      String labelText, String text, BuildContext context) {
+    return TextField(
+      controller: TextEditingController(text: text),
+      enabled: false,
+      decoration: InputDecoration(labelText: labelText),
+      style: TextStyle(color: Theme.of(context).primaryColor),
     );
+  }
 
-    // Reset the _text value when returning from the detail page
-    setState(() {
-      _text = '';
-    });
+  String? findMachineNumByProjectId(List dataList, String projectId) {
+    for (var machine in dataList) {
+      if (machine['project'] != null) {
+        for (var project in machine['project']) {
+          if (project['project_id'] == projectId) {
+            return machine['machine_name'];
+          }
+        }
+      }
+    }
+    return null;
   }
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
