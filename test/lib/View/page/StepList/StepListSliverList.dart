@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../DataClass.dart';
-import '../../../LocalData/data.dart';
-import '../StepPreview/StepPreviewPage.dart';
+
 import 'MachineSummaryCard.dart';
 import 'StepListCard.dart';
-import 'package:pdf/pdf.dart';
+
 import 'package:pdf/widgets.dart' as pw;
 
 import "../../../NavigationData.dart";
@@ -40,10 +39,7 @@ class _StepListSliverListState extends State<StepListSliverList> {
               'updated_at': 'N/A',
               'project': []
             });
-    String machineNum = machine['machine_num'].toString();
-    String category = machine['machine_group'];
-    String machineNumber = "$category-$machineNum";
-
+   
     List<String> stepIds = _getAllStepIds(machine);
 
     return SliverList(
@@ -53,6 +49,8 @@ class _StepListSliverListState extends State<StepListSliverList> {
             return MachineSummaryCard(
               machineId: widget.machineId,
               onPressAction: () => _handleIssueButton(context),
+              onScrollDown: widget.onScrollDown,
+              onScrollUp: widget.onScrollUp,
             );
           } else if (index <= stepIds.length) {
             String stepId = stepIds[index - 1];

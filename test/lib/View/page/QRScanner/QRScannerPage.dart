@@ -7,7 +7,6 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:test/common/methods.dart';
 
 import '../../../DataClass.dart';
-import '../StepSubmit/StepSubmitPage.dart';
 
 class QRScannerPage extends StatefulWidget {
   const QRScannerPage({Key? key}) : super(key: key);

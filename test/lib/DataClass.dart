@@ -50,7 +50,7 @@ class DataNotifier extends ChangeNotifier {
     final fontData = await rootBundle.load('assets/fonts/NotoSansJP-Medium.ttf');
     pw.Font? yourJapaneseFont = pw.Font.ttf(fontData);
     _jpaneseFont = yourJapaneseFont;
-    print("ok");
+    //print("ok");
   }
 
   void selectAlphabet(int alphabet) {
@@ -93,7 +93,7 @@ class DataNotifier extends ChangeNotifier {
     List<Map<String, dynamic>> step = await _dbHelper.queryAll("step");
 
     List<Map<String, dynamic>> allData = structuredData(machine, project, step);
-    print(allData);
+    //print(allData);
 
     updateDataList(allData);
 

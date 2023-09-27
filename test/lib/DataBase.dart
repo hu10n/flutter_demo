@@ -95,7 +95,7 @@ class DatabaseHelper {
     final value = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
     
     final result = await postJSONData(value);
-    print(result);
+    //print(result);
     Database db = await instance.database;
     
     

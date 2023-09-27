@@ -7,8 +7,11 @@ import '../../../common/methods.dart';
 import '../../../common/MachineStatusText.dart';
 
 class MachineSummaryCard extends StatelessWidget {
+  final Function onScrollDown;
+  final Function onScrollUp;
+
   const MachineSummaryCard(
-      {required this.machineId, required this.onPressAction});
+      {required this.machineId, required this.onPressAction, required this.onScrollDown, required this.onScrollUp});
 
   final machineId;
   final VoidCallback onPressAction;
@@ -49,28 +52,93 @@ class MachineSummaryCard extends StatelessWidget {
               _buildProductSpecBox(productName, material, lotNumber, updateDate)
             ],
           ),
-          _buildBottomButtonBox(context, onPressAction)
+          _buildBottomButtonBox(context, onPressAction, machine["project"].isEmpty)
         ],
       ),
     );
   }
 
   Widget _buildBottomButtonBox(
-      BuildContext context, VoidCallback onPressAction) {
+      BuildContext context, VoidCallback onPressAction, bool isEmpty) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
           child: ElevatedButton(
               onPressed: () {
-                onPressAction();
+                if(isEmpty){
+                  //割り当てロジック-------------------------------------------------------------------------
+                  onScrollDown(100);
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    enableDrag: true,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+                    builder: (context) {
+                      return Container(
+                        height: MediaQuery.of(context).size.height,
+                        child: Stack(
+                          children: [
+                            // ColumnとListView.builderを組み合わせる
+                            Column(
+                              children: [
+                                _buildContainer(context),
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: 50,
+                                    itemBuilder: (context, index) => Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: TextField(
+                                        decoration: InputDecoration(
+                                          labelText: 'Item $index',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ),
+                              ],
+                            ),
+                            
+                            // スクロール可能なウィジェットの上に配置される固定ボタン
+                            Positioned.fill(  
+                              bottom: 20,                         
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context).viewInsets.bottom, // キーパッドの高さ + 20.0
+                                  ),
+                                  child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // ボタンがタップされた時の処理を記述
+                                      },
+                                      child: Text('固定ボタン'),
+                                    ),
+                                  ),
+                                ),
+                              ),                            
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  );
+                  //---------------------------------------------------------------------------------------
+                }else{
+                  onPressAction();
+                }
               },
               child: SizedBox(
-                  width: 100,
+                  width: isEmpty ? 200 : 100,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "カード発行",
+                        isEmpty ? "プロジェクト割り当て"
+                        : "カード発行",
                         style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.w600),
                       ),
@@ -197,4 +265,30 @@ class MachineSummaryCard extends StatelessWidget {
       ],
     );
   }
+
+  // 枠線付きコンテナの生成メソッド(sample)---------------------------------------------------------------
+  Widget _buildContainer(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.9,
+      margin: EdgeInsets.symmetric(vertical: 4.0), // コンテナ間のマージン
+      padding: EdgeInsets.all(8.0), // コンテナのパディング
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black, width: 1.0), // 枠線の色と幅
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween, // 子ウィジェットをスペースで均等に配置
+        children: [
+          Text("プロジェクトを割り当てる"),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context); // ここでBottom Sheetを閉じます
+              onScrollUp(100);
+            },
+            child: Icon(Icons.close),
+          ),
+        ],
+      ),
+    );
+  }
+  //-----------------------------------------------------------------------------------------
 }

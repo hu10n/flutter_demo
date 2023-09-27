@@ -87,7 +87,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
       final machineCardCount =
           getMachineCardCount(dataList, widget.selectedStatus);
       dataNotifier.updateMachineCardCount(machineCardCount);
-      print("#initState/cardcount: ${machineCardCount['A']}"); // []が返ってくる
+      //print("#initState/cardcount: ${machineCardCount['A']}"); // []が返ってくる
     });
   }
 
