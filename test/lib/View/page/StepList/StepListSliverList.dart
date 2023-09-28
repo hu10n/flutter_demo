@@ -25,6 +25,7 @@ class StepListSliverList extends StatefulWidget {
 }
 
 class _StepListSliverListState extends State<StepListSliverList> {
+  final ScrollController _scrollController = ScrollController();
   // SliverListを返す ----------------------------------------------
   @override
   Widget build(BuildContext context) {
@@ -51,6 +52,7 @@ class _StepListSliverListState extends State<StepListSliverList> {
               onPressAction: () => _handleIssueButton(context),
               onScrollDown: widget.onScrollDown,
               onScrollUp: widget.onScrollUp,
+              scrollController: _scrollController,
             );
           } else if (index <= stepIds.length) {
             String stepId = stepIds[index - 1];
