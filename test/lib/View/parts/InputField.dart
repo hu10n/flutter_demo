@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Container InputField(String title, ScrollController scrollController) {
+Container InputField(String title) {
   return Container(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start, // 子ウィジェットを左揃えにする
