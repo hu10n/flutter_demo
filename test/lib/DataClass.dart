@@ -17,7 +17,7 @@ class DataNotifier extends ChangeNotifier {
   //ローカルデータベース用
   List<Map<String, dynamic>> _dataList = [];
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
-  bool _isLoading = false;
+  //bool _isLoading = false;
 
   // getter
   List<Map<String, dynamic>> get dataList => _dataList;
@@ -28,7 +28,7 @@ class DataNotifier extends ChangeNotifier {
   bool get isSelectedAlphabet => _isSelectedAlphabet;
   bool get isScrollView => _isScrollView;
   Map<String, Map<String, dynamic>> get machineCardCount => _machineCardCount;
-  bool get isLoading => _isLoading;
+  //bool get isLoading => _isLoading;
 
   //DataNotifier() {
     //print("DataNotifier Init.");
@@ -85,8 +85,8 @@ class DataNotifier extends ChangeNotifier {
   }
 
   Future<void> getAllData() async {
-    _isLoading = true;
-    notifyListeners();
+    //_isLoading = true;
+    //notifyListeners();
 
     List<Map<String, dynamic>> machine = await _dbHelper.queryAll("machine");
     List<Map<String, dynamic>> project = await _dbHelper.queryAll("project");
@@ -97,8 +97,8 @@ class DataNotifier extends ChangeNotifier {
 
     updateDataList(allData);
 
-    _isLoading = false;
-    notifyListeners();
+    //_isLoading = false;
+    //notifyListeners();
   }
 
   List<Map<String, dynamic>> structuredData(List<Map<String, dynamic>> machine,
@@ -127,6 +127,7 @@ class DataNotifier extends ChangeNotifier {
 
   void updateLocalDB() async {
     await _dbHelper.update();
+    getAllData();
     notifyListeners();
   }
 }

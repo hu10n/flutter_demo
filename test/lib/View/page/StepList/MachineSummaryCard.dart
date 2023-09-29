@@ -80,7 +80,7 @@ class MachineSummaryCard extends StatelessWidget {
                     enableDrag: true,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-                    builder: (context) => MyModal(onScrollUp: onScrollUp,),
+                    builder: (context) => MyModal(onScrollUp: onScrollUp,machine: machine),
                   );
                   //---------------------------------------------------------------------------------------
                 }else{

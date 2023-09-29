@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 Future<String?> fetchData() async {
@@ -84,7 +85,10 @@ Future<Map<String,dynamic>> postStepData(lastUpdated,) async {
   }
 }
 
-Future<Map<String,dynamic>> assignProjectInfo(last_updated,machine,project) async {
+Future<Map<String,dynamic>> assignProjectInfo(machine,project) async {
+  final prefs = await SharedPreferences.getInstance();
+  final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
+
   final response = await http.post(
       Uri.parse('https://b7xglncdlj.execute-api.ap-northeast-1.amazonaws.com/AssignProjectFunc/'),
       headers: <String, String>{

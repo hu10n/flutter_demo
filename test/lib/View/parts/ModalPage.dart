@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:test/api/TestAPI.dart';
 import 'InputField.dart';
+import '../../DataClass.dart';
 
 class MyModal extends StatefulWidget {
   final Function onScrollUp;
-  const MyModal({Key? key, required this.onScrollUp}) : super(key: key);
+  final Map<String, dynamic> machine;
+  const MyModal({Key? key, required this.onScrollUp, required this.machine}) : super(key: key);
 
   @override
   _MyModalState createState() => _MyModalState();
@@ -199,9 +204,23 @@ class _MyModalState extends State<MyModal> {
                       // ボタンがタップされた時の処理を記述
                       //print(await postStepData("ok"));
                       //print(await assignProjectInfo(machine["machine_id"],machine["machine_status"]));
-                      for (var item in _controllers) {
-                        print(item.text); // リストの各要素を出力
+                      Map<String,dynamic> project = {
+                        "product_name": _controllers[0].text,
+                        "product_num": _controllers[1].text,
+                        "material": _controllers[2].text,
+                        "lot_num": _controllers[3].text,
+                        "client_name": _controllers[4].text,
+                        "supervisor": _controllers[5].text,
+                        "step": []
+                      };
+
+                      for (var i = 0; i < _controllers.length; i++) {
+                        if (i < 6) continue; // _controllers[6]以降のみ処理する。
+                        project["step"].add({"step_name": _controllers[i].text});
                       }
+                      print(project);
+                      assignProjectInfo(widget.machine, project);
+                      Provider.of<DataNotifier>(context, listen: false).updateLocalDB();
                     },
                     style: ButtonStyle(
                       minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.9, 40.0)), // ここで幅と高さを指定
