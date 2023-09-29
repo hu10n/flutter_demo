@@ -55,15 +55,16 @@ class MachineSummaryCard extends StatelessWidget {
               _buildProductSpecBox(productName, material, lotNumber, updateDate)
             ],
           ),
-          _buildBottomButtonBox(context, onPressAction, machine["project"].isEmpty)
+          _buildBottomButtonBox(context, onPressAction, machine)
         ],
       ),
     );
   }
 
   Widget _buildBottomButtonBox(
-      BuildContext context, VoidCallback onPressAction, bool isEmpty) {
-    final modalPage = ModalPage();
+      BuildContext context, VoidCallback onPressAction, Map<String, dynamic> machine) {
+    //final modalPage = ModalPage();
+    bool isEmpty = machine["project"].isEmpty;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
@@ -71,8 +72,16 @@ class MachineSummaryCard extends StatelessWidget {
               onPressed: () {
                 if(isEmpty){
                   //割り当てロジック-------------------------------------------------------------------------
-                  //onScrollDown(100);
-                  modalPage.show(context,onScrollUp,onScrollDown);
+                  onScrollDown(100);
+                  
+                  showModalBottomSheet(//モーダル表示
+                    context: context,
+                    isScrollControlled: true,
+                    enableDrag: true,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+                    builder: (context) => MyModal(onScrollUp: onScrollUp,),
+                  );
                   //---------------------------------------------------------------------------------------
                 }else{
                   onPressAction();

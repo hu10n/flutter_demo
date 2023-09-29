@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Container InputField(String title) {
+Container InputField(String title, TextEditingController controller) {
   return Container(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start, // 子ウィジェットを左揃えにする
@@ -14,6 +14,7 @@ Container InputField(String title) {
           ),
         ),
         TextField(
+          controller: controller,
           decoration: InputDecoration(
             fillColor: Color.fromARGB(100, 200, 200, 200), // 背景色を指定
             filled: true,
