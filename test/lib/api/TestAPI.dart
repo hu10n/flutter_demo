@@ -59,7 +59,10 @@ Future<Map<String,dynamic>> postJSONData(lastUpdated) async {
   }
 }
 
-Future<Map<String,dynamic>> postStepData(lastUpdated,) async {
+Future<Map<String,dynamic>> updateStepData(update_status,step,status_list) async {
+  final prefs = await SharedPreferences.getInstance();
+  final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
+
   final response = await http.post(
       Uri.parse('https://khsph63fwl.execute-api.ap-northeast-1.amazonaws.com/SubmitStep/'),
       headers: <String, String>{
@@ -67,13 +70,19 @@ Future<Map<String,dynamic>> postStepData(lastUpdated,) async {
         // 'Authorization': 'Bearer YOUR_API_TOKEN',
       },
       body: jsonEncode(<String, dynamic>{
-        'last_updated': lastUpdated,
+        'last_updated': last_updated,
+        'update_status': update_status,
+        'step_id': step['step_id'],
+        'project_id': step['project_id'],
+        'worker': step['worker'],
+        'free_text': step['free_text'],
+        'statusList': status_list
       }),
     );
 
   if (response.statusCode == 200) {
     // If server returns an OK response, parse the JSON
-    //print(json.decode(utf8.decode(response.bodyBytes)));
+    print(json.decode(utf8.decode(response.bodyBytes))["return_status"]);
     
     return json.decode(utf8.decode(response.bodyBytes));// as List<Map<String, dynamic>>;
   } else {
@@ -111,7 +120,7 @@ Future<Map<String,dynamic>> assignProjectInfo(machine,project) async {
 
   if (response.statusCode == 200) {
     // If server returns an OK response, parse the JSON
-    //print(json.decode(utf8.decode(response.bodyBytes)));
+    print(json.decode(utf8.decode(response.bodyBytes))["return_status"]);
     
     return json.decode(utf8.decode(response.bodyBytes));// as List<Map<String, dynamic>>;
   } else {

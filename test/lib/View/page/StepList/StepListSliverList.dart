@@ -9,6 +9,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 import "../../../NavigationData.dart";
 import '../JobCard/PrintingJob.dart';
+import '../../../api/TestAPI.dart';
 
 class StepListSliverList extends StatefulWidget {
   final String machineId;
@@ -49,7 +50,7 @@ class _StepListSliverListState extends State<StepListSliverList> {
           if (index == 0) {
             return MachineSummaryCard(
               machineId: widget.machineId,
-              onPressAction: () => _handleIssueButton(context),
+              onPressAction: () => _handleIssueButton(context,machine),
               onScrollDown: widget.onScrollDown,
               onScrollUp: widget.onScrollUp,
               scrollController: _scrollController,
@@ -70,7 +71,7 @@ class _StepListSliverListState extends State<StepListSliverList> {
   }
 
   // カード発行ボタンのアクション
-  Future<void> _handleIssueButton(BuildContext context) async {
+  Future<void> _handleIssueButton(BuildContext context,Map<String, dynamic> machine) async {
     // デバッグ用---------------------------------------------------------------
     final navigationData = NavigationData.of(context);
     print(navigationData);
