@@ -176,12 +176,12 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
               .entries
               .toList()[categoryIndex - 1]
               .value["height"] +
-          1.0;
+          5.0;
     }
 
     widget.controller?.animateTo(offset,
         duration: Duration(
-          milliseconds: 200,
+          milliseconds: 10,
         ),
         curve: Curves.easeOut);
   }

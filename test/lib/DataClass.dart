@@ -63,12 +63,13 @@ class DataNotifier extends ChangeNotifier {
   void turnSelectedFlag(bool flag) {
     if (_isSelectedAlphabet != flag) {
       _isSelectedAlphabet = flag;
+      print("selectedFlag:$flag ${DateTime.now()}");
       notifyListeners();
     }
   }
 
   void turnScrollFlag(bool flag) {
-    print(flag);
+    //print("$flag : ${DateTime.now()}");
     _isScrollView = flag;
     notifyListeners();
   }

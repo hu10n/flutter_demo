@@ -42,12 +42,11 @@ class _MachineListPageState extends State<MachineListPage> {
 
   _onToggleSelected(int index) async {
     // フィルタリング時にページ上部にジャンプ
-    await scrollController.animateTo(-0.1,
-        duration: Duration(
-          milliseconds: 1000,
-        ),
-        curve: Curves.easeOut);
-    //scrollController.jumpTo(-0.1);
+    await carouselController.animateToPage(0,
+      duration: Duration(
+        microseconds: 1
+      )
+    );
 
     widget.onScrollUp(0);
     setState(() {
@@ -70,6 +69,11 @@ class _MachineListPageState extends State<MachineListPage> {
           return true;
         }
 
+        //カルーセル同期のスクロール用--------------------------------------------------------
+        final provider = Provider.of<DataNotifier>(context, listen: false);
+        int index = provider.selectedAlphabet;
+        //-------------------------------------------------------------------------------
+
         // ボトムナビゲーション用のスクロール制御-----------------------------------------------
         if (notification is ScrollUpdateNotification) {
           // スクロール時
@@ -78,7 +82,7 @@ class _MachineListPageState extends State<MachineListPage> {
             if (notification.scrollDelta! > 0) {
               // ユーザーが下にスクロールしている場合
               widget.onScrollDown(0);
-            } else if (notification.scrollDelta! < 0) {
+            } else if (notification.scrollDelta! < 0 && (!provider.isSelectedAlphabet || index == 0)) {
               // ユーザーが上にスクロールしている場合
               widget.onScrollUp(0);
             }
@@ -87,23 +91,34 @@ class _MachineListPageState extends State<MachineListPage> {
         //--------------------------------------------------------------------------------
 
         // カルーセル同期用のスクロール制御-----------------------------------------------------
-        final provider = Provider.of<DataNotifier>(context, listen: false);
-        int index = provider.selectedAlphabet;
+        
 
         if (!provider.isSelectedAlphabet) {
-          // カルーセル選択フラグがtrueの時
+          // カルーセル選択フラグがfalseの時
+        
           List<MapEntry> entries = provider.machineCardCount.entries.toList();
 
           // Ensure that the list isn't empty and the desired index is valid.
           if (entries.isNotEmpty && index < entries.length) {
             if (scrollController.offset > entries[index].value["height"]) {
-              carouselController.animateToPage(index + 1);
+              carouselController.animateToPage(index + 1,
+                duration: Duration(
+                  milliseconds: 1,
+                ),
+              );
+              //print("+1");
             }
 
             if (index != 0 && index - 1 < entries.length) {
               if (scrollController.offset <
                   entries[index - 1].value["height"]) {
-                carouselController.animateToPage(index - 1);
+                //print(DateTime.now());
+                carouselController.animateToPage(index - 1,
+                  duration: Duration(
+                    milliseconds: 1,
+                  ),
+                );
+                //print("-1");
               }
             }
           }
@@ -111,22 +126,18 @@ class _MachineListPageState extends State<MachineListPage> {
           if (notification is ScrollStartNotification) {
             // スクロール開始時の動作
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              print("srart");
+              //print("srart");
               provider.turnScrollFlag(true);
             });
           } else if (notification is ScrollEndNotification) {
             // スクロール終了時の動作
+            
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              print("end");
-              Future.delayed(Duration(milliseconds: 1000), () {
-                provider.turnScrollFlag(false);
-              });
-              //Future.delayed(Duration(milliseconds: 1000));
-              //provider.turnScrollFlag(false);
+              provider.turnScrollFlag(false);
             });
           }
         } else {
-          //カルーセル選択フラグがfalseの時
+          //カルーセル選択フラグがtrueの時
           if (notification is ScrollEndNotification) {
             // スクロール終了時の動作
             WidgetsBinding.instance.addPostFrameCallback((_) {
