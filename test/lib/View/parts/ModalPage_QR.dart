@@ -8,8 +8,10 @@ import '../../DataClass.dart';
 
 class QRModal extends StatefulWidget {
   final Function onScrollUp;
+  final Map stepStatus;
+  final Function resumeScan;
 
-  const QRModal({Key? key, required this.onScrollUp}) : super(key: key);
+  const QRModal({Key? key, required this.stepStatus, required this.resumeScan,required this.onScrollUp}) : super(key: key);
 
   @override
   _QRModalState createState() => _QRModalState();
@@ -24,13 +26,13 @@ class _QRModalState extends State<QRModal> {
   bool _isLoading = false; //ローディング画面用
 
   void _submitData(
-      machine, project, BuildContext context, Function onScrollUp) async {
+      update_state, step,status_list, BuildContext context, Function onScrollUp) async {
     setState(() {
       _isLoading = true;
     });
 
     final res =
-        await assignProjectInfo(machine, project); //データを送信*********************
+        await updateStepData(update_state,step,status_list); //データを送信*********************
     await Provider.of<DataNotifier>(context, listen: false)
         .updateLocalDB(); //最新データに更新
     print(res);
@@ -111,7 +113,30 @@ class _QRModalState extends State<QRModal> {
                                     horizontal:
                                         25.0), //上下左右のパディング設定。できれば数値指定したくない
                                 child: Column(
-                                  children: [],
+                                  children: [
+                                    if (widget.stepStatus['stepToStart'] != null)
+                                      _createStartSheet(widget.stepStatus, () {
+                                        Navigator.pop(context);
+                                        widget.resumeScan();
+                                      }, () {
+                                        //Button Action (開始)
+                                      },_controllers[0],_focuses[0]),
+                                    if (widget.stepStatus['stepOnGoing'] != null)
+                                      _createCompleteSheet(widget.stepStatus, () {
+                                        Navigator.pop(context);
+                                        widget.resumeScan();
+                                      }, () {
+                                        //Button Action (完了)
+                                      },_controllers[0],_focuses[0]),
+                                    if (widget.stepStatus['stepToStart'] == null &&
+                                        widget.stepStatus['stepOnGoing'] == null)
+                                      _createCompletedSheet(widget.stepStatus, () {
+                                        Navigator.pop(context);
+                                        widget.resumeScan();
+                                      }, () {
+                                        widget.resumeScan();
+                                      },_controllers[0],_focuses[0]),
+                                  ],
                                 ),
                               ),
                             ),
@@ -136,25 +161,19 @@ class _QRModalState extends State<QRModal> {
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
                       onPressed: () async {
-                        Map<String, dynamic> project = {
-                          "product_name": _controllers[0].text,
-                          "product_num": _controllers[1].text,
-                          "material": _controllers[2].text,
-                          "lot_num": _controllers[3].text,
-                          "client_name": _controllers[4].text,
-                          "supervisor": _controllers[5].text,
-                          "step": []
-                        };
+                        //print(widget.stepStatus['stepToStart']);
+                        int update_status = 1;
+                        Map<String, dynamic> step = widget.stepStatus['stepOnGoing'];
+                        //step["worker"] = _controllers[0].text;
+                        step["free_text"] = _controllers[0].text;
+                        List status_list = [1,-1,0,0,0];
 
-                        for (var i = 0; i < _controllers.length; i++) {
-                          if (i < 6) continue; // _controllers[6]以降のみ処理する。
-                          project["step"]
-                              .add({"step_name": _controllers[i].text});
-                        }
+                        print(step);
+
                         //print(project);
                         _unfocus();
-                        // _submitData(widget.machine, project, context,
-                        //     widget.onScrollUp);
+                        _submitData(update_status, step,status_list, context,
+                             widget.onScrollUp);
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all<Size>(Size(
@@ -206,4 +225,144 @@ class _QRModalState extends State<QRModal> {
     );
   }
   //---------------------------------------------------------------------
+
+  Widget _createCompletedSheet(Map<dynamic, dynamic> stepStatus,
+      VoidCallback closeAction, VoidCallback proceedAction, TextEditingController controller, FocusNode focus) {
+    // Adjust the information shown here since stepStatus['stepOnGoing'] will be null
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.5,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '全てのステップが完了しました。',
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[700]),
+          ),
+          Center(
+            child: ElevatedButton(
+              onPressed: proceedAction,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                child: Text(
+                  '閉じる',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+                ),
+              ),
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.green),
+                  foregroundColor: MaterialStateProperty.all(Colors.white)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _createCompleteSheet(Map<dynamic, dynamic> stepStatus,
+          VoidCallback closeAction, VoidCallback proceedAction, TextEditingController controller, FocusNode focus) =>
+      Container(
+        height: MediaQuery.of(context).size.height * 0.5,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'STEP ${stepStatus['stepOnGoing']['step_num']}',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey),
+                ),
+                Text(
+                  '担当工程: ${stepStatus['stepOnGoing']['step_name']}',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[700]),
+                ),
+              ],
+            ),
+            Text(
+              '作業者名: ${stepStatus['stepOnGoing']['worker']}',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[700]),
+            ),
+            InputField("備考", controller, focus),  // Need to be fixed
+            Center(
+              child: ElevatedButton(
+                onPressed: proceedAction,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                  child: Text(
+                    '作業完了',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+                  ),
+                ),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.green),
+                    foregroundColor: MaterialStateProperty.all(Colors.white)),
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget _createStartSheet(Map<dynamic, dynamic> stepStatus,
+          VoidCallback closeAction, VoidCallback proceedAction, TextEditingController controller, FocusNode focus) =>
+      Container(
+        height: MediaQuery.of(context).size.height * 0.5,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'STEP ${stepStatus['stepToStart']['step_num']}',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey),
+                ),
+                Text(
+                  '担当工程: ${stepStatus['stepToStart']['step_name']}',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[700]),
+                ),
+              ],
+            ),
+            InputField("作業者名", controller, focus),  // Need to be fixed
+            Center(
+              child: ElevatedButton(
+                onPressed: proceedAction,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                  child: Text(
+                    '作業開始',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+                  ),
+                ),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    foregroundColor: MaterialStateProperty.all(Colors.white)),
+              ),
+            ),
+          ],
+        ),
+      );
 }

@@ -77,7 +77,7 @@ class MachineSummaryCard extends StatelessWidget {
                   showModalBottomSheet(//モーダル表示
                     context: context,
                     isScrollControlled: true,
-                    enableDrag: true,
+                    enableDrag: false,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
                     builder: (context) => MyModal(onScrollUp: onScrollUp,machine: machine),

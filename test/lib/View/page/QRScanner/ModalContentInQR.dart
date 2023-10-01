@@ -226,28 +226,4 @@ class _ModalContentInQRState extends State<ModalContentInQR> {
           ],
         ),
       );
-
-  Map? findProject(List dataList, String projectId) {
-    for (var machine in dataList) {
-      for (var project in machine['project']) {
-        if (project['project_id'] == projectId) {
-          return project;
-        }
-      }
-    }
-    return null;
-  }
-
-  String? findMachineNumByProjectId(List dataList, String projectId) {
-    for (var machine in dataList) {
-      if (machine['project'] != null) {
-        for (var project in machine['project']) {
-          if (project['project_id'] == projectId) {
-            return machine['machine_name'];
-          }
-        }
-      }
-    }
-    return null;
-  }
 }

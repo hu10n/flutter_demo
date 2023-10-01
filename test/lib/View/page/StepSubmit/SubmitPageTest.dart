@@ -2,14 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test/DataClass.dart';
 
+import '../../parts/ModalPage_QR.dart';
+
 import '../../parts/InputField.dart';
 
 class TestPage extends StatefulWidget {
+  final Function onScrollUp;
+
+  const TestPage({
+    // required this.onScrollDown,
+    required this.onScrollUp,
+  });
+
   @override
   State<TestPage> createState() => _TestPageState();
 }
 
 class _TestPageState extends State<TestPage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +60,7 @@ class _TestPageState extends State<TestPage> {
                         "step_name": "星形成形",
                         "finished_at": null,
                         "started_at": null,
-                        "project_status": -1,
+                        "project_status": 1,
                         "worker": "渡辺健二",
                         "free_text": null,
                         "step_num": 1,
@@ -63,7 +73,7 @@ class _TestPageState extends State<TestPage> {
                         "step_name": "重力圧縮成形",
                         "finished_at": null,
                         "started_at": null,
-                        "project_status": 1,
+                        "project_status": -1,
                         "worker": "渡辺健二",
                         "free_text": null,
                         "step_num": 2,
@@ -129,43 +139,24 @@ class _TestPageState extends State<TestPage> {
   Future<dynamic> _showModalBottomSheet(
       String key, String projectId, dataList) {
     final Map stepStatus = _getStepStatus(dataList, projectId);
+    //print(projectId);
+    //print(dataList);
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      enableDrag: false,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) {
-        return Container(
-          padding: const EdgeInsets.only(bottom: 100),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                if (stepStatus['stepToStart'] != null)
-                  _createStartSheet(stepStatus, () {
-                    Navigator.pop(context);
-                    // _resumeScan();
-                  }, () {
-                    //Button Action (開始)
-                  }),
-                if (stepStatus['stepOnGoing'] != null)
-                  _createCompleteSheet(stepStatus, () {
-                    Navigator.pop(context);
-                    // _resumeScan();
-                  }, () {
-                    //Button Action (完了)
-                  }),
-                if (stepStatus['stepToStart'] == null &&
-                    stepStatus['stepOnGoing'] == null)
-                  _createCompletedSheet(stepStatus, () {
-                    Navigator.pop(context);
-                    // _resumeScan();
-                  }, () {
-                    // _resumeScan();
-                  }),
-              ],
-            ),
-          ),
+        return
+            // ModalContentInQR(
+            //   stepStatus: stepStatus,
+            //   resumeScan: () => _resumeScan(),
+            // );
+            QRModal(
+          onScrollUp: widget.onScrollUp,
+          stepStatus: stepStatus,
+          resumeScan: () => _resumeScan(),
         );
       },
     );
@@ -179,19 +170,6 @@ class _TestPageState extends State<TestPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "完了済プロジェクト",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
-              ),
-              IconButton(
-                icon: Icon(Icons.close),
-                onPressed: closeAction,
-              ),
-            ],
-          ),
           Text(
             '全てのステップが完了しました。',
             style: TextStyle(
@@ -228,19 +206,6 @@ class _TestPageState extends State<TestPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "完了報告を作成",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
-                ),
-                IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: closeAction,
-                ),
-              ],
-            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -297,19 +262,6 @@ class _TestPageState extends State<TestPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "開始報告を作成",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
-                ),
-                IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: closeAction,
-                ),
-              ],
-            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -351,15 +303,15 @@ class _TestPageState extends State<TestPage> {
         ),
       );
 
-  // void _resumeScan() {
-  //   Future.delayed(Duration(milliseconds: 1000), () {
-  //     controller?.resumeCamera(); // Restart scanner
-  //   });
+  void _resumeScan() {
+     //Future.delayed(Duration(milliseconds: 1000), () {
+     //  controller?.resumeCamera(); // Restart scanner
+     //});
 
-  //   setState(() {
-  //     _text = '';
-  //   });
-  // }
+     //setState(() {
+       //_text = '';
+     //});
+   }
 
   Map? findProject(List dataList, String projectId) {
     for (var machine in dataList) {

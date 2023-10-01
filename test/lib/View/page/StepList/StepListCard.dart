@@ -21,6 +21,7 @@ class StepListCard extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     final dataList = Provider.of<DataNotifier>(context).dataList;
+    //print(dataList[2]);
     Map<String, dynamic> machine = dataList.firstWhere(
       (element) => element['machine_id'] == machineId,
     );

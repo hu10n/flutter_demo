@@ -183,7 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             );
           case 2:
-            return MaterialPageRoute(builder: (context) => TestPage());
+            return MaterialPageRoute(builder: (context) => TestPage(onScrollUp: _showBottomBar,));
           default:
             return MaterialPageRoute(
               builder: (context) => PageWithCustomScroll(

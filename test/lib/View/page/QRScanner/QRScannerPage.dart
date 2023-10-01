@@ -108,6 +108,8 @@ class _QRScannerPageState extends State<QRScannerPage> {
             // );
             QRModal(
           onScrollUp: widget.onScrollUp,
+          stepStatus: stepStatus,
+          resumeScan: () => _resumeScan(),
         );
       },
     );

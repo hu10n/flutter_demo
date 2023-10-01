@@ -115,17 +115,17 @@ class _StepListSliverListState extends State<StepListSliverList> {
     BuildContext context,
     String stepId,
   ) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Placeholder()
+    //Navigator.push(
+    //  context,
+    //  MaterialPageRoute(builder: (context) => Placeholder()
           // StepPreviewPage(
           //   machineNumber: machineNumber,
           //   stepId: stepId,
           // ),
-          ),
-    ).then((dataUpdated) {
-      setState(() {}); // 常にtrueを渡して、再レンダリングさせる
-    });
+    //      ),
+    //).then((dataUpdated) {
+    //  setState(() {}); // 常にtrueを渡して、再レンダリングさせる
+    //});
   }
 
   List<String> _getAllStepIds(Map<String, dynamic> machine) {
