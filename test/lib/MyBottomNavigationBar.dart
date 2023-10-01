@@ -11,6 +11,13 @@ class MyBottomNavigationBar extends StatefulWidget {
 }
 
 class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
+  late List<double> scales;
+
+  @override
+  void initState() {
+    super.initState();
+    scales = List.filled(3, 1.0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,43 +27,51 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
       color: Colors.grey[100],
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                icon: Icon(
-                  widget.selectedIndex == 0
-                      ? Icons.home // 選択されている場合のアイコン
-                      : Icons.home_outlined, // 選択されていない場合のアイコン
-                  size: kToolbarHeight * .6,
-                ),
-                onPressed: () {
-                  widget.onTap(0);
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  widget.selectedIndex == 1
-                      ? Icons.qr_code_scanner
-                      : Icons.qr_code_scanner_rounded,
-                  size: kToolbarHeight * .6,
-                ),
-                onPressed: () {
-                  widget.onTap(1);
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  widget.selectedIndex == 2
-                      ? Icons.settings
-                      : Icons.settings_outlined,
-                  size: kToolbarHeight * .6,
-                ),
-                onPressed: () {
-                  widget.onTap(2);
-                },
-              ),
-            ],
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(3, (index) {
+                final isSelected = widget.selectedIndex == index;
+                final iconData = isSelected
+                    ? [Icons.home, Icons.qr_code_scanner, Icons.settings][index]
+                    : [
+                        Icons.home_outlined,
+                        Icons.qr_code_scanner_rounded,
+                        Icons.settings_outlined
+                      ][index];
+                final color = isSelected ? Colors.black : Colors.grey[700];
+
+                return GestureDetector(
+                  onTapDown: (_) {
+                    setState(() {
+                      scales[index] = 0.8;
+                    });
+                  },
+                  onTapUp: (_) {
+                    setState(() {
+                      scales[index] = 1.0;
+                    });
+                    widget.onTap(index);
+                  },
+                  onTapCancel: () {
+                    setState(() {
+                      scales[index] = 1.0;
+                    });
+                  },
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Transform.scale(
+                      scale: scales[index],
+                      child: Icon(
+                        iconData,
+                        size: kToolbarHeight * .6,
+                        color: color,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
           ),
           SizedBox(
             height: safePadding,
