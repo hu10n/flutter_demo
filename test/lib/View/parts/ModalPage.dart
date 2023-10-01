@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:test/api/TestAPI.dart';
 import 'InputField.dart';
+import 'LoadingModal.dart';
 import '../../DataClass.dart';
 
 class MyModal extends StatefulWidget {
@@ -21,7 +22,7 @@ class _MyModalState extends State<MyModal> {
   int _counter = 0; //ステップ数
   List<Widget> stepFields = [];
 
-  bool _isLoading = false;
+  bool _isLoading = false; //ローディング画面用
   
 
   void _plusCounter() {
@@ -290,12 +291,7 @@ class _MyModalState extends State<MyModal> {
             //------------------------------------------------------
             //ローディング画面-----------------------------------------
             if (_isLoading)
-              Container(
-                color: Colors.black.withOpacity(0.5),
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
+              LoadingModal()
             //------------------------------------------------------
           ],
         ), 

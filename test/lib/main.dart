@@ -9,6 +9,7 @@ import 'View/page/MachineList/MachineListPage.dart';
 import 'View/page/home/HomePage.dart';
 import 'DataClass.dart';
 import 'NavigationData.dart';
+import 'View/parts/LoadingModal.dart';
 
 void main() {
   runApp(
@@ -83,9 +84,14 @@ class _MyHomePageState extends State<MyHomePage> {
     GlobalKey<NavigatorState>(),
   ];
   //---------------------------------------------------------
-
-  bool showBottomBar = true; // ボトムナビゲーションのアニメ制御用
+  
+  // ボトムナビゲーションのアニメ制御用----------------------------
+  bool showBottomBar = true; 
   int scrollValue = 0;
+  //---------------------------------------------------------
+
+  //ローディング管理用
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -127,10 +133,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Padding(
                         padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
                         child: ElevatedButton(
-                          onPressed: () async{
+                          onPressed: () {
                             // 更新ボタンのアクションを記述
-                            Provider.of<DataNotifier>(context, listen: false).updateLocalDB(); //ローカルdbをrdsと同期
-                            print("更新");
+                            _pressUpdateButtom();
                           },
                           child: Icon(Icons.refresh),
                           style: ElevatedButton.styleFrom(
@@ -145,6 +150,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             ),
+            //ローディング画面---
+            if(_isLoading)
+              LoadingModal()
+            //----------------
           ],
         ),
       ), 
@@ -215,4 +224,17 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     }
   }
+
+  //更新ボタン用---------------------------------------------------------
+  void _pressUpdateButtom() async{
+    setState(() {
+      _isLoading = true;
+    });
+    await Provider.of<DataNotifier>(context, listen: false).updateLocalDB();//更新
+    print("更新");
+    setState(() {
+      _isLoading = false;
+    });
+  }
+  //-------------------------------------------------------------------
 }
