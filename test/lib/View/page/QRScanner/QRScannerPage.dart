@@ -5,11 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:test/View/parts/InputField.dart';
+import 'package:test/View/parts/ModalPage_QR.dart';
 
 import '../../../DataClass.dart';
 
 class QRScannerPage extends StatefulWidget {
-  const QRScannerPage({Key? key}) : super(key: key);
+  final Function onScrollUp;
+  // final Function onScrollDown;
+
+  const QRScannerPage({
+    // required this.onScrollDown,
+    required this.onScrollUp,
+  });
 
   @override
   _QRScannerPageState createState() => _QRScannerPageState();
@@ -96,44 +103,117 @@ class _QRScannerPageState extends State<QRScannerPage> {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) {
-        return Container(
-          padding: const EdgeInsets.only(bottom: 100),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                if (stepStatus['stepToStart'] != null)
-                  _createStartSheet(stepStatus, () {
-                    Navigator.pop(context);
-                    _resumeScan();
-                  }, () {
-                    //Button Action (開始)
-                  }),
-                if (stepStatus['stepOnGoing'] != null)
-                  _createCompleteSheet(stepStatus, () {
-                    Navigator.pop(context);
-                    _resumeScan();
-                  }, () {
-                    //Button Action (完了)
-                  }),
-                if (stepStatus['stepToStart'] == null &&
-                    stepStatus['stepOnGoing'] == null)
-                  _createCompletedSheet(stepStatus, () {
-                    Navigator.pop(context);
-                    _resumeScan();
-                  }, () {
-                    _resumeScan();
-                  }),
-              ],
-            ),
-          ),
+        return
+            // ModalContentInQR(
+            //   stepStatus: stepStatus,
+            //   resumeScan: () => _resumeScan(),
+            // );
+            QRModal(
+          onScrollUp: widget.onScrollUp,
         );
       },
     );
   }
 
+// Proc of QR Page ------------
+  Map<String, Map?> _getStepStatus(List dataList, String projectId) {
+    Map? step_to_start;
+    Map? step_on_going;
+
+    for (var data in dataList) {
+      for (var project in data['project']) {
+        if (project['project_id'] == projectId) {
+          for (var step in project['step']) {
+            if (step['project_status'] == -1) {
+              step_on_going = step;
+              break;
+            } else if (step['project_status'] == 0) {
+              if (step_to_start == null ||
+                  step['step_num'] < step_to_start['step_num']) {
+                step_to_start = step;
+              }
+            }
+          }
+        }
+        if (step_on_going != null) break;
+      }
+      if (step_on_going != null) break;
+    }
+
+    return {'stepToStart': step_to_start, 'stepOnGoing': step_on_going};
+  }
+
+  void _resumeScan() {
+    Future.delayed(Duration(milliseconds: 1000), () {
+      controller?.resumeCamera(); // Restart scanner after delay.
+    });
+
+    setState(() {
+      _text = '';
+    });
+  }
+
+  void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
+    log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
+    if (!p) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('There is No Permission to Access Camaera')),
+      );
+    }
+  }
+}
+
+class ModalContentInQR extends StatefulWidget {
+  const ModalContentInQR(
+      {super.key, required this.stepStatus, required this.resumeScan});
+
+  final Map stepStatus;
+  final Function resumeScan;
+
+  @override
+  State<ModalContentInQR> createState() => _ModalContentInQRState();
+}
+
+class _ModalContentInQRState extends State<ModalContentInQR> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(bottom: 100),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            if (widget.stepStatus['stepToStart'] != null)
+              _createStartSheet(widget.stepStatus, () {
+                Navigator.pop(context);
+                widget.resumeScan();
+              }, () {
+                //Button Action (開始)
+              }),
+            if (widget.stepStatus['stepOnGoing'] != null)
+              _createCompleteSheet(widget.stepStatus, () {
+                Navigator.pop(context);
+                widget.resumeScan();
+              }, () {
+                //Button Action (完了)
+              }),
+            if (widget.stepStatus['stepToStart'] == null &&
+                widget.stepStatus['stepOnGoing'] == null)
+              _createCompletedSheet(widget.stepStatus, () {
+                Navigator.pop(context);
+                widget.resumeScan();
+              }, () {
+                widget.resumeScan();
+              }),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _createCompletedSheet(Map<dynamic, dynamic> stepStatus,
       VoidCallback closeAction, VoidCallback proceedAction) {
+    // Adjust the information shown here since stepStatus['stepOnGoing'] will be null
     return Container(
       height: MediaQuery.of(context).size.height * 0.5,
       child: Column(
@@ -310,16 +390,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
         ),
       );
 
-  void _resumeScan() {
-    Future.delayed(Duration(milliseconds: 1000), () {
-      controller?.resumeCamera(); // Restart scanner
-    });
-
-    setState(() {
-      _text = '';
-    });
-  }
-
   Map? findProject(List dataList, String projectId) {
     for (var machine in dataList) {
       for (var project in machine['project']) {
@@ -342,41 +412,5 @@ class _QRScannerPageState extends State<QRScannerPage> {
       }
     }
     return null;
-  }
-
-  Map<String, Map?> _getStepStatus(List dataList, String projectId) {
-    Map? step_to_start;
-    Map? step_on_going;
-
-    for (var data in dataList) {
-      for (var project in data['project']) {
-        if (project['project_id'] == projectId) {
-          for (var step in project['step']) {
-            if (step['project_status'] == -1) {
-              step_on_going = step;
-              break;
-            } else if (step['project_status'] == 0) {
-              if (step_to_start == null ||
-                  step['step_num'] < step_to_start['step_num']) {
-                step_to_start = step;
-              }
-            }
-          }
-        }
-        if (step_on_going != null) break;
-      }
-      if (step_on_going != null) break;
-    }
-
-    return {'stepToStart': step_to_start, 'stepOnGoing': step_on_going};
-  }
-
-  void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
-    log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
-    if (!p) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('There is No Permission to Access Camaera')),
-      );
-    }
   }
 }
