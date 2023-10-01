@@ -134,7 +134,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
   Widget _createCompletedSheet(Map<dynamic, dynamic> stepStatus,
       VoidCallback closeAction, VoidCallback proceedAction) {
-    // Adjust the information shown here since stepStatus['stepOnGoing'] will be null
     return Container(
       height: MediaQuery.of(context).size.height * 0.5,
       child: Column(
@@ -313,7 +312,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
   void _resumeScan() {
     Future.delayed(Duration(milliseconds: 1000), () {
-      controller?.resumeCamera(); // Restart scanner after delay.
+      controller?.resumeCamera(); // Restart scanner
     });
 
     setState(() {
