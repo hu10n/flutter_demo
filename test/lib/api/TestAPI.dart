@@ -120,7 +120,7 @@ Future<Map<String,dynamic>> assignProjectInfo(machine,project) async {
 
   if (response.statusCode == 200) {
     // If server returns an OK response, parse the JSON
-    print(json.decode(utf8.decode(response.bodyBytes))["return_status"]);
+    //print(json.decode(utf8.decode(response.bodyBytes)).body["return_status"]);
     
     return json.decode(utf8.decode(response.bodyBytes));// as List<Map<String, dynamic>>;
   } else {

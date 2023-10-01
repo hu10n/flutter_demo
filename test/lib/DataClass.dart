@@ -126,7 +126,7 @@ class DataNotifier extends ChangeNotifier {
     return _machine;
   }
 
-  void updateLocalDB() async {
+  Future updateLocalDB() async {
     await _dbHelper.update();
     getAllData();
     notifyListeners();
