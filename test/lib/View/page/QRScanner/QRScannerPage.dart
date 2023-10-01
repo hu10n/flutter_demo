@@ -119,19 +119,26 @@ class _QRScannerPageState extends State<QRScannerPage> {
   Map<String, Map?> _getStepStatus(List dataList, String projectId) {
     Map? step_to_start;
     Map? step_on_going;
+    Map? step_to_edit;
+    int step_status;
 
     for (var data in dataList) {
       for (var project in data['project']) {
         if (project['project_id'] == projectId) {
           for (var step in project['step']) {
+            //[1,1,0,0]のようなリストを得たい。
             if (step['project_status'] == -1) {
-              step_on_going = step;
+              //step_on_going = step;
+              step_to_edit = step;
+              step_status = -1;
               break;
             } else if (step['project_status'] == 0) {
               if (step_to_start == null ||
                   step['step_num'] < step_to_start['step_num']) {
                 step_to_start = step;
               }
+            }else{
+
             }
           }
         }
