@@ -31,12 +31,12 @@ class _ToggleButtonsWidgetState extends State<ToggleButtonsWidget> {
                   widget.onToggleSelected(-1);
                   break;
                 case 1:
-                  // iが1のときの処理: status=0(稼働中)
-                  widget.onToggleSelected(0);
+                  // iが1のときの処理: status=1(稼働中)
+                  widget.onToggleSelected(1);
                   break;
                 case 2:
-                  // iが2のときの処理: status=1(未稼働)
-                  widget.onToggleSelected(1);
+                  // iが2のときの処理: status=0(未稼働)
+                  widget.onToggleSelected(0);
                   break;
                 case 3:
                   // iが3のときの処理

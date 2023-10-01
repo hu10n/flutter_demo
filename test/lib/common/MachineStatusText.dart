@@ -16,11 +16,11 @@ class MachineStatusText extends StatelessWidget {
     String statusText;
 
     switch (machineStatus) {
-      case 0:
+      case 1:
         circleColor = Colors.green;
         statusText = "稼働中";
         break;
-      case 1:
+      case 0:
         circleColor = Colors.grey;
         statusText = "未稼働";
         break;
