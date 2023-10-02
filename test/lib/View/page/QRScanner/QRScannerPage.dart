@@ -4,8 +4,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:test/View/parts/ModalPage_QR.dart';
+import 'package:test/View/page/QRScanner/ModalContentInQR.dart';
 import 'package:test/DataClass.dart';
+import 'package:test/common/methods.dart';
 
 class QRScannerPage extends StatefulWidget {
   final Function onScrollUp;
@@ -36,7 +37,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('QR Scanner'),
+        title: Text('QRコードをスキャン'),
         centerTitle: true,
       ),
       body: _buildQrView(context),
@@ -71,10 +72,14 @@ class _QRScannerPageState extends State<QRScannerPage> {
     });
   }
 
-  void _processScannedData(String text) {
+  // Procedure when scan data is aquired -----------------------------------
+  Future<void> _processScannedData(String text) async {
     try {
       final decodedData = jsonDecode(text);
       final key = decodedData['key'].toString();
+      // Update LocalDB, then transfer the data to next Page
+      await Provider.of<DataNotifier>(context, listen: false)
+          .updateLocalDB(); //LocalDBを最新データに更新
       final projectId = decodedData['projectId'].toString();
 
       final dataList =
@@ -91,63 +96,26 @@ class _QRScannerPageState extends State<QRScannerPage> {
       );
     }
   }
+  // -----------------------------------------------------------------------
 
   Future<dynamic> _showModalBottomSheet(
       String key, String projectId, dataList) {
-    final Map stepStatus = _getStepStatus(dataList, projectId);
+    final Map stepInfoMap = getStepInfoMap(dataList, projectId);
+    print(stepInfoMap);
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      enableDrag: false,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) {
-        return
-            // ModalContentInQR(
-            //   stepStatus: stepStatus,
-            //   resumeScan: () => _resumeScan(),
-            // );
-            QRModal(
+        return ModalContentInQR(
           onScrollUp: widget.onScrollUp,
-          stepStatus: stepStatus,
+          stepInfoMap: stepInfoMap,
           resumeScan: () => _resumeScan(),
         );
       },
     );
-  }
-
-// Proc of QR Page ------------
-  Map<String, Map?> _getStepStatus(List dataList, String projectId) {
-    Map? step_to_start;
-    Map? step_on_going;
-    Map? step_to_edit;
-    int step_status;
-
-    for (var data in dataList) {
-      for (var project in data['project']) {
-        if (project['project_id'] == projectId) {
-          for (var step in project['step']) {
-            //[1,1,0,0]のようなリストを得たい。
-            if (step['project_status'] == -1) {
-              //step_on_going = step;
-              step_to_edit = step;
-              step_status = -1;
-              break;
-            } else if (step['project_status'] == 0) {
-              if (step_to_start == null ||
-                  step['step_num'] < step_to_start['step_num']) {
-                step_to_start = step;
-              }
-            }else{
-
-            }
-          }
-        }
-        if (step_on_going != null) break;
-      }
-      if (step_on_going != null) break;
-    }
-
-    return {'stepToStart': step_to_start, 'stepOnGoing': step_on_going};
   }
 
   void _resumeScan() {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test/View/page/QRScanner/QRScannerPage.dart';
-import 'package:test/View/page/StepSubmit/SubmitPageTest.dart';
+import 'package:test/View/page/StepSubmit/TestPage_Tab(2).dart';
 
 import 'MyIndexedStack.dart';
 import 'MyAnimatedPositioned.dart';
@@ -183,7 +183,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             );
           case 2:
-            return MaterialPageRoute(builder: (context) => TestPage(onScrollUp: _showBottomBar,));
+            return MaterialPageRoute(
+                builder: (context) => TestPage(
+                      onScrollUp: _showBottomBar,
+                    ));
           default:
             return MaterialPageRoute(
               builder: (context) => PageWithCustomScroll(
