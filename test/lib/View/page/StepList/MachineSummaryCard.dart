@@ -13,8 +13,11 @@ class MachineSummaryCard extends StatelessWidget {
   final ScrollController scrollController;
 
   const MachineSummaryCard(
-      {required this.machineId, required this.onPressAction, required this.onScrollDown,
-       required this.onScrollUp, required this.scrollController});
+      {required this.machineId,
+      required this.onPressAction,
+      required this.onScrollDown,
+      required this.onScrollUp,
+      required this.scrollController});
 
   final machineId;
   final VoidCallback onPressAction;
@@ -33,7 +36,8 @@ class MachineSummaryCard extends StatelessWidget {
     final progressPercentage =
         calcpProgressPercentage(totalProgress, totalSteps);
 
-    String updateDate = formatTime(machine['updated_at'] ?? '');
+    String updateDate = formatTime(getLatestUpdatedAt(machine));
+
     final machineStatus = machine['machine_status'] ?? 0;
     String machineName = machine['machine_name'] ?? '';
     String machineNumber =
@@ -61,8 +65,8 @@ class MachineSummaryCard extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomButtonBox(
-      BuildContext context, VoidCallback onPressAction, Map<String, dynamic> machine) {
+  Widget _buildBottomButtonBox(BuildContext context, VoidCallback onPressAction,
+      Map<String, dynamic> machine) {
     //final modalPage = ModalPage();
     bool isEmpty = machine["project"].isEmpty;
     return Padding(
@@ -70,20 +74,23 @@ class MachineSummaryCard extends StatelessWidget {
       child: SizedBox(
           child: ElevatedButton(
               onPressed: () {
-                if(isEmpty){
+                if (isEmpty) {
                   //割り当てロジック-------------------------------------------------------------------------
                   onScrollDown(100);
-                  
-                  showModalBottomSheet(//モーダル表示
+
+                  showModalBottomSheet(
+                    //モーダル表示
                     context: context,
                     isScrollControlled: true,
                     enableDrag: false,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-                    builder: (context) => MyModal(onScrollUp: onScrollUp,machine: machine),
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(20))),
+                    builder: (context) =>
+                        MyModal(onScrollUp: onScrollUp, machine: machine),
                   );
                   //---------------------------------------------------------------------------------------
-                }else{
+                } else {
                   onPressAction();
                 }
               },
@@ -93,8 +100,7 @@ class MachineSummaryCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        isEmpty ? "プロジェクト割り当て"
-                        : "カード発行",
+                        isEmpty ? "プロジェクト割り当て" : "カード発行",
                         style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.w600),
                       ),
@@ -229,12 +235,15 @@ class MachineSummaryCard extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 4.0), // コンテナ間のマージン
       padding: EdgeInsets.all(8.0), // コンテナのパディング
       decoration: BoxDecoration(
-        //border: Border.all(color: Colors.black, width: 1.0), // 枠線の色と幅
-      ),
+          //border: Border.all(color: Colors.black, width: 1.0), // 枠線の色と幅
+          ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween, // 子ウィジェットをスペースで均等に配置
         children: [
-          Text("プロジェクトを割り当てる", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+          Text(
+            "プロジェクトを割り当てる",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
           GestureDetector(
             onTap: () {
               Navigator.pop(context); // ここでBottom Sheetを閉じます

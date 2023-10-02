@@ -15,28 +15,41 @@ int calcpProgressPercentage(int totalProgress, int stepNumber) =>
 //   return totalProgress;
 // }
 
-// Get DateTime  ----------------------------------------------------------
+// Get Tapped DateTime  ---------------------------
 String getTapTime() {
   var now = DateTime.now();
   var formatter = DateFormat('yyyy/MM/dd HH:mm');
   return formatter.format(now); // 指定したフォーマットで日付と時刻を返す
 }
 
-// Get Latest Step Editted Time
-String getLatestEditedDateTime(String machineNumber) {
-  MachineData machine = machineData[machineNumber]!;
-  String latestEditedDateTime = machine.editedDateTime;
+// Get Latest Step Editted Time --------------------
+String getLatestUpdatedAt(Map<String, dynamic> machine) {
+  DateTime? latestUpdated;
 
-  for (SmallStep step in machine.childSteps.values) {
-    if (step.editedDateTime.compareTo(latestEditedDateTime) > 0) {
-      latestEditedDateTime = step.editedDateTime;
+  if (machine['project'] is List) {
+    for (var project in machine['project']) {
+      if (project['step'] is List) {
+        for (var step in project['step']) {
+          final updatedAtStr = step['updated_at'];
+          if (updatedAtStr is String) {
+            try {
+              final updatedAt = DateTime.parse(updatedAtStr);
+              if (latestUpdated == null || updatedAt.isAfter(latestUpdated)) {
+                latestUpdated = updatedAt;
+              }
+            } catch (e) {
+              print('Error parsing date: $e');
+            }
+          }
+        }
+      }
     }
   }
 
-  return latestEditedDateTime;
+  return latestUpdated != null ? latestUpdated.toIso8601String() : "N/A";
 }
 
-// Added 0924 -----------------------------------------------
+// Formatting Unix DateTime to Readable Format -----------------------------------------------
 String formatTime(String time) {
   try {
     DateTime parsedTime = DateTime.parse(time);
