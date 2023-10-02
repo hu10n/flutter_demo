@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../DataClass.dart';
+import 'package:test/DataClass.dart';
 
 import 'MachineSummaryCard.dart';
 import 'StepListCard.dart';
 
 import 'package:pdf/widgets.dart' as pw;
 
-import "../../../NavigationData.dart";
+import 'package:test/NavigationData.dart';
 import '../JobCard/PrintingJob.dart';
-import '../../../api/TestAPI.dart';
+import 'package:test/api/TestAPI.dart';
 
 class StepListSliverList extends StatefulWidget {
   final String machineId;
@@ -41,7 +41,7 @@ class _StepListSliverListState extends State<StepListSliverList> {
               'updated_at': 'N/A',
               'project': []
             });
-   
+
     List<String> stepIds = _getAllStepIds(machine);
 
     return SliverList(
@@ -50,7 +50,7 @@ class _StepListSliverListState extends State<StepListSliverList> {
           if (index == 0) {
             return MachineSummaryCard(
               machineId: widget.machineId,
-              onPressAction: () => _handleIssueButton(context,machine),
+              onPressAction: () => _handleIssueButton(context, machine),
               onScrollDown: widget.onScrollDown,
               onScrollUp: widget.onScrollUp,
               scrollController: _scrollController,
@@ -71,7 +71,8 @@ class _StepListSliverListState extends State<StepListSliverList> {
   }
 
   // カード発行ボタンのアクション
-  Future<void> _handleIssueButton(BuildContext context,Map<String, dynamic> machine) async {
+  Future<void> _handleIssueButton(
+      BuildContext context, Map<String, dynamic> machine) async {
     // デバッグ用---------------------------------------------------------------
     final navigationData = NavigationData.of(context);
     print(navigationData);
@@ -100,7 +101,10 @@ class _StepListSliverListState extends State<StepListSliverList> {
 
                 //-------------------------------------------------------------
                 final pdf = pw.Document();
-                createAndPrintPdf(pdf, Provider.of<DataNotifier>(context, listen: false).japaneseFont);
+                createAndPrintPdf(
+                    pdf,
+                    Provider.of<DataNotifier>(context, listen: false)
+                        .japaneseFont);
               },
               child: Text('Close'),
             ),
@@ -118,10 +122,10 @@ class _StepListSliverListState extends State<StepListSliverList> {
     //Navigator.push(
     //  context,
     //  MaterialPageRoute(builder: (context) => Placeholder()
-          // StepPreviewPage(
-          //   machineNumber: machineNumber,
-          //   stepId: stepId,
-          // ),
+    // StepPreviewPage(
+    //   machineNumber: machineNumber,
+    //   stepId: stepId,
+    // ),
     //      ),
     //).then((dataUpdated) {
     //  setState(() {}); // 常にtrueを渡して、再レンダリングさせる
@@ -134,7 +138,13 @@ class _StepListSliverListState extends State<StepListSliverList> {
     if (machine['project'] is List) {
       for (var project in machine['project']) {
         if (project['step'] is List) {
-          for (var step in project['step']) {
+          List<dynamic> steps = project['step'];
+
+          // Sort the steps following each step_num
+          steps.sort(
+              (a, b) => (a['step_num'] ?? 0).compareTo(b['step_num'] ?? 0));
+
+          for (var step in steps) {
             if (step['step_id'] is String) {
               stepIds.add(step['step_id']);
             }
