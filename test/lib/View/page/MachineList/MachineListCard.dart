@@ -26,7 +26,7 @@ class MachineListCard extends StatelessWidget {
     String machineNumber =
         "${machine['machine_group']}-${machine['machine_num'].toString()}";
     int machineStatus = machine['machine_status'] ?? 0;
-    String latestEditedDateTime = formatTime(machine['updated_at']);
+    String latestEditedDateTime = formatTime(getLatestUpdatedAt(machine));
     String machineName = machine['machine_name'];
     String productName = getProductName(machine);
 
@@ -70,13 +70,13 @@ class MachineListCard extends StatelessWidget {
   }
 
   Widget _buildMachineNumberBox(String machineNumber) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-          child: Text(
+    return Container(
+      width: 40,
+      alignment: Alignment.center,
+      child: Text(
         machineNumber,
         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
-      )),
+      ),
     );
   }
 
@@ -116,10 +116,13 @@ class MachineListCard extends StatelessWidget {
               height: 30,
               child: MachineStatusText(
                   context: context, machineStatus: machineStatus)),
-          Text(
-            latestEditedDateTime,
-            style:
-                TextStyle(fontSize: 12, color: Theme.of(context).disabledColor),
+          Container(
+            width: 110,
+            child: Text(
+              latestEditedDateTime,
+              style: TextStyle(
+                  fontSize: 12, color: Theme.of(context).disabledColor),
+            ),
           ),
         ],
       ),

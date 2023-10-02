@@ -51,6 +51,10 @@ String getLatestUpdatedAt(Map<String, dynamic> machine) {
 
 // Formatting Unix DateTime to Readable Format -----------------------------------------------
 String formatTime(String time) {
+  if (time == 'N/A') {
+    return time;
+  }
+
   try {
     DateTime parsedTime = DateTime.parse(time);
     return DateFormat('yyyy/MM/dd HH:mm').format(parsedTime);
