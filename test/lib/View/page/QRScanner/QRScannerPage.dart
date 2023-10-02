@@ -10,10 +10,10 @@ import 'package:test/common/methods.dart';
 
 class QRScannerPage extends StatefulWidget {
   final Function onScrollUp;
-  // final Function onScrollDown;
+  final Function onScrollDown;
 
   const QRScannerPage({
-    // required this.onScrollDown,
+    required this.onScrollDown,
     required this.onScrollUp,
   });
 
@@ -85,6 +85,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
       final dataList =
           Provider.of<DataNotifier>(context, listen: false).dataList;
 
+      widget.onScrollDown(100);
       _showModalBottomSheet(key, projectId, dataList).whenComplete(() {
         // Proc when swipe down showModalBottomSheet
         _resumeScan();

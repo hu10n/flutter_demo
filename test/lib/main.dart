@@ -178,7 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
             return MaterialPageRoute(
               builder: (context) => QRScannerPage(
                 // QRスキャナー
-                // onScrollDown: _hideBottomBar,
+                onScrollDown: _hideBottomBar,
                 onScrollUp: _showBottomBar,
               ),
             );

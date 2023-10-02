@@ -97,6 +97,7 @@ class YourHeaderDelegate extends SliverPersistentHeaderDelegate {
             TextButton(
               child: Text('OK'),
               onPressed: () {
+                
                 Navigator.of(context).pop();  // ポップアップを閉じる
               },
             ),

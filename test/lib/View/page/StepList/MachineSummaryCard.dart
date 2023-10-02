@@ -71,30 +71,35 @@ class MachineSummaryCard extends StatelessWidget {
     bool isEmpty = machine["project"].isEmpty;
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-          child: ElevatedButton(
-              onPressed: () {
-                if (isEmpty) {
-                  //割り当てロジック-------------------------------------------------------------------------
-                  onScrollDown(100);
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            SizedBox(
+              child: ElevatedButton(
+                onPressed: () {
+                  if (isEmpty) {
+                    //割り当てロジック-------------------------------------------------------------------------
+                    onScrollDown(100);
 
-                  showModalBottomSheet(
-                    //モーダル表示
-                    context: context,
-                    isScrollControlled: true,
-                    enableDrag: false,
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(20))),
-                    builder: (context) =>
-                        MyModal(onScrollUp: onScrollUp, machine: machine),
-                  );
-                  //---------------------------------------------------------------------------------------
-                } else {
-                  onPressAction();
-                }
-              },
-              child: SizedBox(
+                    showModalBottomSheet(
+                      //モーダル表示
+                      context: context,
+                      isScrollControlled: true,
+                      enableDrag: false,
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(20))),
+                      builder: (context) =>
+                          MyModal(onScrollUp: onScrollUp, machine: machine),
+                    );
+                    //---------------------------------------------------------------------------------------
+                  } else {
+                    onPressAction();
+                  }
+                },
+                child: SizedBox(
                   width: isEmpty ? 200 : 100,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -105,7 +110,30 @@ class MachineSummaryCard extends StatelessWidget {
                             fontSize: 15, fontWeight: FontWeight.w600),
                       ),
                     ],
-                  )))),
+                  )
+                )
+              )
+            ),
+            if(!isEmpty)
+            Positioned(
+              right: 50,
+              child: SizedBox(
+                width: 55,
+                child: ElevatedButton(
+                  onPressed: () {
+                    onScrollDown(100);
+                    _showActionSheet(context);
+                  },
+                  child:Icon(
+                    Icons.more_horiz, // ここで「・・・」のアイコンを設定します。
+                    color: Colors.white, // アイコンの色を設定します。
+                  ),             
+                )
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -256,4 +284,61 @@ class MachineSummaryCard extends StatelessWidget {
     );
   }
   //-----------------------------------------------------------------------------------------
+
+   // アクションシート用-----------------------------------------------------
+  void _showActionSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: <Widget>[
+            ListTile(
+              leading: Icon(Icons.add),
+              title: Text('追加'),
+              onTap: () {
+                Navigator.pop(context);  // アクションシートを閉じる
+                // ここに追加の処理を実装
+                _showPopup(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.cancel),
+              title: Text('キャンセル'),
+              onTap: () {
+                Navigator.pop(context);  // アクションシートを閉じる
+              },
+            ),
+          ],
+        );
+      }
+    ).whenComplete(() {
+      // ここでモーダルが閉じられた際の追加処理を実行します
+      onScrollUp(100);
+    });
+  }
+  //----------------------------------------------------------------
+  
+  // 未実装用ポップアップ
+  void _showPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Important Message'),
+          content: Text('この機能は未実装です。'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                
+                Navigator.of(context).pop();  // ポップアップを閉じる
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
