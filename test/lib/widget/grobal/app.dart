@@ -4,10 +4,10 @@ import 'package:test/View/page/StepSubmit/TestPage_Tab(2).dart';
 
 import 'MyIndexedStack.dart';
 import 'MyAnimatedPositioned.dart';
-import 'View/page/MachineList/MachineListPage.dart';
-import 'View/page/home/HomePage.dart';
-import 'NavigationData.dart';
-import 'View/parts/LoadingModal.dart';
+import '../../View/page/MachineList/MachineListPage.dart';
+import '../../View/page/home/HomePage.dart';
+import '../../providers/NavigationData.dart';
+import '../../View/parts/LoadingModal.dart';
 
 class MyHomePage extends StatefulWidget {
   @override

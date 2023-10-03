@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'app.dart';
-import 'DataClass.dart';
+import '../../providers/DataClass.dart';
 
 class SplashScreen extends StatefulWidget {
   @override

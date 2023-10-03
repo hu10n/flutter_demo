@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:test/api/TestAPI.dart';
 import 'package:test/View/parts/InputField.dart';
 import 'package:test/View/parts/LoadingModal.dart';
-import 'package:test/DataClass.dart';
+import 'package:test/providers/DataClass.dart';
 
 class ModalContentInQR extends StatefulWidget {
   final Function onScrollUp;

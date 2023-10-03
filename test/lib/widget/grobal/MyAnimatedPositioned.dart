@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'DataClass.dart';
+import '../../providers/DataClass.dart';
 import 'MyBottomNavigationBar.dart';
 
 
@@ -61,7 +61,7 @@ class MyAnimatedPositioned extends StatelessWidget {
       ),
     );
   }
-  
+
   //更新ボタン用---------------------------------------------------------
   void _pressUpdateButtom(BuildContext context) async {
     setIsLoading(true);

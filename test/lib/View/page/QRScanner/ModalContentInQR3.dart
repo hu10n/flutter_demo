@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:test/api/TestAPI.dart';
 import '../../parts/InputField.dart';
 import '../../parts/LoadingModal.dart';
-import '../../../DataClass.dart';
+import '../../../providers/DataClass.dart';
 
 class QRModal extends StatefulWidget {
   final Function onScrollUp;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'InitialLoadingPage.dart';
-import 'DataClass.dart';
+import 'widget/grobal/InitialLoadingPage.dart';
+import 'providers/DataClass.dart';
 
 
 void main() {

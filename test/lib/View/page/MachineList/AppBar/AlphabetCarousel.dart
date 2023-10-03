@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../DataClass.dart';
+import '../../../../providers/DataClass.dart';
 
 class AlphabetCarousel extends StatefulWidget {
   final CarouselController controller;

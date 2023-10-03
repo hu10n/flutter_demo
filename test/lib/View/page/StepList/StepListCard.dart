@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test/common/methods.dart';
 
-import '../../../DataClass.dart';
+import '../../../providers/DataClass.dart';
 
 class StepListCard extends StatelessWidget {
   final String machineId; // 追加されたプロパティ

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test/DataClass.dart';
+import 'package:test/providers/DataClass.dart';
 
 import 'MachineSummaryCard.dart';
 import 'StepListCard.dart';
 
 import 'package:pdf/widgets.dart' as pw;
 
-import 'package:test/NavigationData.dart';
+import 'package:test/providers/NavigationData.dart';
 import '../JobCard/PrintingJob.dart';
 import 'package:test/api/TestAPI.dart';
 

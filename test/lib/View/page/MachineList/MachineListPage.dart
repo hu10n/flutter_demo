@@ -5,7 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'MachineListSliverList.dart';
 import 'AppBar/AlphabetCarousel.dart';
 import 'AppBar/ToggleButtonSliver.dart';
-import '../../../DataClass.dart';
+import '../../../providers/DataClass.dart';
 
 class MachineListPage extends StatefulWidget {
   final Function onScrollDown;

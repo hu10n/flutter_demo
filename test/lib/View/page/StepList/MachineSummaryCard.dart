@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // import '../../../LocalData/data.dart';
-import '../../../DataClass.dart';
+import '../../../providers/DataClass.dart';
 import '../../../common/methods.dart';
 import '../../../common/MachineStatusText.dart';
 import '../../parts/ModalPage.dart';

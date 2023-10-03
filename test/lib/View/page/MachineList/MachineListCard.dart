@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../DataClass.dart';
+import '../../../providers/DataClass.dart';
 import '../../../common/MachineStatusText.dart';
 import '../../../common/methods.dart';
 
