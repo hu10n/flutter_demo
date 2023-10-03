@@ -147,7 +147,7 @@ class _TestPageState extends State<TestPage> {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      enableDrag: false,
+      enableDrag: true,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) {
