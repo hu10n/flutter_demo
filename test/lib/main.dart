@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'widget/grobal/InitialLoadingPage.dart';
-import 'providers/DataClass.dart';
-
+import 'Screen/Base/InitLoadPage.dart';
+import 'providers/DataProvider.dart';
 
 void main() {
   runApp(
@@ -24,7 +23,7 @@ class MyApp extends StatelessWidget {
             ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 255, 255, 255)),
       ),
       //home: MyHomePage(),
-      home: SplashScreen(),
+      home: InitLoadSplashScreen(),
     );
   }
 }
