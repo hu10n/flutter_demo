@@ -60,6 +60,8 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
     String material = projects.isNotEmpty ? projects[0]['material'] ?? '' : '';
     String lotNumber = projects.isNotEmpty ? projects[0]['lot_num'] ?? '' : '';
 
+    bool isEmpty = machine["project"].isEmpty;
+
     return Card(
       child: Column(
         children: [
@@ -72,7 +74,10 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
               _buildProductSpecBox(productName, material, lotNumber, updateDate)
             ],
           ),
-          _buildBottomButtonBox(context, widget.onPressAction, machine, projects[0])
+          if(!isEmpty)
+          _buildBottomButtonBox(context, widget.onPressAction, machine, projects[0]),
+          if(isEmpty)
+          _buildBottomButtonBoxEmpty(context, widget.onPressAction, machine)
         ],
       ),
     );
@@ -81,7 +86,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
   Widget _buildBottomButtonBox(BuildContext context, VoidCallback onPressAction,
       Map<String, dynamic> machine, Map<String, dynamic> project) {
     //final modalPage = ModalPage();
-    bool isEmpty = machine["project"].isEmpty;
+    
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -91,41 +96,22 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
           children: [
             SizedBox(
               child: ElevatedButton(
-                onPressed: () {
-                  if (isEmpty) {
-                    //割り当てロジック-------------------------------------------------------------------------
-                    widget.onScrollDown(100);
-
-                    showModalBottomSheet(
-                      //モーダル表示
-                      context: context,
-                      isScrollControlled: true,
-                      enableDrag: false,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20))),
-                      builder: (context) =>
-                          MyModal(onScrollUp: widget.onScrollUp, machine: machine,),
-                    );
-                    //---------------------------------------------------------------------------------------
-                  } else {
-                    onPressAction();
-                  }
+                onPressed: () {              
+                  onPressAction();             
                 },
                 child: SizedBox(
-                    width: isEmpty ? 200 : 100,
+                    width:  100,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          isEmpty ? "プロジェクト割り当て" : "カード発行",
+                          "カード発行",
                           style: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.w600),
                         ),
                       ],
             )))),
-            if (!isEmpty)
-              Positioned(
+            Positioned(
                 right: 50,
                 child: SizedBox(
                     width: 55,
@@ -140,6 +126,54 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
                       ),
                     )),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+
+    Widget _buildBottomButtonBoxEmpty(BuildContext context, VoidCallback onPressAction,
+      Map<String, dynamic> machine) {
+    //final modalPage = ModalPage();
+    
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            SizedBox(
+              child: ElevatedButton(
+                onPressed: () {             
+                  //割り当てロジック-------------------------------------------------------------------------
+                  widget.onScrollDown(100);
+
+                  showModalBottomSheet(
+                    //モーダル表示
+                    context: context,
+                    isScrollControlled: true,
+                    enableDrag: false,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20))),
+                    builder: (context) =>
+                        MyModal(onScrollUp: widget.onScrollUp, machine: machine,),
+                  );
+                  //---------------------------------------------------------------------------------------                 
+                },
+                child: SizedBox(
+                    width: 200,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "プロジェクト割り当て",
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+            )))),
           ],
         ),
       ),

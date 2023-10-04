@@ -94,6 +94,7 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
                                 child: Column(
                                   children: [
                                     SizedBox(height: 20,),
+                                    // 作業機情報----------------------------------------------------
                                     Align(
                                       alignment: Alignment.centerLeft,
                                       child: Text("作業機情報"),
@@ -106,6 +107,19 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
                                       alignment: Alignment.centerLeft,
                                       child: Text("・機名：${machine['machine_name']}"),
                                     ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("・機械ステータス：${machine['machine_status']}"),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("・作成日時：${machine['created_at']}"),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("・作成日時：${machine['created_at']}"),
+                                    ),
+                                    //--------------------------------------------------------------
                                   ],
                                 ),
                               ),
