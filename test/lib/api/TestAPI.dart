@@ -59,7 +59,7 @@ Future<Map<String,dynamic>> postJSONData(lastUpdated) async {
   }
 }
 
-Future<Map<String,dynamic>> updateStepData(update_status,step,status_list) async {
+Future<int> updateStepData(update_status,step,status_list) async {
   final prefs = await SharedPreferences.getInstance();
   final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
 
@@ -82,19 +82,20 @@ Future<Map<String,dynamic>> updateStepData(update_status,step,status_list) async
 
   if (response.statusCode == 200) {
     // If server returns an OK response, parse the JSON
-    print(json.decode(utf8.decode(response.bodyBytes))["return_status"]);
+    //print(json.decode(utf8.decode(response.bodyBytes))["return_status"]);
     
-    return json.decode(utf8.decode(response.bodyBytes));// as List<Map<String, dynamic>>;
+    return json.decode(utf8.decode(response.bodyBytes))["return_status"];// as List<Map<String, dynamic>>;
   } else {
     // If server did not return a 200 OK response,
     // throw an exception.
     print(response.body);
     print(response.statusCode);
-    throw Exception('Failed to load data from the server');
+    //throw Exception('Failed to load data from the server');
+    return json.decode(utf8.decode(response.bodyBytes))["return_status"];
   }
 }
 
-Future<Map<String,dynamic>> assignProjectInfo(machine,project) async {
+Future<int> assignProjectInfo(machine,project) async {
   final prefs = await SharedPreferences.getInstance();
   final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
 
@@ -120,15 +121,16 @@ Future<Map<String,dynamic>> assignProjectInfo(machine,project) async {
 
   if (response.statusCode == 200) {
     // If server returns an OK response, parse the JSON
-    //print(json.decode(utf8.decode(response.bodyBytes)).body["return_status"]);
+    //print(json.decode(utf8.decode(response.bodyBytes))["returnStatus"]);
     
-    return json.decode(utf8.decode(response.bodyBytes));// as List<Map<String, dynamic>>;
+    return json.decode(utf8.decode(response.bodyBytes))["returnStatus"];// as List<Map<String, dynamic>>;
   } else {
     // If server did not return a 200 OK response,
     // throw an exception.
     print(response.body);
     print(response.statusCode);
-    throw Exception('Failed to load data from the server');
+    //throw Exception('Failed to load data from the server');
+    return json.decode(utf8.decode(response.bodyBytes))["returnStatus"];
   }
 }
 

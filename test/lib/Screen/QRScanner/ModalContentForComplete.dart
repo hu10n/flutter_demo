@@ -7,6 +7,8 @@ import 'package:test/api/TestAPI.dart';
 import '../../GlobalWidget/InputField.dart';
 import '../../GlobalWidget/LoadingModal.dart';
 import '../../providers/DataProvider.dart';
+import '../../GlobalWidget/ShowDialog.dart';
+import '../../GlobalWidget/BuildTitleForModal.dart';
 
 class ModalContentForComplete extends StatefulWidget {
   final Function onScrollUp;
@@ -42,35 +44,22 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
         update_state, step, status_list); //データを送信*********************
     await Provider.of<DataNotifier>(context, listen: false)
         .updateLocalDB(); //最新データに更新
-    print(res);
 
     setState(() {
       _isLoading = false;
     });
-    _showCompleteDialog(context, onScrollUp); //完了ダイアログ
+
+    if(res == 3){
+      print(res);
+      showCustomDialog(context, onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
+    }else if(res == 1){
+      showCustomDialog(context, onScrollUp,"完了","データは正常に送信されました。");
+    }else{
+      print(res);
+      showCustomDialog(context, onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
+    }
   }
 
-  void _showCompleteDialog(BuildContext mainContext, Function onScrollUp) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Complete'),
-          content: Text('Loading Complete!'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); //ダイアログを閉じる
-                Navigator.pop(mainContext); // モーダルを閉じる
-                onScrollUp(100); //下部ナビゲーションを戻す
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   void _unfocus() {
     for (var focus in _focuses) {
@@ -99,7 +88,7 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
             Column(
               children: [
                 //モーダルの大タイトル＋クローズボタン---------------------
-                _buildContainer(context, widget.onScrollUp, "完了報告を作成する"),
+                BuildTitleForModal(context, widget.onScrollUp, "完了報告を作成する"),
                 //---------------------------------------------------
                 //スクロールビュー部分----------------------------------
 
@@ -235,34 +224,4 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
       ),
     );
   }
-
-  //モーダルのタイトル作成。一応分けた。---------------------------------------
-  Container _buildContainer(
-      BuildContext context, Function onScrollUp, String title) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.9,
-      margin: EdgeInsets.symmetric(vertical: 4.0), // コンテナ間のマージン
-      padding: EdgeInsets.all(8.0), // コンテナのパディング
-      decoration: BoxDecoration(
-          //border: Border.all(color: Colors.black, width: 1.0), // デバッグ用
-          ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // 子ウィジェットをスペースで均等に配置
-        children: [
-          Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context); // ここでBottom Sheetを閉じます
-              onScrollUp(100); //下部ナビゲーションを戻す
-            },
-            child: Icon(Icons.close),
-          ),
-        ],
-      ),
-    );
-  }
-  //---------------------------------------------------------------------
 }

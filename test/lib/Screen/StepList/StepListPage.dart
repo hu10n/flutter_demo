@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'StepListSliverList.dart';
-import '../HistoryList/HistoryListPage.dart';
+import 'ModalContentForHistory.dart';
 
 class StepListPage extends StatefulWidget {
   final String machineId;
@@ -91,16 +91,29 @@ class _StepListPageState extends State<StepListPage> {
   }
 
   void _handleHistoryIconTap(BuildContext context, String machineId) {
-    widget.onScrollUp();
-    Navigator.of(context)
-        .push(MaterialPageRoute(
-            builder: (context) => HistoryListPage(
-                  machineId: machineId,
-                  onScrollDown: widget.onScrollDown,
-                  onScrollUp: widget.onScrollUp,
-                )))
-        .then((dataUpdated) {
-      setState(() {});
-    });
+    widget.onScrollDown(100);
+    //Navigator.of(context)
+    //    .push(MaterialPageRoute(
+    //        builder: (context) => HistoryListPage(
+    //              machineId: machineId,
+    //              onScrollDown: widget.onScrollDown,
+    //              onScrollUp: widget.onScrollUp,
+    //            )))
+    //    .then((dataUpdated) {
+    //  setState(() {});
+    //});
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      enableDrag: true,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) =>
+            ModalContentForHistory(
+              onScrollUp: widget.onScrollUp, 
+              machineId: machineId, 
+            ),
+    );
   }
 }

@@ -5,30 +5,43 @@ import 'package:provider/provider.dart';
 import '../../providers/DataProvider.dart';
 import '../../GlobalMethod/CommonMethods.dart';
 import '../../GlobalWidget/MachineStatusIndicator.dart';
-import '../../GlobalWidget/ModalPage.dart';
+import 'ModalContentForAssignProject.dart';
+import 'ModalContentForDelivery.dart';
+import 'ModalContentForDetail.dart';
+import 'ModalContentForChangeStatus.dart';
 
-class MachineSummaryCard extends StatelessWidget {
+
+class MachineSummaryCard extends StatefulWidget {
   final Function onScrollDown;
   final Function onScrollUp;
   final ScrollController scrollController;
-
-  const MachineSummaryCard(
-      {required this.machineId,
-      required this.onPressAction,
-      required this.onScrollDown,
-      required this.onScrollUp,
-      required this.scrollController});
-
   final machineId;
   final VoidCallback onPressAction;
+
+  const MachineSummaryCard({
+    required this.machineId,
+    required this.onPressAction,
+    required this.onScrollDown,
+    required this.onScrollUp,
+    required this.scrollController,
+  });
+
+  @override
+  _MachineSummaryCardState createState() => _MachineSummaryCardState();
+}
+
+class _MachineSummaryCardState extends State<MachineSummaryCard>{
+  bool isModal = false; //モーダル表示制御用
+
   @override
   Widget build(BuildContext context) {
     final dataList = Provider.of<DataNotifier>(context).dataList;
     Map<String, dynamic> machine = dataList.firstWhere(
-      (element) => element['machine_id'] == machineId,
+      (element) => element['machine_id'] == widget.machineId,
       orElse: () => {},
     );
     List<dynamic> projects = machine['project'] ?? [];
+    //print(projects[0]);
 
     int totalProgress = calculateTotalProgress(machine);
     int totalSteps = calculateTotalSteps(machine);
@@ -59,14 +72,14 @@ class MachineSummaryCard extends StatelessWidget {
               _buildProductSpecBox(productName, material, lotNumber, updateDate)
             ],
           ),
-          _buildBottomButtonBox(context, onPressAction, machine)
+          _buildBottomButtonBox(context, widget.onPressAction, machine, projects[0])
         ],
       ),
     );
   }
 
   Widget _buildBottomButtonBox(BuildContext context, VoidCallback onPressAction,
-      Map<String, dynamic> machine) {
+      Map<String, dynamic> machine, Map<String, dynamic> project) {
     //final modalPage = ModalPage();
     bool isEmpty = machine["project"].isEmpty;
     return Padding(
@@ -77,40 +90,40 @@ class MachineSummaryCard extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             SizedBox(
-                child: ElevatedButton(
-                    onPressed: () {
-                      if (isEmpty) {
-                        //割り当てロジック-------------------------------------------------------------------------
-                        onScrollDown(100);
+              child: ElevatedButton(
+                onPressed: () {
+                  if (isEmpty) {
+                    //割り当てロジック-------------------------------------------------------------------------
+                    widget.onScrollDown(100);
 
-                        showModalBottomSheet(
-                          //モーダル表示
-                          context: context,
-                          isScrollControlled: true,
-                          enableDrag: false,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(20))),
-                          builder: (context) =>
-                              MyModal(onScrollUp: onScrollUp, machine: machine),
-                        );
-                        //---------------------------------------------------------------------------------------
-                      } else {
-                        onPressAction();
-                      }
-                    },
-                    child: SizedBox(
-                        width: isEmpty ? 200 : 100,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              isEmpty ? "プロジェクト割り当て" : "カード発行",
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w600),
-                            ),
-                          ],
-                        )))),
+                    showModalBottomSheet(
+                      //モーダル表示
+                      context: context,
+                      isScrollControlled: true,
+                      enableDrag: false,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20))),
+                      builder: (context) =>
+                          MyModal(onScrollUp: widget.onScrollUp, machine: machine,),
+                    );
+                    //---------------------------------------------------------------------------------------
+                  } else {
+                    onPressAction();
+                  }
+                },
+                child: SizedBox(
+                    width: isEmpty ? 200 : 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          isEmpty ? "プロジェクト割り当て" : "カード発行",
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+            )))),
             if (!isEmpty)
               Positioned(
                 right: 50,
@@ -118,8 +131,8 @@ class MachineSummaryCard extends StatelessWidget {
                     width: 55,
                     child: ElevatedButton(
                       onPressed: () {
-                        onScrollDown(100);
-                        _showActionSheet(context);
+                        widget.onScrollDown(100);
+                        _showActionSheet(context,machine,project);
                       },
                       child: Icon(
                         Icons.more_horiz, // ここで「・・・」のアイコンを設定します。
@@ -253,37 +266,9 @@ class MachineSummaryCard extends StatelessWidget {
     );
   }
 
-  // 枠線付きコンテナの生成メソッド(sample)---------------------------------------------------------------
-  Widget _buildContainer(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.9,
-      margin: EdgeInsets.symmetric(vertical: 4.0), // コンテナ間のマージン
-      padding: EdgeInsets.all(8.0), // コンテナのパディング
-      decoration: BoxDecoration(
-          //border: Border.all(color: Colors.black, width: 1.0), // 枠線の色と幅
-          ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // 子ウィジェットをスペースで均等に配置
-        children: [
-          Text(
-            "プロジェクトを割り当てる",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context); // ここでBottom Sheetを閉じます
-              onScrollUp(100);
-            },
-            child: Icon(Icons.close),
-          ),
-        ],
-      ),
-    );
-  }
-  //-----------------------------------------------------------------------------------------
 
   // アクションシート用-----------------------------------------------------
-  void _showActionSheet(BuildContext context) {
+  void _showActionSheet(BuildContext context,Map<String, dynamic> machine, Map<String, dynamic> project) {
     showModalBottomSheet(
         context: context,
         isDismissible: true,
@@ -291,16 +276,79 @@ class MachineSummaryCard extends StatelessWidget {
           return Wrap(
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.add),
-                title: Text('追加'),
+                leading: Icon(Icons.local_shipping,color: Color.fromARGB(255, 222, 212, 123)),
+                title: Text('部品を納品する'),
                 onTap: () {
                   Navigator.pop(context); // アクションシートを閉じる
                   // ここに追加の処理を実装
-                  _showPopup(context);
+                  
+                  setIsModal(true);
+                  showModalBottomSheet(
+                    context: context,
+                    //isScrollControlled: true,
+                    enableDrag: true,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+                    builder: (context) =>
+                          ModalContentForDelivery(
+                            onScrollUp: widget.onScrollUp, 
+                            machine: machine, 
+                            project: project,
+                            setIsModal: setIsModal,
+                          ),
+                  );
                 },
               ),
               ListTile(
-                leading: Icon(Icons.cancel),
+                leading: Icon(Icons.zoom_in,color: Colors.blue),
+                title: Text('詳細情報を見る'),
+                onTap: () {
+                  Navigator.pop(context); // アクションシートを閉じる
+                  // ここに追加の処理を実装
+                  print(project);
+                  print(machine);
+                  setIsModal(true);
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    enableDrag: true,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+                    builder: (context) =>
+                          ModalContentForDetail(
+                            onScrollUp: widget.onScrollUp, 
+                            machine: machine, 
+                            project: project,
+                            setIsModal: setIsModal,
+                          ),
+                  );
+                },
+              ),   
+              ListTile(
+                leading: Icon(Icons.swap_horiz,color: Colors.green,),
+                title: Text('作業機のステータスを変更する'),
+                onTap: () {
+                  Navigator.pop(context); // アクションシートを閉じる
+                  // ここに追加の処理を実装
+                  setIsModal(true);
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    enableDrag: true,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+                    builder: (context) =>
+                          ModalContentForChangeStatus(
+                            onScrollUp: widget.onScrollUp, 
+                            machine: machine, 
+                            project: project,
+                            setIsModal: setIsModal,
+                          ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.cancel,color: Colors.red,),
                 title: Text('キャンセル'),
                 onTap: () {
                   Navigator.pop(context); // アクションシートを閉じる
@@ -310,29 +358,15 @@ class MachineSummaryCard extends StatelessWidget {
           );
         }).whenComplete(() {
       // ここでモーダルが閉じられた際の追加処理を実行します
-      onScrollUp(100);
+      if(!isModal){
+        widget.onScrollUp(100);
+      }
     });
   }
   //----------------------------------------------------------------
-
-  // 未実装用ポップアップ
-  void _showPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Important Message'),
-          content: Text('この機能は未実装です。'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop(); // ポップアップを閉じる
-              },
-            ),
-          ],
-        );
-      },
-    );
+  void setIsModal(bool flag){
+    setState(() {
+      isModal = flag;
+    });
   }
 }
