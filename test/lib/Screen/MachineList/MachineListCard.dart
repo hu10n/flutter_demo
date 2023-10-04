@@ -28,6 +28,7 @@ class MachineListCard extends StatelessWidget {
     int machineStatus = machine['machine_status'] ?? 0;
     String latestEditedDateTime = formatTime(getLatestUpdatedAt(machine));
     String machineName = machine['machine_name'];
+    String productNumber = getProductNumber(machine);
     String productName = getProductName(machine);
 
     int totalSteps = calculateTotalSteps(machine);
@@ -42,19 +43,19 @@ class MachineListCard extends StatelessWidget {
           height: 70,
           child: Row(
             children: [
-              _buildMachineNumberBox(machineNumber),
+              _createMachineNumberBox(machineNumber, machineName),
               Expanded(
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildMachineNameBox(machineName, productName!),
-                        _buildMachineStatusBox(
+                        _createProductInfoBox(productNumber!, productName!),
+                        _createMachineStatusBox(
                             context, machineStatus, latestEditedDateTime),
                       ],
                     ),
-                    _buildMachineProgressBox(
+                    _createMachineProgressBox(
                         context, totalProgress, totalSteps),
                   ],
                 ),
@@ -69,18 +70,27 @@ class MachineListCard extends StatelessWidget {
     );
   }
 
-  Widget _buildMachineNumberBox(String machineNumber) {
+  Widget _createMachineNumberBox(String machineNumber, String machineName) {
     return Container(
-      width: 40,
-      alignment: Alignment.center,
-      child: Text(
-        machineNumber,
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+      width: 60,
+      // alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            machineNumber,
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+          ),
+          Text(
+            machineName,
+            style: TextStyle(fontSize: 10),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildMachineNameBox(String machineName, String productName) {
+  Widget _createProductInfoBox(String productNumber, String productName) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -89,7 +99,7 @@ class MachineListCard extends StatelessWidget {
           child: Align(
             alignment: Alignment.center,
             child: Text(
-              machineName,
+              productNumber,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
             ),
           ),
@@ -105,7 +115,7 @@ class MachineListCard extends StatelessWidget {
     );
   }
 
-  Widget _buildMachineStatusBox(
+  Widget _createMachineStatusBox(
       BuildContext context, int machineStatus, String latestEditedDateTime) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
@@ -129,7 +139,7 @@ class MachineListCard extends StatelessWidget {
     );
   }
 
-  Widget _buildMachineProgressBox(
+  Widget _createMachineProgressBox(
       BuildContext context, totalProgress, totalSteps) {
     return Padding(
       padding: const EdgeInsets.all(3.0),

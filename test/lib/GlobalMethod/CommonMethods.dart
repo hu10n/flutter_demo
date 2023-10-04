@@ -70,9 +70,21 @@ String getProductName(Map<String, dynamic> machine) {
       machine['project'][0]['product_name'] != null) {
     productName = machine['project'][0]['product_name'];
   } else {
-    productName = 'Product Name: N/A';
+    productName = 'N/A';
   }
   return productName;
+}
+
+String getProductNumber(Map<String, dynamic> machine) {
+  String productNumber;
+  if (machine['project'] is List &&
+      (machine['project'] as List).isNotEmpty &&
+      machine['project'][0]['product_num'] != null) {
+    productNumber = machine['project'][0]['product_num'];
+  } else {
+    productNumber = 'N/A';
+  }
+  return productNumber;
 }
 
 int calculateTotalSteps(Map<String, dynamic> machine) {
@@ -102,38 +114,6 @@ int calculateTotalProgress(Map<String, dynamic> machine) {
   }
   return sumOfProjectStatus;
 }
-
-// Map<String, dynamic> getStepInfoMap(List dataList, String projectId) {
-//   Map<String, dynamic> stepInfoMap = {
-//     'step_status_to_edit': null,
-//     'step_to_edit': null,
-//     'stepStatusList': [],
-//   };
-
-//   for (var data in dataList) {
-//     for (var project in data['project']) {
-//       if (project['project_id'] == projectId) {
-//         List<int> stepStatusList = [];
-//         for (var step in project['step']) {
-//           stepStatusList
-//               .add(step['project_status']); // constructing stepStatusList
-//           if (step['project_status'] <= 0) {
-//             // prioritizing -1 over 0 for step_status_to_edit and step_to_edit assignment
-//             if (stepInfoMap['step_status_to_edit'] == null ||
-//                 step['project_status'] < stepInfoMap['step_status_to_edit']) {
-//               stepInfoMap['step_status_to_edit'] = step['project_status'];
-//               stepInfoMap['step_to_edit'] = step;
-//             }
-//           }
-//         }
-//         stepInfoMap['stepStatusList'] = stepStatusList;
-//         break; // break early when the projectId is found
-//       }
-//     }
-//   }
-
-//   return stepInfoMap;
-// }
 
 Map<String, dynamic> getStepInfoMap(List dataList, String projectId) {
   Map<String, dynamic> stepInfoMap = {

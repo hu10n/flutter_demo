@@ -73,7 +73,7 @@ class _StepListPageState extends State<StepListPage> {
                 ),
               ],
               flexibleSpace: FlexibleSpaceBar(
-                title: Text('Step List'),
+                title: Text('作業工程一覧'),
               ),
             ),
             StepListSliverList(
@@ -109,11 +109,10 @@ class _StepListPageState extends State<StepListPage> {
       enableDrag: true,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (context) =>
-            ModalContentForHistory(
-              onScrollUp: widget.onScrollUp, 
-              machineId: machineId, 
-            ),
+      builder: (context) => ModalContentForHistory(
+        onScrollUp: widget.onScrollUp,
+        machineId: machineId,
+      ),
     );
   }
 }

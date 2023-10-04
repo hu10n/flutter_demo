@@ -30,6 +30,7 @@ class StepListCard extends StatelessWidget {
     int? stepStatus;
     String worker = '';
     String updatedAt = '';
+    int productionVolume = 0;
 
     for (var project in (machine['project'] as List)) {
       for (var s in (project['step'] as List)) {
@@ -39,6 +40,7 @@ class StepListCard extends StatelessWidget {
           // stepStatus = 1; //test
           worker = s['worker'] ?? '';
           updatedAt = formatTime(s['updated_at'] ?? '');
+          productionVolume = s['production_volume'] ?? 0;
         }
       }
     }
@@ -52,13 +54,14 @@ class StepListCard extends StatelessWidget {
           height: 70,
           child: Row(
             children: [
-              _buildStepStatusIcon(context, stepStatus!),
+              _createStepStatusIcon(context, stepStatus!),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildStepTitleLabel(stepTitle),
-                    _buildStepListSubtitle(worker, updatedAt),
+                    _createStepTitleLabel(stepTitle),
+                    _createStepListSubtitle(
+                        worker, updatedAt, productionVolume),
                   ],
                 ),
               ),
@@ -69,7 +72,7 @@ class StepListCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStepStatusIcon(BuildContext context, int status) {
+  Widget _createStepStatusIcon(BuildContext context, int status) {
     Color iconColor;
     switch (status) {
       case 0:
@@ -95,7 +98,7 @@ class StepListCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStepTitleLabel(String stepTitle) {
+  Widget _createStepTitleLabel(String stepTitle) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
       child: Text(
@@ -108,19 +111,22 @@ class StepListCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStepListSubtitle(String worker, String updatedAt) {
+  Widget _createStepListSubtitle(
+      String worker, String updatedAt, int productionVolume) {
     return Row(
       // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildSubtitleWithIcon(Icons.person, worker),
-        _buildSubtitleWithIcon(Icons.update, updatedAt),
+        _createSubtitleWithIcon(Icons.person, worker),
+        _createSubtitleWithIcon(Icons.inventory, productionVolume.toString()),
+        _createSubtitleWithIcon(Icons.update, updatedAt),
       ],
     );
   }
 
-  Widget _buildSubtitleWithIcon(IconData icon, String text) {
+  Widget _createSubtitleWithIcon(IconData icon, String text) {
     return SizedBox(
+      width: 120,
       child: Row(
         children: [
           Icon(

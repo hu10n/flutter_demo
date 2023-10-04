@@ -10,7 +10,6 @@ import 'ModalContentForDelivery.dart';
 import 'ModalContentForDetail.dart';
 import 'ModalContentForChangeStatus.dart';
 
-
 class MachineSummaryCard extends StatefulWidget {
   final Function onScrollDown;
   final Function onScrollUp;
@@ -30,7 +29,7 @@ class MachineSummaryCard extends StatefulWidget {
   _MachineSummaryCardState createState() => _MachineSummaryCardState();
 }
 
-class _MachineSummaryCardState extends State<MachineSummaryCard>{
+class _MachineSummaryCardState extends State<MachineSummaryCard> {
   bool isModal = false; //モーダル表示制御用
 
   @override
@@ -57,36 +56,47 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
         "${machine['machine_group']}-${machine['machine_num'].toString()}";
     String productName =
         projects.isNotEmpty ? projects[0]['product_name'] ?? '' : '';
+    String productNumber =
+        projects.isNotEmpty ? projects[0]['product_num'] ?? '' : '';
     String material = projects.isNotEmpty ? projects[0]['material'] ?? '' : '';
     String lotNumber = projects.isNotEmpty ? projects[0]['lot_num'] ?? '' : '';
+    int productionVolume =
+        projects.isNotEmpty ? projects[0]['production_volume'] ?? 0 : 0;
+    String cliantName =
+        projects.isNotEmpty ? projects[0]['client_name'] ?? '' : '';
 
     bool isEmpty = machine["project"].isEmpty;
 
     return Card(
       child: Column(
         children: [
-          _buildTitleBox(machineNumber, machineName),
+          _createTitleBox(machineNumber, machineName, productNumber),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              _buildMachineStatusBox(context, machineStatus, progressPercentage,
-                  totalProgress, totalSteps),
-              _buildProductSpecBox(productName, material, lotNumber, updateDate)
+              _createMachineStatusBox(context, machineStatus,
+                  progressPercentage, totalProgress, totalSteps),
+              _createProductInfoBox(productName, material, lotNumber,
+                  updateDate, productionVolume, cliantName)
             ],
           ),
-          if(!isEmpty)
-          _buildBottomButtonBox(context, widget.onPressAction, machine, projects[0]),
-          if(isEmpty)
-          _buildBottomButtonBoxEmpty(context, widget.onPressAction, machine)
+          if (!isEmpty)
+            _createBottomButtonBox(
+                context, widget.onPressAction, machine, projects[0]),
+          if (isEmpty)
+            _createBottomButtonBoxEmpty(context, widget.onPressAction, machine)
         ],
       ),
     );
   }
 
-  Widget _buildBottomButtonBox(BuildContext context, VoidCallback onPressAction,
-      Map<String, dynamic> machine, Map<String, dynamic> project) {
+  Widget _createBottomButtonBox(
+      BuildContext context,
+      VoidCallback onPressAction,
+      Map<String, dynamic> machine,
+      Map<String, dynamic> project) {
     //final modalPage = ModalPage();
-    
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -95,47 +105,47 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
           alignment: Alignment.center,
           children: [
             SizedBox(
-              child: ElevatedButton(
-                onPressed: () {              
-                  onPressAction();             
-                },
-                child: SizedBox(
-                    width:  100,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "カード発行",
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w600),
-                        ),
-                      ],
-            )))),
+                child: ElevatedButton(
+                    onPressed: () {
+                      onPressAction();
+                    },
+                    child: SizedBox(
+                        width: 100,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "カード発行",
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        )))),
             Positioned(
-                right: 50,
-                child: SizedBox(
-                    width: 55,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        widget.onScrollDown(100);
-                        _showActionSheet(context,machine,project);
-                      },
-                      child: Icon(
-                        Icons.more_horiz, // ここで「・・・」のアイコンを設定します。
-                        color: Colors.white, // アイコンの色を設定します。
-                      ),
-                    )),
-              ),
+              right: 50,
+              child: SizedBox(
+                  width: 55,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      widget.onScrollDown(100);
+                      _showActionSheet(context, machine, project);
+                    },
+                    child: Icon(
+                      Icons.more_horiz, // ここで「・・・」のアイコンを設定します。
+                      color: Colors.white, // アイコンの色を設定します。
+                    ),
+                  )),
+            ),
           ],
         ),
       ),
     );
   }
 
-    Widget _buildBottomButtonBoxEmpty(BuildContext context, VoidCallback onPressAction,
-      Map<String, dynamic> machine) {
+  Widget _createBottomButtonBoxEmpty(BuildContext context,
+      VoidCallback onPressAction, Map<String, dynamic> machine) {
     //final modalPage = ModalPage();
-    
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -144,67 +154,69 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
           alignment: Alignment.center,
           children: [
             SizedBox(
-              child: ElevatedButton(
-                onPressed: () {             
-                  //割り当てロジック-------------------------------------------------------------------------
-                  widget.onScrollDown(100);
+                child: ElevatedButton(
+                    onPressed: () {
+                      //割り当てロジック-------------------------------------------------------------------------
+                      widget.onScrollDown(100);
 
-                  showModalBottomSheet(
-                    //モーダル表示
-                    context: context,
-                    isScrollControlled: true,
-                    enableDrag: false,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(20))),
-                    builder: (context) =>
-                        MyModal(onScrollUp: widget.onScrollUp, machine: machine,),
-                  );
-                  //---------------------------------------------------------------------------------------                 
-                },
-                child: SizedBox(
-                    width: 200,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "プロジェクト割り当て",
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w600),
+                      showModalBottomSheet(
+                        //モーダル表示
+                        context: context,
+                        isScrollControlled: true,
+                        enableDrag: false,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(20))),
+                        builder: (context) => MyModal(
+                          onScrollUp: widget.onScrollUp,
+                          machine: machine,
                         ),
-                      ],
-            )))),
+                      );
+                      //---------------------------------------------------------------------------------------
+                    },
+                    child: SizedBox(
+                        width: 200,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "プロジェクト割り当て",
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        )))),
           ],
         ),
       ),
     );
   }
 
-  SizedBox _buildProductSpecBox(String productName, String material,
-      String lotNumber, String updateDate) {
+  SizedBox _createProductInfoBox(
+      String productName,
+      String material,
+      String lotNumber,
+      String updateDate,
+      int productionVolume,
+      String cliantName) {
     return SizedBox(
+      height: 150,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("品名:$productName"),
-          SizedBox(
-            height: 10,
-          ),
-          Text("材質:$material"),
-          SizedBox(
-            height: 10,
-          ),
-          Text("Lot番号:$lotNumber"),
-          SizedBox(
-            height: 10,
-          ),
+          Text("品名: $productName"),
+          Text("材質: $material"),
+          Text("Lot番号: $lotNumber"),
+          Text("生産数: $productionVolume"),
+          Text("客先: $cliantName"),
           Text("前回更新:$updateDate")
         ],
       ),
     );
   }
 
-  Widget _buildMachineStatusBox(BuildContext context, int machineStatus,
+  Widget _createMachineStatusBox(BuildContext context, int machineStatus,
       int progressPercentage, int totalProgress, int totalSteps) {
     return SizedBox(
       width: 170,
@@ -216,14 +228,14 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
           SizedBox(
             height: 10,
           ),
-          _buildProgressCircle(
+          _createProgressCircle(
               context, progressPercentage, totalProgress, totalSteps, 100),
         ],
       ),
     );
   }
 
-  Widget _buildTitleBox(machineNumber, machineName) {
+  Widget _createTitleBox(machineNumber, machineName, productNumber) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Stack(
@@ -231,7 +243,19 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(child: Text("$machineNumber")),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    machineNumber,
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                  ),
+                  Text(
+                    machineName,
+                    style: TextStyle(fontSize: 10),
+                  ),
+                ],
+              ),
             ],
           ),
           Row(
@@ -239,7 +263,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
             children: [
               SizedBox(
                   child: Text(
-                machineName,
+                productNumber,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
               )),
             ],
@@ -249,7 +273,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
     );
   }
 
-  Widget _buildProgressCircle(BuildContext context, int progressPercentage,
+  Widget _createProgressCircle(BuildContext context, int progressPercentage,
       int totalProgress, int totalSteps, double circleRadius) {
     return Stack(
       children: [
@@ -300,9 +324,9 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
     );
   }
 
-
   // アクションシート用-----------------------------------------------------
-  void _showActionSheet(BuildContext context,Map<String, dynamic> machine, Map<String, dynamic> project) {
+  void _showActionSheet(BuildContext context, Map<String, dynamic> machine,
+      Map<String, dynamic> project) {
     showModalBottomSheet(
         context: context,
         isDismissible: true,
@@ -310,31 +334,32 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
           return Wrap(
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.local_shipping,color: Color.fromARGB(255, 222, 212, 123)),
+                leading: Icon(Icons.local_shipping,
+                    color: Color.fromARGB(255, 222, 212, 123)),
                 title: Text('部品を納品する'),
                 onTap: () {
                   Navigator.pop(context); // アクションシートを閉じる
                   // ここに追加の処理を実装
-                  
+
                   setIsModal(true);
                   showModalBottomSheet(
                     context: context,
                     //isScrollControlled: true,
                     enableDrag: true,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-                    builder: (context) =>
-                          ModalContentForDelivery(
-                            onScrollUp: widget.onScrollUp, 
-                            machine: machine, 
-                            project: project,
-                            setIsModal: setIsModal,
-                          ),
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(20))),
+                    builder: (context) => ModalContentForDelivery(
+                      onScrollUp: widget.onScrollUp,
+                      machine: machine,
+                      project: project,
+                      setIsModal: setIsModal,
+                    ),
                   );
                 },
               ),
               ListTile(
-                leading: Icon(Icons.zoom_in,color: Colors.blue),
+                leading: Icon(Icons.zoom_in, color: Colors.blue),
                 title: Text('詳細情報を見る'),
                 onTap: () {
                   Navigator.pop(context); // アクションシートを閉じる
@@ -347,19 +372,22 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
                     isScrollControlled: true,
                     enableDrag: true,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-                    builder: (context) =>
-                          ModalContentForDetail(
-                            onScrollUp: widget.onScrollUp, 
-                            machine: machine, 
-                            project: project,
-                            setIsModal: setIsModal,
-                          ),
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(20))),
+                    builder: (context) => ModalContentForDetail(
+                      onScrollUp: widget.onScrollUp,
+                      machine: machine,
+                      project: project,
+                      setIsModal: setIsModal,
+                    ),
                   );
                 },
-              ),   
+              ),
               ListTile(
-                leading: Icon(Icons.swap_horiz,color: Colors.green,),
+                leading: Icon(
+                  Icons.swap_horiz,
+                  color: Colors.green,
+                ),
                 title: Text('作業機のステータスを変更する'),
                 onTap: () {
                   Navigator.pop(context); // アクションシートを閉じる
@@ -370,19 +398,22 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
                     isScrollControlled: true,
                     enableDrag: true,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-                    builder: (context) =>
-                          ModalContentForChangeStatus(
-                            onScrollUp: widget.onScrollUp, 
-                            machine: machine, 
-                            project: project,
-                            setIsModal: setIsModal,
-                          ),
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(20))),
+                    builder: (context) => ModalContentForChangeStatus(
+                      onScrollUp: widget.onScrollUp,
+                      machine: machine,
+                      project: project,
+                      setIsModal: setIsModal,
+                    ),
                   );
                 },
               ),
               ListTile(
-                leading: Icon(Icons.cancel,color: Colors.red,),
+                leading: Icon(
+                  Icons.cancel,
+                  color: Colors.red,
+                ),
                 title: Text('キャンセル'),
                 onTap: () {
                   Navigator.pop(context); // アクションシートを閉じる
@@ -392,13 +423,14 @@ class _MachineSummaryCardState extends State<MachineSummaryCard>{
           );
         }).whenComplete(() {
       // ここでモーダルが閉じられた際の追加処理を実行します
-      if(!isModal){
+      if (!isModal) {
         widget.onScrollUp(100);
       }
     });
   }
+
   //----------------------------------------------------------------
-  void setIsModal(bool flag){
+  void setIsModal(bool flag) {
     setState(() {
       isModal = flag;
     });
