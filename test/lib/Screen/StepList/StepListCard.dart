@@ -69,10 +69,21 @@ class StepListCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStepStatusIcon(context, int status) {
-    Color iconColor = status == 0
-        ? Theme.of(context).disabledColor
-        : Theme.of(context).colorScheme.primary;
+  Widget _buildStepStatusIcon(BuildContext context, int status) {
+    Color iconColor;
+    switch (status) {
+      case 0:
+        iconColor = Theme.of(context).disabledColor;
+        break;
+      case -1:
+        iconColor = Colors.yellow;
+        break;
+      case 1:
+        iconColor = Colors.green;
+        break;
+      default:
+        iconColor = Theme.of(context).disabledColor; // 0, -1, 1以外の場合もグレーに設定
+    }
 
     return Padding(
       padding: const EdgeInsets.all(10.0),
