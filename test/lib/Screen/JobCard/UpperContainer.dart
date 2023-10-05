@@ -14,7 +14,7 @@ pw.Container UpperContainer(pw.Font? fontJP,machine, date) {
           width: 150,
           child: pw.Center(
             child: pw.BarcodeWidget(
-              data: 'https://www.example.com', // ここにQRコードのデータ（テキストやURL）を設定します。
+              data: '{"key":"key-12345","projectId": "${machine["project"][0]["project_id"]}"}', // ここにQRコードのデータ（テキストやURL）を設定します。
               barcode: pw.Barcode.qrCode(),
               width: 120,
               height: 120,

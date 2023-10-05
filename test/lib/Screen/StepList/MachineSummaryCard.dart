@@ -8,7 +8,8 @@ import '../../GlobalWidget/MachineStatusIndicator.dart';
 import 'ModalContentForAssignProject.dart';
 import 'ModalContentForDelivery.dart';
 import 'ModalContentForDetail.dart';
-import 'ModalContentForChangeStatus.dart';
+//import 'ModalContentForChangeStatus.dart';
+import 'ModalContent.dart';
 
 class MachineSummaryCard extends StatefulWidget {
   final Function onScrollDown;
