@@ -1,18 +1,16 @@
 import 'package:intl/intl.dart';
 
+// format large Number
+String formatNumber(int? number) {
+  if (number == null) {
+    return "N/A";
+  }
+  return NumberFormat("#,###").format(number);
+}
+
 // Calculate Progress ----------------------------------------------------------
 int calcpProgressPercentage(int totalProgress, int stepNumber) =>
     stepNumber > 0 ? ((totalProgress / stepNumber) * 100).toInt() : 0;
-
-// int calcStepNumber(MachineData machine) => machine.childSteps.length;
-
-// int calcTotalProgress(MachineData machine) {
-//   int totalProgress = 0;
-//   for (var step in machine.childSteps.values) {
-//     totalProgress += step.stepStatus;
-//   }
-//   return totalProgress;
-// }
 
 // Get Tapped DateTime  ---------------------------
 String getTapTime() {
@@ -49,9 +47,9 @@ String getLatestUpdatedAt(Map<String, dynamic> machine) {
 }
 
 // Formatting Unix DateTime to Readable Format -----------------------------------------------
-String formatTime(String time) {
-  if (time == 'N/A') {
-    return time;
+String formatTime(String? time) {
+  if (time == null || time == 'N/A') {
+    return 'N/A';
   }
 
   try {
@@ -100,19 +98,19 @@ int calculateTotalSteps(Map<String, dynamic> machine) {
 }
 
 int calculateTotalProgress(Map<String, dynamic> machine) {
-  int sumOfProjectStatus = 0;
+  int countOfCompletedSteps = 0;
   if (machine['project'] is List) {
     for (var project in machine['project']) {
       if (project['step'] is List) {
         for (var step in project['step']) {
-          if (step['project_status'] is num) {
-            sumOfProjectStatus += (step['project_status'] as num).toInt();
+          if (step['project_status'] is num && step['project_status'] == 1) {
+            countOfCompletedSteps++;
           }
         }
       }
     }
   }
-  return sumOfProjectStatus;
+  return countOfCompletedSteps;
 }
 
 Map<String, dynamic> getStepInfoMap(List dataList, String projectId) {

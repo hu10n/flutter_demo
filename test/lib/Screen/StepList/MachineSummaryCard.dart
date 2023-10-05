@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 // import '../../../LocalData/data.dart';
 import '../../providers/DataProvider.dart';
-import '../../GlobalMethod/CommonMethods.dart';
+import '../../GlobalMethod/utils.dart';
 import '../../GlobalWidget/MachineStatusIndicator.dart';
 import 'ModalContentForAssignProject.dart';
 import 'ModalContentForDelivery.dart';
@@ -61,8 +61,9 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
         projects.isNotEmpty ? projects[0]['product_num'] ?? '' : '';
     String material = projects.isNotEmpty ? projects[0]['material'] ?? '' : '';
     String lotNumber = projects.isNotEmpty ? projects[0]['lot_num'] ?? '' : '';
-    int productionVolume =
-        projects.isNotEmpty ? projects[0]['production_volume'] ?? 0 : 0;
+    String productionVolume = projects.isNotEmpty
+        ? formatNumber(projects[0]['production_volume']) ?? ''
+        : '';
     String cliantName =
         projects.isNotEmpty ? projects[0]['client_name'] ?? '' : '';
 
@@ -213,7 +214,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
       String material,
       String lotNumber,
       String updateDate,
-      int productionVolume,
+      String productionVolume,
       String cliantName) {
     return SizedBox(
       height: 150,
@@ -350,58 +351,58 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
         builder: (BuildContext context) {
           return Wrap(
             children: <Widget>[
-              if(project.isNotEmpty)
-              ListTile(
-                leading: Icon(Icons.local_shipping,
-                    color: Color.fromARGB(255, 222, 212, 123)),
-                title: Text('部品を納品する'),
-                onTap: () {
-                  Navigator.pop(context); // アクションシートを閉じる
-                  // ここに追加の処理を実装
+              if (project.isNotEmpty)
+                ListTile(
+                  leading: Icon(Icons.local_shipping,
+                      color: Color.fromARGB(255, 222, 212, 123)),
+                  title: Text('部品を納品する'),
+                  onTap: () {
+                    Navigator.pop(context); // アクションシートを閉じる
+                    // ここに追加の処理を実装
 
-                  setIsModal(true);
-                  showModalBottomSheet(
-                    context: context,
-                    //isScrollControlled: true,
-                    enableDrag: false,
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(20))),
-                    builder: (context) => ModalContentForDelivery(
-                      onScrollUp: widget.onScrollUp,
-                      machine: machine,
-                      project: project,
-                      setIsModal: setIsModal,
-                    ),
-                  );
-                },
-              ),
-              if(project.isNotEmpty)
-              ListTile(
-                leading: Icon(Icons.zoom_in, color: Colors.blue),
-                title: Text('詳細情報を見る'),
-                onTap: () {
-                  Navigator.pop(context); // アクションシートを閉じる
-                  // ここに追加の処理を実装
-                  print(project);
-                  print(machine);
-                  setIsModal(true);
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    enableDrag: false,
-                    shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(20))),
-                    builder: (context) => ModalContentForDetail(
-                      onScrollUp: widget.onScrollUp,
-                      machine: machine,
-                      project: project,
-                      setIsModal: setIsModal,
-                    ),
-                  );
-                },
-              ),
+                    setIsModal(true);
+                    showModalBottomSheet(
+                      context: context,
+                      //isScrollControlled: true,
+                      enableDrag: false,
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(20))),
+                      builder: (context) => ModalContentForDelivery(
+                        onScrollUp: widget.onScrollUp,
+                        machine: machine,
+                        project: project,
+                        setIsModal: setIsModal,
+                      ),
+                    );
+                  },
+                ),
+              if (project.isNotEmpty)
+                ListTile(
+                  leading: Icon(Icons.zoom_in, color: Colors.blue),
+                  title: Text('詳細情報を見る'),
+                  onTap: () {
+                    Navigator.pop(context); // アクションシートを閉じる
+                    // ここに追加の処理を実装
+                    print(project);
+                    print(machine);
+                    setIsModal(true);
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      enableDrag: false,
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(20))),
+                      builder: (context) => ModalContentForDetail(
+                        onScrollUp: widget.onScrollUp,
+                        machine: machine,
+                        project: project,
+                        setIsModal: setIsModal,
+                      ),
+                    );
+                  },
+                ),
               ListTile(
                 leading: Icon(
                   Icons.swap_horiz,

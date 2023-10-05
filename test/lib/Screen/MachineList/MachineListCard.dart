@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/DataProvider.dart';
 import '../../GlobalWidget/MachineStatusIndicator.dart';
-import '../../GlobalMethod/CommonMethods.dart';
+import '../../GlobalMethod/utils.dart';
 
 class MachineListCard extends StatelessWidget {
   const MachineListCard({

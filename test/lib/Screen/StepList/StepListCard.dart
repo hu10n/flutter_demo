@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test/GlobalMethod/CommonMethods.dart';
+import 'package:test/GlobalMethod/utils.dart';
 
 import '../../providers/DataProvider.dart';
 
@@ -30,7 +30,7 @@ class StepListCard extends StatelessWidget {
     int? stepStatus;
     String worker = '';
     String updatedAt = '';
-    int productionVolume = 0;
+    String productionVolume = '';
 
     for (var project in (machine['project'] as List)) {
       for (var s in (project['step'] as List)) {
@@ -40,7 +40,7 @@ class StepListCard extends StatelessWidget {
           // stepStatus = 1; //test
           worker = s['worker'] ?? '';
           updatedAt = formatTime(s['updated_at'] ?? '');
-          productionVolume = s['production_volume'] ?? 0;
+          productionVolume = formatNumber(s['production_volume']) ?? '';
         }
       }
     }
@@ -85,7 +85,7 @@ class StepListCard extends StatelessWidget {
         iconColor = Colors.green;
         break;
       default:
-        iconColor = Theme.of(context).disabledColor; // 0, -1, 1以外の場合もグレーに設定
+        iconColor = Theme.of(context).disabledColor;
     }
 
     return Padding(
@@ -112,37 +112,42 @@ class StepListCard extends StatelessWidget {
   }
 
   Widget _createStepListSubtitle(
-      String worker, String updatedAt, int productionVolume) {
+      String worker, String updatedAt, String productionVolume) {
     return Row(
-      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _createSubtitleWithIcon(Icons.person, worker),
-        _createSubtitleWithIcon(Icons.inventory, productionVolume.toString()),
-        _createSubtitleWithIcon(Icons.update, updatedAt),
+        Flexible(
+          flex: 5,
+          child: _createSubtitleWithIcon(Icons.person, worker),
+        ),
+        Flexible(
+          flex: 5,
+          child: _createSubtitleWithIcon(
+              Icons.inventory, productionVolume.toString()),
+        ),
+        Flexible(
+          flex: 6,
+          child: _createSubtitleWithIcon(Icons.update, updatedAt),
+        ),
       ],
     );
   }
 
   Widget _createSubtitleWithIcon(IconData icon, String text) {
-    return SizedBox(
-      width: 120,
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            size: 13,
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 13,
+          color: Colors.grey,
+        ),
+        Text(
+          text,
+          style: const TextStyle(
+            fontSize: 12,
             color: Colors.grey,
           ),
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

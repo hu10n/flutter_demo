@@ -5,19 +5,20 @@ import 'package:test/api/TestAPI.dart';
 import '../../providers/DataProvider.dart';
 import '../../GlobalWidget/ShowDialog.dart';
 import '../../GlobalWidget/BuildTitleForModal.dart';
+import 'package:test/GlobalMethod/utils.dart';
 
 class ModalContentForDetail extends StatefulWidget {
   final Function onScrollUp;
   final Function setIsModal;
   final Map<String, dynamic> machine;
   final Map<String, dynamic> project;
-  const ModalContentForDetail({
-    Key? key, 
-    required this.onScrollUp,
-    required this.setIsModal,
-    required this.machine, 
-    required this.project
-    })  : super(key: key);
+  const ModalContentForDetail(
+      {Key? key,
+      required this.onScrollUp,
+      required this.setIsModal,
+      required this.machine,
+      required this.project})
+      : super(key: key);
 
   @override
   _ModalContentForDetail createState() => _ModalContentForDetail();
@@ -38,7 +39,7 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
             Column(
               children: [
                 //モーダルの大タイトル＋クローズボタン---------------------
-               BuildTitleForModal(context, widget.onScrollUp, "詳細情報を見る"),
+                BuildTitleForModal(context, widget.onScrollUp, "詳細情報を見る"),
                 //---------------------------------------------------
                 //スクロールビュー部分----------------------------------
 
@@ -61,7 +62,9 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
                                         25.0), //上下左右のパディング設定。できれば数値指定したくない
                                 child: Column(
                                   children: [
-                                    SizedBox(height: 20,),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
                                     // 作業機情報----------------------------------------------------
                                     Align(
                                       alignment: Alignment.centerLeft,
@@ -69,26 +72,33 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・機番：${machine['machine_group']}-${machine['machine_num']}"),
+                                      child: Text(
+                                          "・機番：${machine['machine_group']}-${machine['machine_num']}"),
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・機名：${machine['machine_name']}"),
+                                      child: Text(
+                                          "・機名：${machine['machine_name']}"),
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・機械ステータス：${machine['machine_status']}"),
+                                      child: Text(
+                                          "・機械ステータス：${machine['machine_status']}"),
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・作成日時：${machine['created_at']}"),
+                                      child: Text(
+                                          "・作成日時：${formatTime(machine['created_at'])}"),
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・更新日時：${machine['updated_at']}"),
+                                      child: Text(
+                                          "・更新日時：${formatTime(machine['updated_at'])}"),
                                     ),
                                     //--------------------------------------------------------------
-                                    SizedBox(height: 20,),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
                                     // 商品情報----------------------------------------------------
                                     Align(
                                       alignment: Alignment.centerLeft,
@@ -96,15 +106,18 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・品番：${project['product_num']}"),
+                                      child:
+                                          Text("・品番：${project['product_num']}"),
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・品名：${project['product_name']}"),
+                                      child: Text(
+                                          "・品名：${project['product_name']}"),
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・プロジェクトステータス：${project['project_status']}"),
+                                      child: Text(
+                                          "・プロジェクトステータス：${project['project_status']}"),
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
@@ -112,27 +125,40 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・ロット番号：${project['lot_num']}"),
+                                      child:
+                                          Text("・ロット番号：${project['lot_num']}"),
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・生産量：${project['production_volume']}"),
+                                      child: Text(
+                                          "・生産量：${project['production_volume']}"),
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・担当者：${project['supervisor']}"),
+                                      child:
+                                          Text("・担当者：${project['supervisor']}"),
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・作成日時：${project['created_at']}"),
+                                      child: Text(
+                                          "・作成日時：${formatTime(project['created_at'])}"),
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・更新日時：${project['updated_at']}"),
+                                      child: Text(
+                                          "・更新日時：${formatTime(project['updated_at'])}"),
                                     ),
                                     //--------------------------------------------------------------
-                                    SizedBox(height: 20,),
-                                    ...List.generate(project["step"].length, (index) => stepInfoWidget(index, project["step"][index])).expand((widget) => [widget, SizedBox(height: 20)]).toList(),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    ...List.generate(
+                                            project["step"].length,
+                                            (index) => stepInfoWidget(
+                                                index, project["step"][index]))
+                                        .expand((widget) =>
+                                            [widget, SizedBox(height: 20)])
+                                        .toList(),
                                   ],
                                 ),
                               ),
@@ -147,6 +173,7 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
       ),
     );
   }
+
   Widget stepInfoWidget(int index, Map<String, dynamic> step) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,19 +204,19 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
         ),
         Align(
           alignment: Alignment.centerLeft,
-          child: Text("・開始日時：${step['started_at']}"),
+          child: Text("・開始日時：${formatTime(step['started_at'])}"),
         ),
         Align(
           alignment: Alignment.centerLeft,
-          child: Text("・完了日時：${step['finished_at']}"),
+          child: Text("・完了日時：${formatTime(step['finished_at'])}"),
         ),
         Align(
           alignment: Alignment.centerLeft,
-          child: Text("・作成日時：${step['created_at']}"),
+          child: Text("・作成日時：${formatTime(step['created_at'])}"),
         ),
         Align(
           alignment: Alignment.centerLeft,
-          child: Text("・更新日時：${step['updated_at']}"),
+          child: Text("・更新日時：${formatTime(step['updated_at'])}"),
         ),
       ],
     );

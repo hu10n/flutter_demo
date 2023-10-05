@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test/GlobalMethod/CommonMethods.dart';
+import 'package:test/GlobalMethod/utils.dart';
 import 'package:test/Screen/QRScanner/ModalContentForComplete.dart';
 import 'package:test/Screen/QRScanner/ModalContentInQR.dart';
 import 'package:test/Screen/QRScanner/ModalContentForStart.dart';
