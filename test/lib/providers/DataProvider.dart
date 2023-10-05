@@ -108,15 +108,29 @@ class DataNotifier extends ChangeNotifier {
     List<Map<String, dynamic>> _project = [];
     List<Map<String, dynamic>> _machine = [];
 
+    // sorting step by 'step_num'
+    List<Map<String, dynamic>> sortedStep = List.from(step);
+    sortedStep.sort((a, b) => a["step_num"].compareTo(b["step_num"]));
+
     for (var p in project) {
       var _p = Map.of(p);
-      _p["step"] = step
+      _p["step"] = sortedStep
           .where((element) => element["project_id"] == p["project_id"])
           .toList();
       _project.add(_p);
     }
 
-    for (var m in machine) {
+    // sorting machine List by 'machine_group' ,then by 'machine_num'
+    List<Map<String, dynamic>> sortedMachine = List.from(machine);
+    sortedMachine.sort((a, b) {
+      int compare = a["machine_group"].compareTo(b["machine_group"]);
+      if (compare == 0) {
+        return a["machine_num"].compareTo(b["machine_num"]);
+      }
+      return compare;
+    });
+
+    for (var m in sortedMachine) {
       var _m = Map.of(m);
       _m["project"] = _project
           .where((element) => element["machine_id"] == m["machine_id"])
