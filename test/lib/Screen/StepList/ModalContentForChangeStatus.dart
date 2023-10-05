@@ -63,7 +63,7 @@ class _ModalContentForChangeStatus extends State<ModalContentForChangeStatus> {
     return GestureDetector(
       onTap: () {},
       child: Container(
-        height: MediaQuery.of(context).size.height, //モーダルの高さは全画面
+        height: 500, //モーダルの高さは全画面
         child: Stack(
           children: [
             Column(
@@ -77,7 +77,7 @@ class _ModalContentForChangeStatus extends State<ModalContentForChangeStatus> {
                     child: Padding(
                         padding: EdgeInsets.only(
                             bottom: MediaQuery.of(context).viewInsets.bottom +
-                                70.0),
+                                20.0),
                         child: ListView(
                           //controller: scrollController,
                           children: [
@@ -92,21 +92,14 @@ class _ModalContentForChangeStatus extends State<ModalContentForChangeStatus> {
                                         25.0), //上下左右のパディング設定。できれば数値指定したくない
                                 child: Column(
                                   children: [
-                                    DropdownButton<String>(
-                                      value: _selectedItem,  // 現在選択されている項目
-                                      hint: Text('選択してください'),  // 選択されていないときのヒント
-                                      onChanged: (String? newValue) {  // 項目が選択されたときの処理
-                                        setState(() {
-                                          _selectedItem = newValue;
-                                        });
-                                      },
-                                      items: _dropdownItems.map<DropdownMenuItem<String>>((String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      }).toList(),
-                                    ),
+                                    SizedBox(height: 20,),
+                                    _createOptions("稼働中", Colors.green),
+                                    SizedBox(height: 50,),
+                                    _createOptions("停止中", Colors.pink),
+                                    SizedBox(height: 20,),
+                                    _createOptions("異常停止中", Colors.red),
+                                    SizedBox(height: 20,),
+                                    _createOptions("メンテナンス中", Colors.yellow),
                                   ],
                                 ),
                               ),
@@ -116,70 +109,44 @@ class _ModalContentForChangeStatus extends State<ModalContentForChangeStatus> {
                 //--------------------------------------------------
               ],
             ),
-            // スクロール可能なウィジェットの上に配置される固定ボタン--------
-            Positioned.fill(
-              bottom: 20,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context)
-                        .viewInsets
-                        .bottom, // キーパッドの高さ + 20.0
-                  ),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        // ボタンがタップされた時の処理を記述
-                        //print(widget.machine);
-                        //print(widget.project);
-                        //_submitData(widget.machine, project, context,
-                        //    widget.onScrollUp);
-                        print(_selectedItem);
-                        print(widget.machine["project"].isEmpty);
-                        final num;
-
-                        if(_selectedItem == "正常"){
-                          if(widget.machine["project"].isEmpty){
-                            num = 0;
-                          }else{
-                            num = 1;
-                          }
-                        }else if(_selectedItem == "停止"){
-                          num = 2;
-                        }else if(_selectedItem == "異常停止"){
-                          num = 3;
-                        }else if(_selectedItem == "メンテナンス"){
-                          num = 4;
-                        }else{
-                          num = -1;
-                        }
-                        print(num);
-
-                        _submitData(widget.machine, num, context, widget.onScrollUp);
-
-                        widget.setIsModal(false);
-                        //Navigator.of(context).pop();
-                        //widget.onScrollUp(100);
-                      },
-                      style: ButtonStyle(
-                        minimumSize: MaterialStateProperty.all<Size>(Size(
-                            MediaQuery.of(context).size.width * 0.9,
-                            40.0)), // ここで幅と高さを指定
-                      ),
-                      child: Text('変更'),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            //------------------------------------------------------
-
-            
             //ローディング画面-----------------------------------------
             if (_isLoading) LoadingModal()
             //------------------------------------------------------
+          ],
+        ),
+      ),
+    );
+  }
+  Container _createOptions(text,color){
+    return Container(
+      height: 70,
+      decoration: BoxDecoration(
+        color: Color.fromARGB(255, 243, 243, 243), // 背景色
+        //border: Border.all(
+          //color: Colors.blue, // 枠線の色
+          //width: 2.0, // 枠線の太さ
+        //),
+        borderRadius: BorderRadius.circular(8.0), // 角を丸くする場合
+      ),
+      child: Align(
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(width: 10,),
+            Icon(
+              Icons.circle,
+              color: color,
+              size: 20,
+            ),
+            SizedBox(width: 10,),
+            Text(
+              text,
+              style: TextStyle(
+                  color: Colors.black, fontWeight: FontWeight.bold
+              ),
+            ),                                           
           ],
         ),
       ),
