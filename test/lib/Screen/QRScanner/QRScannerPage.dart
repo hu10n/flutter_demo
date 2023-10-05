@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:test/Screen/QRScanner/ModalContentForComplete.dart';
 import 'package:test/Screen/QRScanner/ModalContentForStart.dart';
-import 'package:test/Screen/QRScanner/ModalContentInQR.dart';
 import 'package:test/providers/DataProvider.dart';
 import 'package:test/GlobalMethod/utils.dart';
 

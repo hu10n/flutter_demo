@@ -23,27 +23,38 @@ String getTapTime() {
 String getLatestUpdatedAt(Map<String, dynamic> machine) {
   DateTime? latestUpdated;
 
+  // Helper function to compare and update the latestUpdated date
+  void updateLatestUpdated(String? updatedAtStr) {
+    if (updatedAtStr is String) {
+      try {
+        final updatedAt = DateTime.parse(updatedAtStr);
+        if (latestUpdated == null || updatedAt.isAfter(latestUpdated!)) {
+          latestUpdated = updatedAt;
+        }
+      } catch (e) {
+        // print('Error parsing date: $e');
+      }
+    }
+  }
+
+  // Check machine["updated_at"]
+  updateLatestUpdated(machine['updated_at'] as String?);
+
   if (machine['project'] is List) {
     for (var project in machine['project']) {
+      // Check project["updated_at"]
+      updateLatestUpdated(project['updated_at'] as String?);
+
       if (project['step'] is List) {
         for (var step in project['step']) {
-          final updatedAtStr = step['updated_at'];
-          if (updatedAtStr is String) {
-            try {
-              final updatedAt = DateTime.parse(updatedAtStr);
-              if (latestUpdated == null || updatedAt.isAfter(latestUpdated)) {
-                latestUpdated = updatedAt;
-              }
-            } catch (e) {
-              print('Error parsing date: $e');
-            }
-          }
+          updateLatestUpdated(step['updated_at'] as String?);
         }
       }
     }
   }
 
-  return latestUpdated != null ? latestUpdated.toIso8601String() : "N/A";
+  // Ensure latestUpdated is not null before calling toIso8601String
+  return latestUpdated?.toIso8601String() ?? "N/A";
 }
 
 // Formatting Unix DateTime to Readable Format -----------------------------------------------
