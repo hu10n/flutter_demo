@@ -55,8 +55,7 @@ class MachineListCard extends StatelessWidget {
                             context, machineStatus, latestEditedDateTime),
                       ],
                     ),
-                    _createMachineProgressBox(
-                        context, totalProgress, totalSteps),
+                    _createMachineProgressBox(context, machine),
                   ],
                 ),
               ),
@@ -140,12 +139,21 @@ class MachineListCard extends StatelessWidget {
   }
 
   Widget _createMachineProgressBox(
-      BuildContext context, totalProgress, totalSteps) {
+      BuildContext context, Map<String, dynamic> machine) {
+    List<int> stepStatusList = [];
+
+    if (machine['project'] != null && machine['project'].isNotEmpty) {
+      stepStatusList = (machine['project'][0]['step'] as List)
+          .map<int>((dynamic stepMap) =>
+              (stepMap as Map<String, dynamic>)['project_status'] as int)
+          .toList();
+    }
+
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: Row(
         children: [
-          for (int i = 0; i < totalSteps; i++)
+          for (int status in stepStatusList)
             Row(
               children: [
                 Container(
@@ -155,9 +163,11 @@ class MachineListCard extends StatelessWidget {
                     border: Border.all(
                         color: Theme.of(context).disabledColor, width: 1),
                     borderRadius: BorderRadius.circular(2),
-                    color: i < totalProgress
+                    color: status == 1
                         ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.background,
+                        : status == -1
+                            ? Theme.of(context).colorScheme.primaryContainer
+                            : Theme.of(context).colorScheme.background,
                   ),
                 ),
                 SizedBox(
