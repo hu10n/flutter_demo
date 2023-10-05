@@ -1,7 +1,7 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-pw.Container UpperContainer(pw.Font? fontJP) {
+pw.Container UpperContainer(pw.Font? fontJP,machine, date) {
   return pw.Container(
     width: PdfPageFormat.letter.width,
     height: 150,
@@ -30,13 +30,13 @@ pw.Container UpperContainer(pw.Font? fontJP) {
             mainAxisAlignment: pw.MainAxisAlignment.start, 
             crossAxisAlignment: pw.CrossAxisAlignment.start, 
             children: [
-              pw.Text('発行日付：2023/09/22',
+              pw.Text('発行日付：${date}',
                 style: pw.TextStyle(font: fontJP,fontSize: 16)
               ),
-              pw.Text('作業機：K-9|B(2)',
+              pw.Text('作業機：${machine["machine_group"]}-${machine["machine_num"]}|${machine["machine_name"]}',
                 style: pw.TextStyle(font: fontJP,fontSize: 16)
               ),
-              pw.Text('担当者：村上拓也',
+              pw.Text('担当者：${machine["project"][0]["supervisor"]}',
                 style: pw.TextStyle(font: fontJP,fontSize: 16)
               ),
             ],

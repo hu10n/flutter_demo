@@ -1,12 +1,17 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:intl/intl.dart';
 
 import 'BottomContainer.dart';
 import 'MiddleContainer.dart';
 import 'UpperContainer.dart';
 
-Future<void> createAndPrintPdf(pw.Document pdf,pw.Font? yourJapaneseFont) async {
+Future<void> createAndPrintPdf(pw.Document pdf,pw.Font? yourJapaneseFont, Map<String,dynamic> machine) async {
+  //print(machine);
+  DateTime now = DateTime.now();
+  String formattedDate = DateFormat('yyyy/MM/dd').format(now);
+
   pdf.addPage(
     pw.Page(
       pageFormat: PdfPageFormat.letter,
@@ -22,11 +27,11 @@ Future<void> createAndPrintPdf(pw.Document pdf,pw.Font? yourJapaneseFont) async 
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
               //上段
-              UpperContainer(yourJapaneseFont),
+              UpperContainer(yourJapaneseFont, machine, formattedDate),
               //中段
-              MiddleContainer(yourJapaneseFont),
+              MiddleContainer(yourJapaneseFont, machine["project"][0]),
               //下段------------------------------------------------------
-              BottomContainer(yourJapaneseFont),
+              BottomContainer(yourJapaneseFont, machine["project"][0]["step"]),
             ],
           ),
         );

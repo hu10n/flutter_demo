@@ -186,6 +186,21 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                             ),
                           ],
                         )))),
+            Positioned(
+              right: 50,
+              child: SizedBox(
+                  width: 55,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      widget.onScrollDown(100);
+                      _showActionSheet(context, machine, {});
+                    },
+                    child: Icon(
+                      Icons.more_horiz, // ここで「・・・」のアイコンを設定します。
+                      color: Colors.white, // アイコンの色を設定します。
+                    ),
+                  )),
+            ),
           ],
         ),
       ),
@@ -330,9 +345,11 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
     showModalBottomSheet(
         context: context,
         isDismissible: true,
+        enableDrag: false,
         builder: (BuildContext context) {
           return Wrap(
             children: <Widget>[
+              if(project.isNotEmpty)
               ListTile(
                 leading: Icon(Icons.local_shipping,
                     color: Color.fromARGB(255, 222, 212, 123)),
@@ -345,7 +362,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                   showModalBottomSheet(
                     context: context,
                     //isScrollControlled: true,
-                    enableDrag: true,
+                    enableDrag: false,
                     shape: RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.vertical(top: Radius.circular(20))),
@@ -358,6 +375,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                   );
                 },
               ),
+              if(project.isNotEmpty)
               ListTile(
                 leading: Icon(Icons.zoom_in, color: Colors.blue),
                 title: Text('詳細情報を見る'),
@@ -370,7 +388,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
-                    enableDrag: true,
+                    enableDrag: false,
                     shape: RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.vertical(top: Radius.circular(20))),
@@ -396,7 +414,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
-                    enableDrag: true,
+                    enableDrag: false,
                     shape: RoundedRectangleBorder(
                         borderRadius:
                             BorderRadius.vertical(top: Radius.circular(20))),

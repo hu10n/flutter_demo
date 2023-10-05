@@ -6,7 +6,7 @@ import 'package:test/api/TestAPI.dart';
 
 class DatabaseHelper {
   static final _dbName = 'Database.db';
-  static final _dbVersion = 1;
+  static final _dbVersion = 3;
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -20,7 +20,7 @@ class DatabaseHelper {
 
   _initDatabase() async {
     String path = join(await getDatabasesPath(), _dbName);
-    return await openDatabase(path, version: _dbVersion, onCreate: _onCreate);
+    return await openDatabase(path, version: _dbVersion, onCreate: _onCreate, onUpgrade: _onUpgrade);
   }
 
   Future _onCreate(Database db, int version) async {
@@ -94,7 +94,9 @@ class DatabaseHelper {
     final value = prefs.getString('last_updated') ??
         "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
 
+    
     final result = await postJSONData(value);
+    //final result = await getAllDataGrobal();
     //print(result);
     Database db = await instance.database;
 
@@ -121,6 +123,8 @@ class DatabaseHelper {
     }
 
     await prefs.setString('last_updated', result["current"]); // int値の保存
+  
+    
   }
 
   // 他のCRUD操作（更新、削除など）もここに追加できます
@@ -128,6 +132,13 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), _dbName);
     await deleteDatabase(path);
     _database = null; // _database のリファレンスを削除
+  }
+}
+
+Future _onUpgrade(Database db, int oldVersion, int newVersion) async{
+  if(oldVersion < 3){
+    print("object");
+    await db.execute("ALTER TABLE step ADD COLUMN production_volume INTEGER");
   }
 }
 

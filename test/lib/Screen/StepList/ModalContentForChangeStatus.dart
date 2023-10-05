@@ -27,19 +27,20 @@ class ModalContentForChangeStatus extends StatefulWidget {
 class _ModalContentForChangeStatus extends State<ModalContentForChangeStatus> {
 
   bool _isLoading = false; //ローディング画面用
-
+   List<String> _dropdownItems = ['正常', '停止', '異常停止','メンテナンス'];  // ここに選択項目を追加します
+  String? _selectedItem;
 
 
   void _submitData(
-      machine, project, BuildContext context, Function onScrollUp) async {
+      machine, status, BuildContext context, Function onScrollUp) async {
     setState(() {
       _isLoading = true;
     });
 
-    final res = await assignProjectInfo(machine, project); //データを送信
+    final res = await changeMachineStatus(machine, status); //データを送信
     await Provider.of<DataNotifier>(context, listen: false)
         .updateLocalDB(); //最新データに更新
-    
+    print(res);
 
     setState(() {
       _isLoading = false;
@@ -91,7 +92,21 @@ class _ModalContentForChangeStatus extends State<ModalContentForChangeStatus> {
                                         25.0), //上下左右のパディング設定。できれば数値指定したくない
                                 child: Column(
                                   children: [
-                                    
+                                    DropdownButton<String>(
+                                      value: _selectedItem,  // 現在選択されている項目
+                                      hint: Text('選択してください'),  // 選択されていないときのヒント
+                                      onChanged: (String? newValue) {  // 項目が選択されたときの処理
+                                        setState(() {
+                                          _selectedItem = newValue;
+                                        });
+                                      },
+                                      items: _dropdownItems.map<DropdownMenuItem<String>>((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -117,21 +132,43 @@ class _ModalContentForChangeStatus extends State<ModalContentForChangeStatus> {
                     child: ElevatedButton(
                       onPressed: () async {
                         // ボタンがタップされた時の処理を記述
-                        print(widget.machine);
-                        print(widget.project);
+                        //print(widget.machine);
+                        //print(widget.project);
                         //_submitData(widget.machine, project, context,
                         //    widget.onScrollUp);
+                        print(_selectedItem);
+                        print(widget.machine["project"].isEmpty);
+                        final num;
+
+                        if(_selectedItem == "正常"){
+                          if(widget.machine["project"].isEmpty){
+                            num = 0;
+                          }else{
+                            num = 1;
+                          }
+                        }else if(_selectedItem == "停止"){
+                          num = 2;
+                        }else if(_selectedItem == "異常停止"){
+                          num = 3;
+                        }else if(_selectedItem == "メンテナンス"){
+                          num = 4;
+                        }else{
+                          num = -1;
+                        }
+                        print(num);
+
+                        _submitData(widget.machine, num, context, widget.onScrollUp);
 
                         widget.setIsModal(false);
-                        Navigator.of(context).pop();
-                        widget.onScrollUp(100);
+                        //Navigator.of(context).pop();
+                        //widget.onScrollUp(100);
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all<Size>(Size(
                             MediaQuery.of(context).size.width * 0.9,
                             40.0)), // ここで幅と高さを指定
                       ),
-                      child: Text('割り当て'),
+                      child: Text('変更'),
                     ),
                   ),
                 ),

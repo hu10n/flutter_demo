@@ -1,7 +1,7 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-pw.Container BottomContainer(pw.Font? fontJP) {
+pw.Container BottomContainer(pw.Font? fontJP, step) {
   return pw.Container(
     width: PdfPageFormat.letter.width,
     height: 240,
@@ -30,7 +30,12 @@ pw.Container BottomContainer(pw.Font? fontJP) {
                 padding: pw.EdgeInsets.all(8.0),
                 child: pw.Align(
                   alignment: pw.Alignment.centerLeft,
-                  child: pw.Text('作業工程',style: pw.TextStyle(font: fontJP)),
+                  child: pw.Text(
+                    index == 0 ? '作業工程':
+                    step.length > index - 1 ? '${step[index - 1]["step_name"]}':
+                    "",
+                    style: pw.TextStyle(font: fontJP)
+                  ),
                 ),
               ),
               pw.Container(
@@ -47,7 +52,12 @@ pw.Container BottomContainer(pw.Font? fontJP) {
                 padding: pw.EdgeInsets.all(8.0),
                 child: pw.Align(
                   alignment: pw.Alignment.centerLeft,
-                  child: pw.Text('作業工程',style: pw.TextStyle(font: fontJP)),
+                  child: pw.Text(
+                    index == 0 ? '作業工程':
+                    step.length > index + 4 ? '${step[index - 1]["step_name"]}':
+                    "",
+                    style: pw.TextStyle(font: fontJP)
+                  ),
                 ),
               ),
             ],

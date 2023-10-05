@@ -75,7 +75,7 @@ class _StepListSliverListState extends State<StepListSliverList> {
       BuildContext context, Map<String, dynamic> machine) async {
     // デバッグ用---------------------------------------------------------------
     final navigationData = NavigationData.of(context);
-    print(navigationData);
+    //print(navigationData);
     //------------------------------------------------------------------------
 
     return showDialog(
@@ -102,9 +102,10 @@ class _StepListSliverListState extends State<StepListSliverList> {
                 //-------------------------------------------------------------
                 final pdf = pw.Document();
                 createAndPrintPdf(
-                    pdf,
-                    Provider.of<DataNotifier>(context, listen: false)
-                        .japaneseFont);
+                  pdf,
+                  Provider.of<DataNotifier>(context, listen: false).japaneseFont,
+                  machine,
+                );
               },
               child: Text('Close'),
             ),

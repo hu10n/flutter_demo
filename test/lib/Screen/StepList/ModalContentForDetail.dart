@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:test/api/TestAPI.dart';
-import '../../GlobalWidget/LoadingModal.dart';
 import '../../providers/DataProvider.dart';
 import '../../GlobalWidget/ShowDialog.dart';
 import '../../GlobalWidget/BuildTitleForModal.dart';
@@ -25,42 +24,11 @@ class ModalContentForDetail extends StatefulWidget {
 }
 
 class _ModalContentForDetail extends State<ModalContentForDetail> {
-
-  bool _isLoading = false; //ローディング画面用
-
-
-
-  void _submitData(
-      machine, project, BuildContext context, Function onScrollUp) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    final res = await assignProjectInfo(machine, project); //データを送信
-    await Provider.of<DataNotifier>(context, listen: false)
-        .updateLocalDB(); //最新データに更新
-    
-
-    setState(() {
-      _isLoading = false;
-    });
-  
-    if(res == 3){
-      print(res);
-      showCustomDialog(context, onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
-    }else if(res == 1){
-      showCustomDialog(context, onScrollUp,"完了","データは正常に送信されました。");
-    }else{
-      print(res);
-      showCustomDialog(context, onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
-    }
-  }
-
-
   @override
   Widget build(BuildContext context) {
     final machine = widget.machine;
     final project = widget.project;
+    //print(project["step"]);
     return GestureDetector(
       onTap: () {},
       child: Container(
@@ -78,7 +46,7 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
                     child: Padding(
                         padding: EdgeInsets.only(
                             bottom: MediaQuery.of(context).viewInsets.bottom +
-                                70.0),
+                                50.0),
                         child: ListView(
                           //controller: scrollController,
                           children: [
@@ -117,9 +85,54 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
                                     ),
                                     Align(
                                       alignment: Alignment.centerLeft,
-                                      child: Text("・作成日時：${machine['created_at']}"),
+                                      child: Text("・更新日時：${machine['updated_at']}"),
                                     ),
                                     //--------------------------------------------------------------
+                                    SizedBox(height: 20,),
+                                    // 商品情報----------------------------------------------------
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("部品情報"),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("・品番：${project['product_num']}"),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("・品名：${project['product_name']}"),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("・プロジェクトステータス：${project['project_status']}"),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("・材料：${project['material']}"),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("・ロット番号：${project['lot_num']}"),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("・生産量：${project['production_volume']}"),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("・担当者：${project['supervisor']}"),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("・作成日時：${project['created_at']}"),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text("・更新日時：${project['updated_at']}"),
+                                    ),
+                                    //--------------------------------------------------------------
+                                    SizedBox(height: 20,),
+                                    ...List.generate(project["step"].length, (index) => stepInfoWidget(index, project["step"][index])).expand((widget) => [widget, SizedBox(height: 20)]).toList(),
                                   ],
                                 ),
                               ),
@@ -129,14 +142,56 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
                 //--------------------------------------------------
               ],
             ),
-
-            
-            //ローディング画面-----------------------------------------
-            if (_isLoading) LoadingModal()
-            //------------------------------------------------------
           ],
         ),
       ),
+    );
+  }
+  Widget stepInfoWidget(int index, Map<String, dynamic> step) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text("工程${index + 1}"),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text("・作業名：${step['step_name']}"),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text("・ステップステータス：${step['step_status']}"),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text("・作業者名：${step['worker']}"),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text("・生産数：${step['production_volume']}"),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text("・備考：${step['free_text']}"),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text("・開始日時：${step['started_at']}"),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text("・完了日時：${step['finished_at']}"),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text("・作成日時：${step['created_at']}"),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text("・更新日時：${step['updated_at']}"),
+        ),
+      ],
     );
   }
 }
