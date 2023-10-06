@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test/providers/DataProvider.dart';
-
-import 'MachineSummaryCard.dart';
-import 'StepListCard.dart';
-
 import 'package:pdf/widgets.dart' as pw;
 
+import 'package:test/providers/DataProvider.dart';
+import 'MachineSummaryCard.dart';
+import 'StepListCard.dart';
 import 'package:test/providers/NavigationData.dart';
-import '../JobCard/PrintingJob.dart';
-import 'package:test/api/TestAPI.dart';
+import 'package:test/Screen/JobCard/PrintingJob.dart';
 
 class StepListSliverList extends StatefulWidget {
   final String machineId;

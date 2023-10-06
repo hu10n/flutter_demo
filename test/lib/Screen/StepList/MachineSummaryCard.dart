@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// import '../../../LocalData/data.dart';
-import '../../providers/DataProvider.dart';
-import '../../GlobalMethod/utils.dart';
-import '../../GlobalWidget/MachineStatusIndicator.dart';
+import 'package:test/providers/DataProvider.dart';
+import 'package:test/GlobalMethod/utils.dart';
+import 'package:test/GlobalWidget/MachineStatusIndicator.dart';
 import 'ModalContentForAssignProject.dart';
 import 'ModalContentForDelivery.dart';
 import 'ModalContentForDetail.dart';
@@ -168,11 +167,11 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.vertical(
                                 top: Radius.circular(20))),
-                        builder: (context) => MyModal(
-                          onScrollUp: widget.onScrollUp,
-                          machine: machine,
-                        ),
-                      );
+                        builder:(context) => MyModal(onScrollUp: widget.onScrollUp, machine: machine),
+                      ).whenComplete(() {
+                        // ここでモーダルが閉じられた際の追加処理を実行します
+                         widget.onScrollUp(100);
+                      });
                       //---------------------------------------------------------------------------------------
                     },
                     child: SizedBox(
@@ -373,7 +372,11 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                         project: project,
                         setIsModal: setIsModal,
                       ),
-                    );
+                    ).whenComplete(() {
+                      // ここでモーダルが閉じられた際の追加処理を実行します
+                      setIsModal(false);
+                      widget.onScrollUp(100);
+                    });
                   },
                 ),
               if (project.isNotEmpty)
@@ -399,7 +402,11 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                         project: project,
                         setIsModal: setIsModal,
                       ),
-                    );
+                    ).whenComplete(() {
+                      // ここでモーダルが閉じられた際の追加処理を実行します
+                      setIsModal(false);
+                      widget.onScrollUp(100);
+                    });
                   },
                 ),
               ListTile(
@@ -425,7 +432,11 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                       project: project,
                       setIsModal: setIsModal,
                     ),
-                  );
+                  ).whenComplete(() {
+                    // ここでモーダルが閉じられた際の追加処理を実行します
+                    setIsModal(false);
+                    widget.onScrollUp(100);
+                  });
                 },
               ),
               ListTile(

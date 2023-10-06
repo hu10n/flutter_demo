@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/DataProvider.dart';
-import '../../GlobalWidget/MachineStatusIndicator.dart';
-import '../../GlobalMethod/utils.dart';
+import 'package:test/providers/DataProvider.dart';
+import 'package:test/GlobalWidget/MachineStatusIndicator.dart';
+import 'package:test/GlobalMethod/utils.dart';
 
 class MachineListCard extends StatelessWidget {
   const MachineListCard({

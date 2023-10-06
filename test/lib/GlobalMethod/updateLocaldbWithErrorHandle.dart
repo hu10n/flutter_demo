@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/DataProvider.dart';
-import '../GlobalWidget/ShowDialog.dart';
+import 'package:test/providers/DataProvider.dart';
+import 'package:test/GlobalWidget/ShowDialog.dart';
 
 
 //更新動作＋エラーハンドリング

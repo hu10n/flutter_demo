@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:test/api/TestAPI.dart';
-import '../../GlobalWidget/LoadingModal.dart';
-import '../../providers/DataProvider.dart';
-import '../../GlobalWidget/ShowCusomDialog.dart';
-import '../../GlobalWidget/BuildTitleForModal.dart';
+import 'package:test/GlobalWidget/LoadingModal.dart';
+import 'package:test/providers/DataProvider.dart';
+import 'package:test/GlobalWidget/ShowCusomDialog.dart';
+import 'package:test/GlobalWidget/BuildTitleForModal.dart';
 
 class ModalContentForHistory extends StatefulWidget {
   final Function onScrollUp;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/services.dart' show rootBundle;
-import '../LocalDataBase/LocalDataBase.dart';
+import 'package:test/LocalDataBase/LocalDataBase.dart';
 
 class DataNotifier extends ChangeNotifier {
   String _data = '1';

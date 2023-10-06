@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/DataProvider.dart';
-// import '../../../LocalData/data.dart';
-import '../StepList/StepListPage.dart';
+import 'package:test/providers/DataProvider.dart';
+import 'package:test/Screen/StepList/StepListPage.dart';
 import 'MachineListCard.dart';
 
 class MachineListSliverList extends StatefulWidget {

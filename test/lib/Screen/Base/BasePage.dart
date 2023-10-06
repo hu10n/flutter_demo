@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:test/Screen/QRScanner/QRScannerPage.dart';
 
-import '../../BottomNavigation/BottNaviIndexStack.dart';
-import '../../BottomNavigation/BottNaviWithRefleshBtn.dart';
-import '../MachineList/MachineListPage.dart';
-import '../../providers/NavigationData.dart';
-import '../../GlobalWidget/LoadingModal.dart';
+import 'package:test/BottomNavigation/BottNaviIndexStack.dart';
+import 'package:test/BottomNavigation/BottNaviWithRefleshBtn.dart';
+import 'package:test/Screen/MachineList/MachineListPage.dart';
+import 'package:test/providers/NavigationData.dart';
+import 'package:test/GlobalWidget/LoadingModal.dart';
 
 class BasePage extends StatefulWidget {
   @override
