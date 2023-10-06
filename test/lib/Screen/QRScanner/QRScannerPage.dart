@@ -128,6 +128,31 @@ class _QRScannerPageState extends State<QRScannerPage> {
     }
   }
 
+  // -----------------------------------------------------------------------
+
+  Future<dynamic> _showModalBottomSheet(
+    String key,
+    Map stepInfoMap,
+  ) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      enableDrag: false,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) {
+        if (stepInfoMap['step_status_to_edit'] == 0)
+          return ModalContentForStart(
+              stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp);
+        if (stepInfoMap['step_status_to_edit'] == -1)
+          return ModalContentForComplete(
+              stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp);
+        if (stepInfoMap['step_status_to_edit'] == null) return Container();
+        return Container();
+      },
+    ).then((_) => _resumeScan());
+  }
+
   Future<dynamic> _showInvalidMachStatsDialog(
       context, machineStatus, machineName) {
     return showDialog(
@@ -163,35 +188,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
         );
       },
     );
-  }
-
-  // -----------------------------------------------------------------------
-
-  Future<dynamic> _showModalBottomSheet(
-    String key,
-    Map stepInfoMap,
-  ) {
-    return showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      enableDrag: false,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (context) {
-        if (stepInfoMap['step_status_to_edit'] == 0)
-          return ModalContentForStart(
-              stepInfoMap: stepInfoMap,
-              resumeScan: _resumeScan,
-              onScrollUp: widget.onScrollUp);
-        if (stepInfoMap['step_status_to_edit'] == -1)
-          return ModalContentForComplete(
-              stepInfoMap: stepInfoMap,
-              resumeScan: _resumeScan,
-              onScrollUp: widget.onScrollUp);
-        if (stepInfoMap['step_status_to_edit'] == null) return Container();
-        return Container();
-      },
-    ).then((_) => _resumeScan());
   }
 
   void _resumeScan() {

@@ -12,13 +12,9 @@ import 'package:test/GlobalWidget/BuildTitleForModal.dart';
 class ModalContentForComplete extends StatefulWidget {
   final Function onScrollUp;
   final Map stepInfoMap;
-  final Function resumeScan;
 
   const ModalContentForComplete(
-      {super.key,
-      required this.stepInfoMap,
-      required this.resumeScan,
-      required this.onScrollUp});
+      {super.key, required this.stepInfoMap, required this.onScrollUp});
 
   @override
   _ModalContentForCompleteState createState() =>
@@ -33,30 +29,38 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
 
   bool _isLoading = false; //ローディング画面用
 
-  void _submitData(update_state, step, BuildContext context,) async {
+  void _submitData(
+    update_state,
+    step,
+    BuildContext context,
+  ) async {
     setState(() {
       _isLoading = true;
     });
 
     final res = await updateStepData(
-        update_state, step, widget.stepInfoMap['stepStatusList'], widget.stepInfoMap['machine_id']); //データを送信*********************
+        update_state,
+        step,
+        widget.stepInfoMap['stepStatusList'],
+        widget.stepInfoMap['machine_id']); //データを送信*********************
     await updateLocaldbWithErrorHandle(context);
 
     setState(() {
       _isLoading = false;
     });
 
-    if(res == 3){
+    if (res == 3) {
       print(res);
-      showCustomDialog(context, widget.onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
-    }else if(res == 1){
-      showCustomDialog(context, widget.onScrollUp,"完了","データは正常に送信されました。");
-    }else{
+      showCustomDialog(context, widget.onScrollUp, "エラー",
+          "データが最新ではありません。更新してから、もう一度お試しください");
+    } else if (res == 1) {
+      showCustomDialog(context, widget.onScrollUp, "完了", "データは正常に送信されました。");
+    } else {
       print(res);
-      showCustomDialog(context, widget.onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp, "エラー",
+          "予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
     }
   }
-
 
   void _unfocus() {
     for (var focus in _focuses) {
@@ -157,15 +161,13 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
                                     SizedBox(
                                       height: 60,
                                     ),
-                                    InputField(
-                                      "生産数", true, _controllers[0], _focuses[0]
-                                    ),
+                                    InputField("生産数", true, _controllers[0],
+                                        _focuses[0]),
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    InputField(
-                                      "備考", true, _controllers[1], _focuses[1]
-                                    ),
+                                    InputField("備考", true, _controllers[1],
+                                        _focuses[1]),
                                   ],
                                 ),
                               ),
@@ -194,11 +196,10 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
                         //print(widget.stepStatus['stepToStart']);
                         int update_status = 1;
                         Map<String, dynamic> step = Map.from(step_to_edit);
-                        
+
                         //step["worker"] = _controllers[0].text;
                         step["production_volume"] = _controllers[0].text;
                         step["free_text"] = _controllers[1].text;
-                        
 
                         print(step);
 

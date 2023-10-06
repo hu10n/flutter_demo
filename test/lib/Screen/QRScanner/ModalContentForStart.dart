@@ -12,13 +12,9 @@ import 'package:test/GlobalWidget/BuildTitleForModal.dart';
 class ModalContentForStart extends StatefulWidget {
   final Function onScrollUp;
   final Map stepInfoMap;
-  final Function resumeScan;
 
   const ModalContentForStart(
-      {super.key,
-      required this.stepInfoMap,
-      required this.resumeScan,
-      required this.onScrollUp});
+      {super.key, required this.stepInfoMap, required this.onScrollUp});
 
   @override
   _ModalContentForStartState createState() => _ModalContentForStartState();
@@ -38,20 +34,25 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
     });
 
     final res = await updateStepData(
-        update_state, step, widget.stepInfoMap['stepStatusList'], widget.stepInfoMap['machine_id']); //データを送信*********************
+        update_state,
+        step,
+        widget.stepInfoMap['stepStatusList'],
+        widget.stepInfoMap['machine_id']); //データを送信*********************
     await updateLocaldbWithErrorHandle(context);
 
     setState(() {
       _isLoading = false;
     });
-    if(res == 3){
+    if (res == 3) {
       print(res);
-      showCustomDialog(context, widget.onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
-    }else if(res == 1){
-      showCustomDialog(context, widget.onScrollUp,"完了","データは正常に送信されました。");
-    }else{
+      showCustomDialog(context, widget.onScrollUp, "エラー",
+          "データが最新ではありません。更新してから、もう一度お試しください");
+    } else if (res == 1) {
+      showCustomDialog(context, widget.onScrollUp, "完了", "データは正常に送信されました。");
+    } else {
       print(res);
-      showCustomDialog(context, widget.onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp, "エラー",
+          "予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
     }
   }
 
@@ -138,8 +139,8 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
                                     SizedBox(
                                       height: 60,
                                     ),
-                                    InputField(
-                                        "作業者名", true, _controllers[0], _focuses[0]),
+                                    InputField("作業者名", true, _controllers[0],
+                                        _focuses[0]),
                                   ],
                                 ),
                               ),
