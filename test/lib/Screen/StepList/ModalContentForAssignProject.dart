@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:test/api/TestAPI.dart';
+import 'package:test/api/api.dart';
 import 'package:test/GlobalMethod/updateLocaldbWithErrorHandle.dart';
 import 'package:test/GlobalWidget/InputField.dart';
 import 'package:test/GlobalWidget/LoadingModal.dart';
@@ -43,7 +43,7 @@ class _MyModalState extends State<MyModal> {
     setState(() {
       _controllers.add(TextEditingController());
       _focuses.add(FocusNode());
-      stepFields.add(InputField("ステップ${_counter + 1}",
+      stepFields.add(InputField("ステップ${_counter + 1}", true,
           _controllers[_counter + 7], _focuses[_counter + 7]));
       stepFields.add(SizedBox(
         height: 20,
@@ -96,7 +96,7 @@ class _MyModalState extends State<MyModal> {
     // initStateの中でstepFieldsを初期化
     _controllers.add(TextEditingController());
     _focuses.add(FocusNode());
-    stepFields.add(InputField("ステップ1", _controllers[7], _focuses[7]));
+    stepFields.add(InputField("ステップ1", true, _controllers[7], _focuses[7]));
     stepFields.add(SizedBox(
       height: 20,
     ));
@@ -154,27 +154,27 @@ class _MyModalState extends State<MyModal> {
                                       height: 20,
                                     ),
                                     InputField(
-                                        "品名", _controllers[0], _focuses[0]),
+                                        "品名", true, _controllers[0], _focuses[0]),
                                     SizedBox(
                                       height: 15,
                                     ),
                                     InputField(
-                                        "品番", _controllers[1], _focuses[1]),
+                                        "品番", true, _controllers[1], _focuses[1]),
                                     SizedBox(
                                       height: 15,
                                     ),
                                     InputField(
-                                        "材料", _controllers[2], _focuses[2]),
+                                        "材料", true, _controllers[2], _focuses[2]),
                                     SizedBox(
                                       height: 15,
                                     ),
                                     InputField(
-                                        "ロットNo.", _controllers[3], _focuses[3]),
+                                        "ロットNo.", true, _controllers[3], _focuses[3]),
                                     SizedBox(
                                       height: 15,
                                     ),
                                     InputField(
-                                        "生産数", _controllers[4], _focuses[4]),
+                                        "生産数", true, _controllers[4], _focuses[4]),
                                     SizedBox(
                                       height: 80,
                                     ),
@@ -190,7 +190,7 @@ class _MyModalState extends State<MyModal> {
                                       height: 20,
                                     ),
                                     InputField(
-                                        "客先名", _controllers[5], _focuses[5]),
+                                        "客先名", true, _controllers[5], _focuses[5]),
                                     SizedBox(
                                       height: 80,
                                     ),
@@ -204,7 +204,7 @@ class _MyModalState extends State<MyModal> {
                                       height: 20,
                                     ),
                                     InputField(
-                                        "担当者名", _controllers[6], _focuses[6]),
+                                        "担当者名", true, _controllers[6], _focuses[6]),
                                     SizedBox(
                                       height: 80,
                                     ),

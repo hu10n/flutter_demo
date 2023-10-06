@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:test/api/TestAPI.dart';
+import 'package:test/api/api.dart';
 import 'package:test/GlobalMethod/updateLocaldbWithErrorHandle.dart';
 import 'package:test/GlobalWidget/InputField.dart';
 import 'package:test/GlobalWidget/LoadingModal.dart';
@@ -139,7 +139,7 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
                                       height: 60,
                                     ),
                                     InputField(
-                                        "作業者名", _controllers[0], _focuses[0]),
+                                        "作業者名", true, _controllers[0], _focuses[0]),
                                   ],
                                 ),
                               ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-Container InputField(String title, TextEditingController controller, FocusNode focus) {
+//入力フォーム---------------------------------------------------------------------
+
+//入力タイトル＋テキストフィールド＋必須マーク
+Container InputField(String title, bool isRequired, TextEditingController controller, FocusNode focus) {
   return Container(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start, // 子ウィジェットを左揃えにする
@@ -13,12 +16,15 @@ Container InputField(String title, TextEditingController controller, FocusNode f
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
+              //タイトル---------------------------------------------
               Text(
                 title,
                 style: TextStyle(
                   color: Colors.grey, fontWeight: FontWeight.bold
                 ),
               ),
+              //必須マーク--------------------------------------------
+              if(isRequired)
               Container(
                 //width: 100,
                 //height: 100,
@@ -31,15 +37,17 @@ Container InputField(String title, TextEditingController controller, FocusNode f
                   child: Text(
                     '必須',
                     style: TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10
-                ),
+                      color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10
+                    ),
                   )
                 ),
               ),
+              //----------------------------------------------------
             ],
           ),
         ),
         SizedBox(height: 4,),
+        //テキストフィールド-------------------------------------------
         TextField(
           keyboardType: TextInputType.number,
           focusNode: focus,
@@ -60,6 +68,7 @@ Container InputField(String title, TextEditingController controller, FocusNode f
             
           },
         ),
+        //------------------------------------------------------------
       ],
     ),
   );

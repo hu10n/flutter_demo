@@ -10,6 +10,6 @@ Future<void> deleteProjectWithErrorHandle(BuildContext context,String project_id
     await Provider.of<DataNotifier>(context, listen: false).deleteProject(project_id);
   } catch (e) {
     print('Error occurred: $e');
-    showDialogGeneral(context, "", "");
+    showDialogGeneral(context, "エラー", "予期せぬエラーが発生しました。しばらくして、もう一度お試しください。");
   }
 }

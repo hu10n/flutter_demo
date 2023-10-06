@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test/GlobalMethod/updateLocaldbWithErrorHandle.dart';
+import 'package:test/GlobalWidget/UpdateButton.dart';
 import 'BottNaviBar.dart';
 
 class BottNaviWithRefleshBtn extends StatelessWidget {
@@ -22,8 +23,8 @@ class BottNaviWithRefleshBtn extends StatelessWidget {
     final safePadding = MediaQuery.of(context).padding.bottom;
     return AnimatedPositioned(
       duration: Duration(milliseconds: 300),
-      bottom:
-          showBottomBar ? 0.0 : -(kToolbarHeight + safePadding + scrollValue),
+      bottom://ボトムナビゲーションのアニメーションロジック
+          showBottomBar ? 0.0 : -(kToolbarHeight + safePadding + scrollValue), 
       left: 0.0,
       right: 0.0,
       child: Column(
@@ -31,25 +32,8 @@ class BottNaviWithRefleshBtn extends StatelessWidget {
         children: [
           if (currentIndex != 1) // currentIndexが1でのみ更新ボタンを表示
             //更新ボタン(分割予定)-----------------------------------------
-            Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    // 更新ボタンのアクションを記述
-                    _pressUpdateButtom(context);
-                  },
-                  child: Icon(Icons.refresh),
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
-                    fixedSize: Size(50, 50),
-                    padding: EdgeInsets.all(8),
-                  ),
-                ),
-              ),
-            ),
-          //----------------------------------------------------------
+            UpdateButton(context,_pressUpdateButtom),
+            //----------------------------------------------------------
           //ボトムナビゲーション部分----------------------------------------
           BottNaviBar(onTap: onTap, selectedIndex: currentIndex),
           //------------------------------------------------------------

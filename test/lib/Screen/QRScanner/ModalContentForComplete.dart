@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:test/api/TestAPI.dart';
+import 'package:test/api/api.dart';
 import 'package:test/GlobalMethod/updateLocaldbWithErrorHandle.dart';
 import 'package:test/GlobalWidget/InputField.dart';
 import 'package:test/GlobalWidget/LoadingModal.dart';
@@ -158,13 +158,13 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
                                       height: 60,
                                     ),
                                     InputField(
-                                      "生産数", _controllers[0], _focuses[0]
+                                      "生産数", true, _controllers[0], _focuses[0]
                                     ),
                                     SizedBox(
                                       height: 15,
                                     ),
                                     InputField(
-                                      "備考", _controllers[1], _focuses[1]
+                                      "備考", true, _controllers[1], _focuses[1]
                                     ),
                                   ],
                                 ),

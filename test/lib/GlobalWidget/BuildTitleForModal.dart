@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+//現在、モーダルフォームのタイトルに使用。
 
-//モーダルのタイトル作成。一応分けた。---------------------------------------
+//大タイトル+モーダルを閉じるボタン---------------------------------------
   Container BuildTitleForModal(
       BuildContext context, Function onScrollUp, String title) {
     return Container(
+
       width: MediaQuery.of(context).size.width * 0.9,
       margin: EdgeInsets.symmetric(vertical: 4.0), // コンテナ間のマージン
       padding: EdgeInsets.all(8.0), // コンテナのパディング
-      decoration: BoxDecoration(
-          //border: Border.all(color: Colors.black, width: 1.0), // デバッグ用
-          ),
+
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween, // 子ウィジェットをスペースで均等に配置
         children: [

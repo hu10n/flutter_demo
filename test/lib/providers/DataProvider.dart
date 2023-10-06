@@ -4,48 +4,30 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:test/LocalDataBase/LocalDataBase.dart';
 
 class DataNotifier extends ChangeNotifier {
-  String _data = '1';
-  List _alphabetList = [];
+  //----------------------------------------------------
+  pw.Font? _jpaneseFont;            //日本語フォント、pdf用
 
-  pw.Font? _jpaneseFont;
-
-  int _selectedAlphabet = 0;
-  bool _isSelectedAlphabet = false;
-  bool _isScrollView = false;
-  Map<String, Map<String, dynamic>> _machineCardCount = {};
+  int _selectedAlphabet = 0;        //カルーセルの選択バー位置管理用
+  bool _isSelectedAlphabet = false; //カルーセル操作中フラグ
+  bool _isScrollView = false;       //スクロール操作中フラグ
+  Map<String, Map<String, dynamic>> _machineCardCount = {};  //作業機グループの開始位置特定用
 
   //ローカルデータベース用
   List<Map<String, dynamic>> _dataList = [];
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
-  //bool _isLoading = false;
+  //-----------------------------------------------------
 
-  // getter
+  // getter----------------------------------------------
   List<Map<String, dynamic>> get dataList => _dataList;
-  String get data => _data;
-  List get alphabetList => _alphabetList;
-  pw.Font? get japaneseFont => _jpaneseFont; //日本語フォント、pdf用
+  pw.Font? get japaneseFont => _jpaneseFont; 
   int get selectedAlphabet => _selectedAlphabet;
   bool get isSelectedAlphabet => _isSelectedAlphabet;
   bool get isScrollView => _isScrollView;
   Map<String, Map<String, dynamic>> get machineCardCount => _machineCardCount;
-  //bool get isLoading => _isLoading;
+  //-----------------------------------------------------
+ 
 
-  //DataNotifier() {
-  //print("DataNotifier Init.");
-  // このNotifierが生成されたときにデータのロードを行う
-  //getAllData();
-  //}
-
-  set data(String newValue) {
-    _data = newValue;
-    notifyListeners();
-  }
-
-  void setAlphabetList(List alphabets) {
-    _alphabetList = alphabets;
-    notifyListeners();
-  }
-
+  //日本語フォントを起動時に読み込み
   Future<void> loadFont() async {
     final fontData =
         await rootBundle.load('assets/fonts/NotoSansJP-Medium.ttf');
@@ -54,6 +36,7 @@ class DataNotifier extends ChangeNotifier {
     //print("ok");
   }
 
+  //setState------------------------------------------------
   void selectAlphabet(int alphabet) {
     if (_selectedAlphabet != alphabet) {
       _selectedAlphabet = alphabet;
@@ -64,7 +47,7 @@ class DataNotifier extends ChangeNotifier {
   void turnSelectedFlag(bool flag) {
     if (_isSelectedAlphabet != flag) {
       _isSelectedAlphabet = flag;
-      print("selectedFlag:$flag ${DateTime.now()}");
+      //print("selectedFlag:$flag ${DateTime.now()}");
       notifyListeners();
     }
   }
@@ -82,14 +65,13 @@ class DataNotifier extends ChangeNotifier {
 
   void updateDataList(List<Map<String, dynamic>> dataList) {
     _dataList = dataList;
-    print("updateDataList Timig");
+    //print("updateDataList Timig");
     notifyListeners();
   }
+  //-----------------------------------------------------------
 
+  //LDBから全データを取得
   Future<void> getAllData() async {
-    //_isLoading = true;
-    //notifyListeners();
-
     List<Map<String, dynamic>> machine = await _dbHelper.queryAll("machine");
     List<Map<String, dynamic>> project = await _dbHelper.queryAll("project");
     List<Map<String, dynamic>> step = await _dbHelper.queryAll("step");
@@ -98,11 +80,9 @@ class DataNotifier extends ChangeNotifier {
     //print(allData);
 
     updateDataList(allData);
-
-    //_isLoading = false;
-    //notifyListeners();
   }
 
+  //ソート済の構造化データに変換
   List<Map<String, dynamic>> structuredData(List<Map<String, dynamic>> machine,
       List<Map<String, dynamic>> project, List<Map<String, dynamic>> step) {
     List<Map<String, dynamic>> _project = [];
@@ -141,12 +121,14 @@ class DataNotifier extends ChangeNotifier {
     return _machine;
   }
 
+  //任意のプロジェクトレコードをLDBから削除
   Future deleteProject(String project_id) async {
     await _dbHelper.delete(project_id, "project");
   }
 
+  //更新
   Future updateLocalDB() async {
-    await _dbHelper.update();
+    await _dbHelper.update(false); //trueで全データ更新
     getAllData();
     notifyListeners();
   }

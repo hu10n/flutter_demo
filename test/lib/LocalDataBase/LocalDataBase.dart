@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:test/api/TestAPI.dart';
+import 'package:test/api/api.dart';
 
 class DatabaseHelper {
   static final _dbName = 'Database.db';
@@ -74,6 +74,7 @@ class DatabaseHelper {
     ''');
   }
 
+  //ほぼデバッグ用-----------------------------------------------------------
   Future<int> insert(String tableName, Map<String, dynamic> row) async {
     Database db = await instance.database;
     return await db.insert(
@@ -83,20 +84,35 @@ class DatabaseHelper {
     );
   }
 
+  //途中でカラムを追加する場合。普通にdbを作成し直した方がいい。
+  Future _onUpgrade(Database db, int oldVersion, int newVersion) async{
+    if(oldVersion < 3){
+      print("object");
+      await db.execute("ALTER TABLE step ADD COLUMN production_volume INTEGER");
+    }
+  }
+  //-----------------------------------------------------------------------
+
+  //指定したテーブルの全レコード取得--------------------------------------------
   Future<List<Map<String, dynamic>>> queryAll(String tableName) async {
     Database db = await instance.database;
     //print(db);
     return await db.query(tableName);
   }
+  //-----------------------------------------------------------------------
 
-  Future<void> update() async {
+  //RDSからデータを取得し、LDBを更新。
+  Future<void> update(bool isAll) async {
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getString('last_updated') ??
         "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
+    final result;
 
-    
-    //final result = await postJSONData(value);
-    final result = await getAllDataGrobal();
+    if(isAll){
+      result = await getAllDataGrobal(); //全データを更新
+    }else{
+      result = await postJSONData(value); //新しいデータのみ更新
+    }
     //print(result);
     Database db = await instance.database;
 
@@ -123,29 +139,21 @@ class DatabaseHelper {
     }
 
     await prefs.setString('last_updated', result["current"]); // int値の保存
-  
-    
   }
 
+  //完了済プロジェクトの削除に使用。プロジェクトを消せば、関連するステップも自動削除。---
   Future<void> delete(String id,String table) async {
     //print(id);
     Database db = await instance.database;
     await db.delete(table, where: '${table}_id = ?', whereArgs: [id]);
   }
-
-  // 他のCRUD操作（更新、削除など）もここに追加できます
+  //-----------------------------------------------------------------------
+  //LDB削除-----------------------------------------------------------------
   Future<void> delete_database() async {
     String path = join(await getDatabasesPath(), _dbName);
     await deleteDatabase(path);
     _database = null; // _database のリファレンスを削除
   }
+  //-----------------------------------------------------------------------
 }
 
-Future _onUpgrade(Database db, int oldVersion, int newVersion) async{
-  if(oldVersion < 3){
-    print("object");
-    await db.execute("ALTER TABLE step ADD COLUMN production_volume INTEGER");
-  }
-}
-
-//TODOメモ 更新時に完了操作終了済みのproject-stepデータは削除するようにする。

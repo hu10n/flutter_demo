@@ -11,6 +11,6 @@ Future<void> updateLocaldbWithErrorHandle(BuildContext context) async {
     //print("更新");
   } catch (e) {
     print('Error occurred: $e');
-    showDialogGeneral(context, "", "");
+    showDialogGeneral(context, "エラー", "予期せぬエラーが発生しました。しばらくして、もう一度お試しください。");
   }
 }
