@@ -141,6 +141,10 @@ class DataNotifier extends ChangeNotifier {
     return _machine;
   }
 
+  Future deleteProject(String project_id) async {
+    await _dbHelper.delete(project_id, "project");
+  }
+
   Future updateLocalDB() async {
     await _dbHelper.update();
     getAllData();

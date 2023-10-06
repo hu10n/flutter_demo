@@ -64,7 +64,7 @@ Future<Map<String,dynamic>> postJSONData(lastUpdated) async {
   }
 }
 //報告用
-Future<int> updateStepData(update_status,step,status_list) async {
+Future<int> updateStepData(update_status,step,status_list,machine_id) async {
   final prefs = await SharedPreferences.getInstance();
   final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
 
@@ -82,7 +82,43 @@ Future<int> updateStepData(update_status,step,status_list) async {
         'project_id': step['project_id'],
         'worker': step['worker'],
         'free_text': step['free_text'],
-        'statusList': status_list
+        'production_volume': step['production_volume'],
+        'statusList': status_list,
+        "machine_id": machine_id
+      }),
+    );
+
+    return json.decode(response.body)["return_status"];
+  }catch(e){
+    print('Error occurred: $e');
+    return -1;
+  }
+}
+
+//プロジェクト完了用
+Future<int> completeProject(machine) async {
+  final prefs = await SharedPreferences.getInstance();
+  final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
+
+  List status_list = [];
+
+  for(var step in machine["project"][0]["step"]){
+    status_list.add(step["project_status"]);
+  }
+
+  try{
+    final response = await http.post(
+      Uri.parse('https://aohgd352mg.execute-api.ap-northeast-1.amazonaws.com/completeProject/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
+        // 'Authorization': 'Bearer YOUR_API_TOKEN',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'last_updated': last_updated,
+        'machine_id': machine["machine_id"],
+        'machine_status': machine["machine_status"],
+        'project_id': machine["project"][0]['project_id'],
+        'statusList': status_list,
       }),
     );
 
@@ -114,6 +150,7 @@ Future<int> assignProjectInfo(machine,project) async {
         'product_num': project['product_num'],
         'material': project['material'],
         'lot_num': project['lot_num'],
+        'production_volume': project['production_volume'],
         'supervisor': project['supervisor'],
         'step': project['step']
       }),

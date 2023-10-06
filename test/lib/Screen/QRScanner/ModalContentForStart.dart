@@ -32,14 +32,13 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
 
   bool _isLoading = false; //ローディング画面用
 
-  void _submitData(update_state, step, status_list, BuildContext context,
-      Function onScrollUp) async {
+  void _submitData(update_state, step, BuildContext context) async {
     setState(() {
       _isLoading = true;
     });
 
     final res = await updateStepData(
-        update_state, step, status_list); //データを送信*********************
+        update_state, step, widget.stepInfoMap['stepStatusList'], widget.stepInfoMap['machine_id']); //データを送信*********************
     await updateLocaldbWithErrorHandle(context);
 
     setState(() {
@@ -47,12 +46,12 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
     });
     if(res == 3){
       print(res);
-      showCustomDialog(context, onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
     }else if(res == 1){
-      showCustomDialog(context, onScrollUp,"完了","データは正常に送信されました。");
+      showCustomDialog(context, widget.onScrollUp,"完了","データは正常に送信されました。");
     }else{
       print(res);
-      showCustomDialog(context, onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
     }
   }
 
@@ -174,16 +173,15 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
                         // List status_list =
                         //     widget.stepInfoMap['step_status_to_edit'];
 
-                        print(step);
+                        //print(step);
 
                         //print(project);
                         _unfocus();
                         _submitData(
-                            update_status,
-                            step,
-                            widget.stepInfoMap['stepStatusList'],
-                            context,
-                            widget.onScrollUp);
+                          update_status,
+                          step,
+                          context,
+                        );
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all<Size>(Size(

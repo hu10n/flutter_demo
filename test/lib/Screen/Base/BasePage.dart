@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:test/Screen/QRScanner/QRScannerPage.dart';
-import 'package:test/Screen/StepSubmit/TestPage_Tab(2).dart';
 
 import '../../BottomNavigation/BottNaviIndexStack.dart';
 import '../../BottomNavigation/BottNaviWithRefleshBtn.dart';
@@ -104,12 +103,12 @@ class _BasePageState extends State<BasePage> {
                 onScrollUp: _showBottomBar,
               ),
             );
-          case 2:
-            return MaterialPageRoute(
-                builder: (context) => TestPage(
-                      onScrollUp: _showBottomBar,
-                      onScrollDown: _hideBottomBar,
-                    ));
+          //case 2:
+            //return MaterialPageRoute(
+                //builder: (context) => TestPage(
+                      //onScrollUp: _showBottomBar,
+                      //onScrollDown: _hideBottomBar,
+                    //));
           default:
             return MaterialPageRoute(
               builder: (context) => MachineListPage(

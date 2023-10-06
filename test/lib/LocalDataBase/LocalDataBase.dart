@@ -20,7 +20,7 @@ class DatabaseHelper {
 
   _initDatabase() async {
     String path = join(await getDatabasesPath(), _dbName);
-    return await openDatabase(path, version: _dbVersion, onCreate: _onCreate, onUpgrade: _onUpgrade);
+    return await openDatabase(path, version: _dbVersion, onCreate: _onCreate);
   }
 
   Future _onCreate(Database db, int version) async {
@@ -52,7 +52,7 @@ class DatabaseHelper {
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
         machine_id TEXT REFERENCES machine(machine_id),
-        FOREIGN KEY (machine_id) REFERENCES machine(machine_id)
+        FOREIGN KEY (machine_id) REFERENCES machine(machine_id) ON DELETE CASCADE
       )
     ''');
 
@@ -69,7 +69,7 @@ class DatabaseHelper {
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
         project_id TEXT REFERENCES project(project_id),
-        FOREIGN KEY (project_id) REFERENCES project(project_id)
+        FOREIGN KEY (project_id) REFERENCES project(project_id) ON DELETE CASCADE
       )
     ''');
   }
@@ -125,6 +125,12 @@ class DatabaseHelper {
     await prefs.setString('last_updated', result["current"]); // int値の保存
   
     
+  }
+
+  Future<void> delete(String id,String table) async {
+    //print(id);
+    Database db = await instance.database;
+    await db.delete(table, where: '${table}_id = ?', whereArgs: [id]);
   }
 
   // 他のCRUD操作（更新、削除など）もここに追加できます

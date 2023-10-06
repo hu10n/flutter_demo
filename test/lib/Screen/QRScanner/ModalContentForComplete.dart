@@ -26,21 +26,20 @@ class ModalContentForComplete extends StatefulWidget {
 }
 
 class _ModalContentForCompleteState extends State<ModalContentForComplete> {
-  //ステップ以外の入力フィールドは６つ
+  //ステップ以外の入力フィールドは2つ
   List<TextEditingController> _controllers =
-      List.generate(1, (index) => TextEditingController());
-  List<FocusNode> _focuses = List.generate(1, (index) => FocusNode());
+      List.generate(2, (index) => TextEditingController());
+  List<FocusNode> _focuses = List.generate(2, (index) => FocusNode());
 
   bool _isLoading = false; //ローディング画面用
 
-  void _submitData(update_state, step, status_list, BuildContext context,
-      Function onScrollUp) async {
+  void _submitData(update_state, step, BuildContext context,) async {
     setState(() {
       _isLoading = true;
     });
 
     final res = await updateStepData(
-        update_state, step, status_list); //データを送信*********************
+        update_state, step, widget.stepInfoMap['stepStatusList'], widget.stepInfoMap['machine_id']); //データを送信*********************
     await updateLocaldbWithErrorHandle(context);
 
     setState(() {
@@ -49,12 +48,12 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
 
     if(res == 3){
       print(res);
-      showCustomDialog(context, onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
     }else if(res == 1){
-      showCustomDialog(context, onScrollUp,"完了","データは正常に送信されました。");
+      showCustomDialog(context, widget.onScrollUp,"完了","データは正常に送信されました。");
     }else{
       print(res);
-      showCustomDialog(context, onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
     }
   }
 
@@ -159,7 +158,14 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
                                       height: 60,
                                     ),
                                     InputField(
-                                        "備考", _controllers[0], _focuses[0]),
+                                      "生産数", _controllers[0], _focuses[0]
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    InputField(
+                                      "備考", _controllers[1], _focuses[1]
+                                    ),
                                   ],
                                 ),
                               ),
@@ -188,19 +194,21 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
                         //print(widget.stepStatus['stepToStart']);
                         int update_status = 1;
                         Map<String, dynamic> step = Map.from(step_to_edit);
+                        
                         //step["worker"] = _controllers[0].text;
-                        step["free_text"] = _controllers[0].text;
+                        step["production_volume"] = _controllers[0].text;
+                        step["free_text"] = _controllers[1].text;
+                        
 
                         print(step);
 
                         //print(project);
                         _unfocus();
                         _submitData(
-                            update_status,
-                            step,
-                            widget.stepInfoMap['stepStatusList'],
-                            context,
-                            widget.onScrollUp);
+                          update_status,
+                          step,
+                          context,
+                        );
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all<Size>(Size(

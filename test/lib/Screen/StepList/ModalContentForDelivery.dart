@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:test/api/TestAPI.dart';
 import 'package:test/GlobalMethod/updateLocaldbWithErrorHandle.dart';
+import 'package:test/GlobalMethod/deleteProjectWithErrorHandle.dart';
 import 'package:test/GlobalWidget/LoadingModal.dart';
 import 'package:test/GlobalWidget/ShowCusomDialog.dart';
 import 'package:test/GlobalWidget/BuildTitleForModal.dart';
@@ -29,13 +30,15 @@ class _ModalContentForDelivery extends State<ModalContentForDelivery> {
 
 
 
-  void _submitData(
-      machine, project, BuildContext context, Function onScrollUp) async {
+  void _submitData(machine, BuildContext context) async {
     setState(() {
       _isLoading = true;
     });
 
-    final res = await assignProjectInfo(machine, project); //データを送信
+    final res = await completeProject(machine); //データを送信
+    if(res == 1){
+      await deleteProjectWithErrorHandle(context, machine["project"][0]["project_id"]);
+    }
     await updateLocaldbWithErrorHandle(context);
     
 
@@ -45,12 +48,12 @@ class _ModalContentForDelivery extends State<ModalContentForDelivery> {
   
     if(res == 3){
       print(res);
-      showCustomDialog(context, onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
     }else if(res == 1){
-      showCustomDialog(context, onScrollUp,"完了","データは正常に送信されました。");
+      showCustomDialog(context, widget.onScrollUp,"完了","データは正常に送信されました。");
     }else{
       print(res);
-      showCustomDialog(context, onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
     }
   }
 
@@ -109,12 +112,9 @@ class _ModalContentForDelivery extends State<ModalContentForDelivery> {
                   // ボタンがタップされた時の処理を記述
                   print(widget.machine);
                   print(widget.project);
-                  //_submitData(widget.machine, project, context,
-                  //    widget.onScrollUp);
+                  _submitData(widget.machine, context);
 
                   widget.setIsModal(false);
-                  Navigator.of(context).pop();
-                  widget.onScrollUp(100);
                 },
                 style: ButtonStyle(
                   minimumSize: MaterialStateProperty.all<Size>(Size(

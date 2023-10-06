@@ -29,7 +29,7 @@ class BottNaviWithRefleshBtn extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min, // 最小限のサイズを取るように設定
         children: [
-          if (currentIndex == 0) // currentIndexが1でのみ更新ボタンを表示
+          if (currentIndex != 1) // currentIndexが1でのみ更新ボタンを表示
             //更新ボタン(分割予定)-----------------------------------------
             Align(
               alignment: Alignment.centerRight,

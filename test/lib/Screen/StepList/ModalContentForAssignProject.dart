@@ -18,10 +18,10 @@ class MyModal extends StatefulWidget {
 }
 
 class _MyModalState extends State<MyModal> {
-  //ステップ以外の入力フィールドは６つ
+  //ステップ以外の入力フィールドは7つ
   List<TextEditingController> _controllers =
-      List.generate(6, (index) => TextEditingController());
-  List<FocusNode> _focuses = List.generate(6, (index) => FocusNode());
+      List.generate(7, (index) => TextEditingController());
+  List<FocusNode> _focuses = List.generate(7, (index) => FocusNode());
   int _counter = 0; //ステップ数
   List<Widget> stepFields = [];
 
@@ -44,7 +44,7 @@ class _MyModalState extends State<MyModal> {
       _controllers.add(TextEditingController());
       _focuses.add(FocusNode());
       stepFields.add(InputField("ステップ${_counter + 1}",
-          _controllers[_counter + 6], _focuses[_counter + 6]));
+          _controllers[_counter + 7], _focuses[_counter + 7]));
       stepFields.add(SizedBox(
         height: 20,
       ));
@@ -55,13 +55,12 @@ class _MyModalState extends State<MyModal> {
     setState(() {
       stepFields.removeAt(stepFields.length - 1);
       stepFields.removeAt(stepFields.length - 1);
-      _controllers.removeAt(_counter + 7);
-      _focuses.removeAt(_counter + 7);
+      _controllers.removeAt(_counter + 8);
+      _focuses.removeAt(_counter + 8);
     });
   }
 
-  void _submitData(
-      machine, project, BuildContext context, Function onScrollUp) async {
+  void _submitData(machine, project, BuildContext context,) async {
     setState(() {
       _isLoading = true;
     });
@@ -76,12 +75,12 @@ class _MyModalState extends State<MyModal> {
   
     if(res == 3){
       print(res);
-      showCustomDialog(context, onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
     }else if(res == 1){
-      showCustomDialog(context, onScrollUp,"完了","データは正常に送信されました。");
+      showCustomDialog(context, widget.onScrollUp,"完了","データは正常に送信されました。");
     }else{
       print(res);
-      showCustomDialog(context, onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
     }
   }
 
@@ -97,7 +96,7 @@ class _MyModalState extends State<MyModal> {
     // initStateの中でstepFieldsを初期化
     _controllers.add(TextEditingController());
     _focuses.add(FocusNode());
-    stepFields.add(InputField("ステップ1", _controllers[6], _focuses[6]));
+    stepFields.add(InputField("ステップ1", _controllers[7], _focuses[7]));
     stepFields.add(SizedBox(
       height: 20,
     ));
@@ -172,6 +171,11 @@ class _MyModalState extends State<MyModal> {
                                     InputField(
                                         "ロットNo.", _controllers[3], _focuses[3]),
                                     SizedBox(
+                                      height: 15,
+                                    ),
+                                    InputField(
+                                        "生産数", _controllers[4], _focuses[4]),
+                                    SizedBox(
                                       height: 80,
                                     ),
                                     //-----------------------------------
@@ -186,7 +190,7 @@ class _MyModalState extends State<MyModal> {
                                       height: 20,
                                     ),
                                     InputField(
-                                        "客先名", _controllers[4], _focuses[4]),
+                                        "客先名", _controllers[5], _focuses[5]),
                                     SizedBox(
                                       height: 80,
                                     ),
@@ -200,7 +204,7 @@ class _MyModalState extends State<MyModal> {
                                       height: 20,
                                     ),
                                     InputField(
-                                        "担当者名", _controllers[5], _focuses[5]),
+                                        "担当者名", _controllers[6], _focuses[6]),
                                     SizedBox(
                                       height: 80,
                                     ),
@@ -314,20 +318,20 @@ class _MyModalState extends State<MyModal> {
                           "product_num": _controllers[1].text,
                           "material": _controllers[2].text,
                           "lot_num": _controllers[3].text,
-                          "client_name": _controllers[4].text,
-                          "supervisor": _controllers[5].text,
+                          "production_volume": _controllers[4].text,
+                          "client_name": _controllers[5].text,
+                          "supervisor": _controllers[6].text,
                           "step": []
                         };
 
                         for (var i = 0; i < _controllers.length; i++) {
-                          if (i < 6) continue; // _controllers[6]以降のみ処理する。
+                          if (i < 7) continue; // _controllers[6]以降のみ処理する。
                           project["step"]
                               .add({"step_name": _controllers[i].text});
                         }
                         //print(project);
                         _unfocus();
-                        _submitData(widget.machine, project, context,
-                            widget.onScrollUp);
+                        _submitData(widget.machine, project, context);
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all<Size>(Size(

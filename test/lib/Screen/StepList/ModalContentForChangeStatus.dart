@@ -26,12 +26,10 @@ class ModalContentForChangeStatus extends StatefulWidget {
 class _ModalContentForChangeStatus extends State<ModalContentForChangeStatus> {
 
   bool _isLoading = false; //ローディング画面用
-   List<String> _dropdownItems = ['正常', '停止', '異常停止','メンテナンス'];  // ここに選択項目を追加します
+  List<String> _dropdownItems = ['正常', '停止', '異常停止','メンテナンス'];  // ここに選択項目を追加します
   String? _selectedItem;
 
-
-  void _submitData(
-      machine, status, BuildContext context, Function onScrollUp) async {
+  void _submitData(machine, status, BuildContext context) async {
     setState(() {
       _isLoading = true;
     });
@@ -45,12 +43,12 @@ class _ModalContentForChangeStatus extends State<ModalContentForChangeStatus> {
   
     if(res == 3){
       print(res);
-      showCustomDialog(context, onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
     }else if(res == 1){
-      showCustomDialog(context, onScrollUp,"完了","データは正常に送信されました。");
+      showCustomDialog(context, widget.onScrollUp,"完了","データは正常に送信されました。");
     }else{
       print(res);
-      showCustomDialog(context, onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
     }
   }
 
@@ -90,13 +88,16 @@ class _ModalContentForChangeStatus extends State<ModalContentForChangeStatus> {
                                 child: Column(
                                   children: [
                                     SizedBox(height: 20,),
-                                    _createOptions("稼働中", Colors.green),
+                                    if(widget.project.isNotEmpty)
+                                    _createOptions("稼働中", Colors.green,1),
+                                    if(widget.project.isEmpty)
+                                    _createOptions("未稼働", Colors.grey,0),
                                     SizedBox(height: 50,),
-                                    _createOptions("停止中", Colors.pink),
+                                    _createOptions("停止中", Colors.pink,2),
                                     SizedBox(height: 20,),
-                                    _createOptions("異常停止中", Colors.red),
+                                    _createOptions("異常停止中", Colors.red,3),
                                     SizedBox(height: 20,),
-                                    _createOptions("メンテナンス中", Colors.yellow),
+                                    _createOptions("メンテナンス中", Colors.yellow,4),
                                   ],
                                 ),
                               ),
@@ -114,37 +115,43 @@ class _ModalContentForChangeStatus extends State<ModalContentForChangeStatus> {
       ),
     );
   }
-  Container _createOptions(text,color){
-    return Container(
-      height: 70,
+  Ink _createOptions(text,color,int update_status){
+    return Ink(
       decoration: BoxDecoration(
         color: Color.fromARGB(255, 243, 243, 243), // 背景色
-        //border: Border.all(
-          //color: Colors.blue, // 枠線の色
-          //width: 2.0, // 枠線の太さ
-        //),
         borderRadius: BorderRadius.circular(8.0), // 角を丸くする場合
       ),
-      child: Align(
-        alignment: Alignment.center,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(width: 10,),
-            Icon(
-              Icons.circle,
-              color: color,
-              size: 20,
+      child: InkWell(
+        onTap: () {
+          // タップ時の処理をここに記述
+          _submitData(widget.machine,update_status,context);
+          widget.setIsModal(false);
+        },
+        borderRadius: BorderRadius.circular(8.0),
+        child: Container(
+          height: 70,
+          child: Align(
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(width: 10,),
+                Icon(
+                  Icons.circle,
+                  color: color,
+                  size: 20,
+                ),
+                SizedBox(width: 10,),
+                Text(
+                  text,
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold
+                  ),
+                ),                                           
+              ],
             ),
-            SizedBox(width: 10,),
-            Text(
-              text,
-              style: TextStyle(
-                  color: Colors.black, fontWeight: FontWeight.bold
-              ),
-            ),                                           
-          ],
+          ),
         ),
       ),
     );
