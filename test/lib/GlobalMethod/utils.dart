@@ -130,14 +130,17 @@ Map<String, dynamic> getStepInfoMap(List dataList, String projectId) {
     'step_to_edit': null,
     'stepStatusList': [],
     'machine_id': null,
-    'machine_status': null
+    'machine_status': null,
+    'machine_name': null // <- Add this line
   };
 
   for (var data in dataList) {
     for (var project in data['project']) {
       if (project['project_id'] == projectId) {
         stepInfoMap["machine_id"] = project["machine_id"];
-        stepInfoMap["machine_status"] = data["machine_status"]; // Added 1007
+        stepInfoMap["machine_status"] = data["machine_status"];
+        stepInfoMap["machine_name"] = data["machine_name"]; // <- Add this line
+
         // Sort the steps by step_num before processing
         List stepList = project['step'];
         stepList.sort((a, b) => a['step_num'].compareTo(b['step_num']));

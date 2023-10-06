@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:test/GlobalWidget/MachineStatusIndicator.dart';
 import 'package:test/Screen/QRScanner/LoadingModalForScan.dart';
 import 'package:test/Screen/QRScanner/ModalContentForComplete.dart';
 import 'package:test/Screen/QRScanner/ModalContentForStart.dart';
@@ -99,15 +100,22 @@ class _QRScannerPageState extends State<QRScannerPage> {
           Provider.of<DataNotifier>(context, listen: false).dataList;
       final Map stepInfoMap = getStepInfoMap(dataList, projectId);
 
-      // showModalBottomSheet
-      widget.onScrollDown(100);
-      await _showModalBottomSheet(
-        key,
-        stepInfoMap,
-      );
+      final int machineStatus = stepInfoMap['machine_status'];
+      final String machineName = stepInfoMap['machine_name'];
 
-      // resume scan when swiped down
-      _resumeScan();
+      if (machineStatus == 1) {
+        // showModalBottomSheet
+        widget.onScrollDown(100);
+        await _showModalBottomSheet(
+          key,
+          stepInfoMap,
+        );
+      } else {
+        // Show AlertDialog (when Stats is not 1[稼働中])
+        _showInvalidMachStatsDialog(context, machineStatus, machineName)
+            .then((_) => _resumeScan());
+        return; //
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("不正なQRコードです\n$e")),
@@ -115,8 +123,46 @@ class _QRScannerPageState extends State<QRScannerPage> {
     } finally {
       setState(() {
         _isLoading = false; // End Loading
+        // _resumeScan();
       });
     }
+  }
+
+  Future<dynamic> _showInvalidMachStatsDialog(
+      context, machineStatus, machineName) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('作業機状態を確認'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize:
+                  MainAxisSize.min, // force it to take only the space it needs
+              children: [
+                Text('・機番: $machineName'),
+                Row(
+                  children: [
+                    Text('・状態: '),
+                    MachineStatusIndicator(
+                        context: context, machineStatus: machineStatus)
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('閉じる'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // -----------------------------------------------------------------------
@@ -145,7 +191,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
         if (stepInfoMap['step_status_to_edit'] == null) return Container();
         return Container();
       },
-    );
+    ).then((_) => _resumeScan());
   }
 
   void _resumeScan() {
