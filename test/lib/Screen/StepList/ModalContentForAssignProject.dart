@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import 'package:test/api/TestAPI.dart';
-import '../../GlobalWidget/InputField.dart';
-import '../../GlobalWidget/LoadingModal.dart';
-import '../../providers/DataProvider.dart';
-import '../../GlobalWidget/ShowDialog.dart';
-import '../../GlobalWidget/BuildTitleForModal.dart';
+import 'package:test/GlobalMethod/updateLocaldbWithErrorHandle.dart';
+import 'package:test/GlobalWidget/InputField.dart';
+import 'package:test/GlobalWidget/LoadingModal.dart';
+import 'package:test/GlobalWidget/ShowCusomDialog.dart';
+import 'package:test/GlobalWidget/BuildTitleForModal.dart';
 
 class MyModal extends StatefulWidget {
   final Function onScrollUp;
@@ -68,8 +67,7 @@ class _MyModalState extends State<MyModal> {
     });
 
     final res = await assignProjectInfo(machine, project); //データを送信
-    await Provider.of<DataNotifier>(context, listen: false)
-        .updateLocalDB(); //最新データに更新
+    await updateLocaldbWithErrorHandle(context);
     
 
     setState(() {

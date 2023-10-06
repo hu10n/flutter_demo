@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:test/api/TestAPI.dart';
-import '../../providers/DataProvider.dart';
-import '../../GlobalWidget/ShowDialog.dart';
-import '../../GlobalWidget/BuildTitleForModal.dart';
+import 'package:test/GlobalWidget/BuildTitleForModal.dart';
 import 'package:test/GlobalMethod/utils.dart';
 
 class ModalContentForDetail extends StatefulWidget {

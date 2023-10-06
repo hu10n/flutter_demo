@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:test/api/TestAPI.dart';
 import '../../GlobalWidget/LoadingModal.dart';
 import '../../providers/DataProvider.dart';
-import '../../GlobalWidget/ShowDialog.dart';
+import '../../GlobalWidget/ShowCusomDialog.dart';
 import '../../GlobalWidget/BuildTitleForModal.dart';
 
 class ModalContentForHistory extends StatefulWidget {

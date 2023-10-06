@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../providers/DataProvider.dart';
+import 'package:test/GlobalMethod/updateLocaldbWithErrorHandle.dart';
 import 'BottNaviBar.dart';
 
 class BottNaviWithRefleshBtn extends StatelessWidget {
@@ -63,9 +61,7 @@ class BottNaviWithRefleshBtn extends StatelessWidget {
   //更新ボタン用---------------------------------------------------------
   void _pressUpdateButtom(BuildContext context) async {
     setIsLoading(true);
-    await Provider.of<DataNotifier>(context, listen: false)
-        .updateLocalDB(); //更新
-    print("更新");
+    await updateLocaldbWithErrorHandle(context);
     setIsLoading(false);
   }
   //-------------------------------------------------------------------

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-void showCustomDialog(BuildContext mainContext, Function onScrollUp, String title, String text) {
+//未実装用ポップアップ
+void showDialogGeneral(BuildContext mainContext, String title, String text) {
   showDialog(
     context: mainContext,
     builder: (BuildContext context) {
@@ -11,8 +12,7 @@ void showCustomDialog(BuildContext mainContext, Function onScrollUp, String titl
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(); //ダイアログを閉じる
-              Navigator.pop(mainContext); // モーダルを閉じる
-              onScrollUp(100); //下部ナビゲーションを戻す
+              //Navigator.pop(mainContext); // モーダルを閉じる
             },
             child: Text('OK'),
           ),
