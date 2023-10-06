@@ -5,15 +5,43 @@ Container InputField(String title, TextEditingController controller, FocusNode f
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start, // 子ウィジェットを左揃えにする
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            title,
-            style: TextStyle(
-                color: Colors.grey, fontWeight: FontWeight.bold),
+        Container(
+          margin: EdgeInsets.only(top: 0.0),
+          height: 20.0,
+          //width: 70.0,
+          //color: Colors.blue,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.grey, fontWeight: FontWeight.bold
+                ),
+              ),
+              Container(
+                //width: 100,
+                //height: 100,
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(2), // 角を丸めるためのプロパティ
+                ),
+                padding: EdgeInsets.all(3), 
+                child: Center(
+                  child: Text(
+                    '必須',
+                    style: TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10
+                ),
+                  )
+                ),
+              ),
+            ],
           ),
         ),
+        SizedBox(height: 4,),
         TextField(
+          keyboardType: TextInputType.number,
           focusNode: focus,
           controller: controller,
           decoration: InputDecoration(

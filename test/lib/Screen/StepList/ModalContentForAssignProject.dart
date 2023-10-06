@@ -309,7 +309,7 @@ class _MyModalState extends State<MyModal> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
-                      onPressed: () async {
+                      onPressed: false ? null :() async {
                         // ボタンがタップされた時の処理を記述
                         //print(await postStepData("ok"));
                         //print(await assignProjectInfo(machine["machine_id"],machine["machine_status"]));
