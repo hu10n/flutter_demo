@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:test/Screen/QRScanner/LoadingModalForScan.dart';
 import 'package:test/Screen/QRScanner/ModalContentForComplete.dart';
 import 'package:test/Screen/QRScanner/ModalContentForStart.dart';
 import 'package:test/providers/DataProvider.dart';
@@ -28,6 +29,8 @@ class _QRScannerPageState extends State<QRScannerPage> {
   Barcode? result;
   String _text = '';
 
+  bool _isLoading = false;
+
   @override
   void dispose() {
     controller?.dispose(); // Dispose the QRViewController
@@ -36,12 +39,17 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('QRコードをスキャン'),
-        centerTitle: true,
-      ),
-      body: _buildQrView(context),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            title: Text('QRコードをスキャン'),
+            centerTitle: true,
+          ),
+          body: _buildQrView(context),
+        ),
+        if (_isLoading) LoadingDialogForScan()
+      ],
     );
   }
 
@@ -62,6 +70,9 @@ class _QRScannerPageState extends State<QRScannerPage> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
+      setState(() {
+        _isLoading = true; // loading start
+      });
       result = scanData;
       final newText = scanData.code.toString();
       if (newText != _text) {
@@ -69,6 +80,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
           _text = newText;
           _processScannedData(_text);
         });
+        controller.pauseCamera();
       }
     });
   }
@@ -78,32 +90,41 @@ class _QRScannerPageState extends State<QRScannerPage> {
     try {
       final decodedData = jsonDecode(text);
       final key = decodedData['key'].toString();
-      // Update LocalDB, then transfer the data to next Page
-      await Provider.of<DataNotifier>(context, listen: false)
-          .updateLocalDB(); //LocalDBを最新データに更新
-      final projectId = decodedData['projectId'].toString();
 
+      // updateLocalDB
+      await Provider.of<DataNotifier>(context, listen: false).updateLocalDB();
+
+      final projectId = decodedData['projectId'].toString();
       final dataList =
           Provider.of<DataNotifier>(context, listen: false).dataList;
+      final Map stepInfoMap = getStepInfoMap(dataList, projectId);
 
+      // showModalBottomSheet
       widget.onScrollDown(100);
-      _showModalBottomSheet(key, projectId, dataList).whenComplete(() {
-        // Proc when swipe down showModalBottomSheet
-        _resumeScan();
-      });
+      await _showModalBottomSheet(
+        key,
+        stepInfoMap,
+      );
+
+      // resume scan when swiped down
+      _resumeScan();
     } catch (e) {
-      // Handle JSON decoding error
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("不正なQRコードです\n$e")),
       );
+    } finally {
+      setState(() {
+        _isLoading = false; // End Loading
+      });
     }
   }
+
   // -----------------------------------------------------------------------
 
   Future<dynamic> _showModalBottomSheet(
-      String key, String projectId, dataList) {
-    final Map stepInfoMap = getStepInfoMap(dataList, projectId);
-    print(stepInfoMap);
+    String key,
+    Map stepInfoMap,
+  ) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -141,7 +162,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
     log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
     if (!p) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('There is No Permission to Access Camaera')),
+        SnackBar(content: Text('カメラへのアクセス権がありません')),
       );
     }
   }
