@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:test/GlobalWidget/MachineStatusIndicator.dart';
 import 'package:test/Screen/QRScanner/LoadingModalForScan.dart';
+import 'package:test/Screen/QRScanner/ModalContentForClosed.dart';
 import 'package:test/Screen/QRScanner/ModalContentForComplete.dart';
 import 'package:test/Screen/QRScanner/ModalContentForStart.dart';
 import 'package:test/providers/DataProvider.dart';
@@ -147,8 +148,13 @@ class _QRScannerPageState extends State<QRScannerPage> {
         if (stepInfoMap['step_status_to_edit'] == -1)
           return ModalContentForComplete(
               stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp);
-        if (stepInfoMap['step_status_to_edit'] == null) return Container();
-        return Container();
+        if (stepInfoMap['step_status_to_edit'] == null)
+          return ModalContentForClosed(
+              stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp);
+        else
+          return Container(
+            child: Text("Error:SCAN_QR_E-1"),
+          );
       },
     ).then((_) => _resumeScan());
   }
@@ -159,7 +165,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('作業機状態を確認'),
+          title: Text('作業機の状態を確認'),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -8,13 +8,9 @@ import 'package:test/GlobalWidget/BuildTitleForModal.dart';
 class ModalContentForClosed extends StatefulWidget {
   final Function onScrollUp;
   final Map stepInfoMap;
-  final Function resumeScan;
 
   const ModalContentForClosed(
-      {super.key,
-      required this.stepInfoMap,
-      required this.resumeScan,
-      required this.onScrollUp});
+      {super.key, required this.stepInfoMap, required this.onScrollUp});
 
   @override
   _ModalContentForClosedState createState() => _ModalContentForClosedState();
@@ -28,50 +24,15 @@ class _ModalContentForClosedState extends State<ModalContentForClosed> {
 
   bool _isLoading = false; //ローディング画面用
 
-  void _submitData(update_state, step, BuildContext context) async {
-    // setState(() {
-    //   _isLoading = true;
-    // });
+  void _submitData(update_state, step, BuildContext context) async {}
 
-    // final res = await updateStepData(
-    //     update_state,
-    //     step,
-    //     widget.stepInfoMap['stepStatusList'],
-    //     widget.stepInfoMap['machine_id']); //データを送信*********************
-    // await updateLocaldbWithErrorHandle(context);
-
-    // setState(() {
-    //   _isLoading = false;
-    // });
-    // if (res == 3) {
-    //   print(res);
-    //   showCustomDialog(context, widget.onScrollUp, "エラー",
-    //       "データが最新ではありません。更新してから、もう一度お試しください");
-    // } else if (res == 1) {
-    //   showCustomDialog(context, widget.onScrollUp, "完了", "データは正常に送信されました。");
-    // } else {
-    //   print(res);
-    //   showCustomDialog(context, widget.onScrollUp, "エラー",
-    //       "予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
-    // }
-  }
-
-  void _unfocus() {
-    // for (var focus in _focuses) {
-    //   focus.unfocus();
-    // }
-  }
+  void _unfocus() {}
 
   @override
-  void dispose() {
-    // _controllers.forEach((controller) => controller.dispose());
-    // _focuses.forEach((focus) => focus.dispose());
-    // super.dispose();
-  }
+  void dispose() {}
 
   @override
   Widget build(BuildContext context) {
-    final step_to_edit = widget.stepInfoMap['step_to_edit'];
     return GestureDetector(
       onTap: () {
         _unfocus(); //入力フィールド以外をタップするとフォーカスが外れる
@@ -83,7 +44,7 @@ class _ModalContentForClosedState extends State<ModalContentForClosed> {
             Column(
               children: [
                 //モーダルの大タイトル＋クローズボタン---------------------
-                BuildTitleForModal(context, widget.onScrollUp, "開始報告を作成する"),
+                BuildTitleForModal(context, widget.onScrollUp, "全ての工程が完了済み"),
                 //---------------------------------------------------
                 //スクロールビュー部分----------------------------------
 
@@ -119,28 +80,16 @@ class _ModalContentForClosedState extends State<ModalContentForClosed> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            'STEP ${step_to_edit['step_num']}',
+                                            'Name: ${widget.stepInfoMap['machine_name']}',
                                             style: TextStyle(
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.w600,
                                                 color: Colors.grey),
                                           ),
-                                          Text(
-                                            '担当工程: ${step_to_edit['step_name']}',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.grey[700]),
-                                          ),
                                         ],
                                       ),
                                     ),
                                     //-------------------------------------------------
-                                    SizedBox(
-                                      height: 60,
-                                    ),
-                                    // InputField(
-                                    //     "作業者名", _controllers[0], _focuses[0]),
                                   ],
                                 ),
                               ),
@@ -165,31 +114,16 @@ class _ModalContentForClosedState extends State<ModalContentForClosed> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
-                      onPressed: () async {
-                        //print(widget.stepStatus['stepToStart']);
-                        int update_status = -1;
-                        Map<String, dynamic> step = Map.from(step_to_edit);
-                        step["worker"] = _controllers[0].text;
-                        // step["free_text"] = _controllers[0].text;
-                        // List status_list =
-                        //     widget.stepInfoMap['step_status_to_edit'];
-
-                        //print(step);
-
-                        //print(project);
-                        _unfocus();
-                        _submitData(
-                          update_status,
-                          step,
-                          context,
-                        );
+                      onPressed: () {
+                        Navigator.pop(context); // この行を追加
+                        // widget.resumeScan();
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all<Size>(Size(
                             MediaQuery.of(context).size.width * 0.9,
                             40.0)), // ここで幅と高さを指定
                       ),
-                      child: Text('作業開始'),
+                      child: Text('閉じる'),
                     ),
                   ),
                 ),
