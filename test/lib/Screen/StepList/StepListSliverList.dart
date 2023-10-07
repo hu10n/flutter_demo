@@ -5,7 +5,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:test/providers/DataProvider.dart';
 import 'MachineSummaryCard.dart';
 import 'StepListCard.dart';
-import 'package:test/providers/NavigationData.dart';
+//import 'package:test/providers/NavigationData.dart';
 import 'package:test/Screen/JobCard/PrintingJob.dart';
 
 class StepListSliverList extends StatefulWidget {
@@ -71,44 +71,14 @@ class _StepListSliverListState extends State<StepListSliverList> {
   Future<void> _handleIssueButton(
       BuildContext context, Map<String, dynamic> machine) async {
     // デバッグ用---------------------------------------------------------------
-    final navigationData = NavigationData.of(context);
+    //final navigationData = NavigationData.of(context);
     //print(navigationData);
     //------------------------------------------------------------------------
-
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Alert'),
-          content: Text('Button is Pressed !!!'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                // 画面遷移管理のデバッグ用----------------------------------------
-                if (navigationData != null) {
-                  final navigatorState =
-                      navigationData.pageKeys[0].currentState;
-
-                  if (navigatorState != null && navigatorState.canPop()) {
-                    navigatorState.popUntil((route) => route.isFirst);
-                    navigationData.onTabChange(0);
-                  }
-                }
-
-                //-------------------------------------------------------------
-                final pdf = pw.Document();
-                createAndPrintPdf(
-                  pdf,
-                  Provider.of<DataNotifier>(context, listen: false).japaneseFont,
-                  machine,
-                );
-              },
-              child: Text('Close'),
-            ),
-          ],
-        );
-      },
+    final pdf = pw.Document();
+    createAndPrintPdf(
+      pdf,
+      Provider.of<DataNotifier>(context, listen: false).japaneseFont,
+      machine,
     );
   }
 

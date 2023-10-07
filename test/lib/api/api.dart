@@ -146,6 +146,7 @@ Future<int> assignProjectInfo(machine,project) async {
         'step': project['step']
       }),
     );
+    //print(response);
     return json.decode(response.body)["return_status"];
   }catch(e){
     print('Error occurred: $e');

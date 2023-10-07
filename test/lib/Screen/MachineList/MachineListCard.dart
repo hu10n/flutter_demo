@@ -31,8 +31,8 @@ class MachineListCard extends StatelessWidget {
     String productNumber = getProductNumber(machine);
     String productName = getProductName(machine);
 
-    int totalSteps = calculateTotalSteps(machine);
-    int totalProgress = calculateTotalProgress(machine);
+    //int totalSteps = calculateTotalSteps(machine);
+    //int totalProgress = calculateTotalProgress(machine);
     // print("$sumOfProjectStatus/$totalSteps");
 
     return Card(

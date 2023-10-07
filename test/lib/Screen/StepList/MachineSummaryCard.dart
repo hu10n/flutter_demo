@@ -65,7 +65,17 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
     String cliantName =
         projects.isNotEmpty ? projects[0]['client_name'] ?? '' : '';
 
-    bool isEmpty = machine["project"].isEmpty;
+    bool isEmpty = projects.isEmpty;
+    bool isComplete = false;
+
+    if(!isEmpty){
+      if (projects[0]["step"].every((step) => step["project_status"] == 1)) {
+        // すべてのstepが1の場合の処理をここに書く
+        // ...
+        //print("object");
+        isComplete = true;
+      }
+    }
 
     return Card(
       child: Column(
@@ -80,11 +90,8 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                   updateDate, productionVolume, cliantName)
             ],
           ),
-          if (!isEmpty)
-            _createBottomButtonBox(
-                context, widget.onPressAction, machine, projects[0]),
-          if (isEmpty)
-            _createBottomButtonBoxEmpty(context, widget.onPressAction, machine)
+          
+          _createBottomButtonBox(context, machine, isEmpty, isComplete, isEmpty ? {} : projects[0]),
         ],
       ),
     );
@@ -92,8 +99,9 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
 
   Widget _createBottomButtonBox(
       BuildContext context,
-      VoidCallback onPressAction,
       Map<String, dynamic> machine,
+      bool isEmpty,
+      bool isComplete,
       Map<String, dynamic> project) {
     //final modalPage = ModalPage();
 
@@ -106,16 +114,14 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
           children: [
             SizedBox(
                 child: ElevatedButton(
-                    onPressed: () {
-                      onPressAction();
-                    },
+                    onPressed: [2,3,4].contains(machine["machine_status"]) ? null: () => isEmpty ? pressAssignButton(machine): widget.onPressAction(),
                     child: SizedBox(
-                        width: 100,
+                        width: isEmpty ? 200: 100,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "カード発行",
+                              isEmpty ? "プロジェクト割り当て": "カード発行",
                               style: TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.w600),
                             ),
@@ -128,7 +134,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                   child: ElevatedButton(
                     onPressed: () {
                       widget.onScrollDown(100);
-                      _showActionSheet(context, machine, project);
+                      _showActionSheet(context, machine, project, isEmpty, isComplete);
                     },
                     child: Icon(
                       Icons.more_horiz, // ここで「・・・」のアイコンを設定します。
@@ -142,70 +148,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
     );
   }
 
-  Widget _createBottomButtonBoxEmpty(BuildContext context,
-      VoidCallback onPressAction, Map<String, dynamic> machine) {
-    //final modalPage = ModalPage();
-
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            SizedBox(
-                child: ElevatedButton(
-                    onPressed: () {
-                      //割り当てロジック-------------------------------------------------------------------------
-                      widget.onScrollDown(100);
-
-                      showModalBottomSheet(
-                        //モーダル表示
-                        context: context,
-                        isScrollControlled: true,
-                        enableDrag: false,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(20))),
-                        builder:(context) => MyModal(onScrollUp: widget.onScrollUp, machine: machine),
-                      ).whenComplete(() {
-                        // ここでモーダルが閉じられた際の追加処理を実行します
-                         widget.onScrollUp(100);
-                      });
-                      //---------------------------------------------------------------------------------------
-                    },
-                    child: SizedBox(
-                        width: 200,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "プロジェクト割り当て",
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w600),
-                            ),
-                          ],
-                        )))),
-            Positioned(
-              right: 50,
-              child: SizedBox(
-                  width: 55,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      widget.onScrollDown(100);
-                      _showActionSheet(context, machine, {});
-                    },
-                    child: Icon(
-                      Icons.more_horiz, // ここで「・・・」のアイコンを設定します。
-                      color: Colors.white, // アイコンの色を設定します。
-                    ),
-                  )),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  
 
   SizedBox _createProductInfoBox(
       String productName,
@@ -341,7 +284,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
 
   // アクションシート用-----------------------------------------------------
   void _showActionSheet(BuildContext context, Map<String, dynamic> machine,
-      Map<String, dynamic> project) {
+      Map<String, dynamic> project, bool isEmpty, bool isComplete) {
     showModalBottomSheet(
         context: context,
         isDismissible: true,
@@ -349,7 +292,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
         builder: (BuildContext context) {
           return Wrap(
             children: <Widget>[
-              if (project.isNotEmpty)
+              if (isComplete)
                 ListTile(
                   leading: Icon(Icons.local_shipping,
                       color: Color.fromARGB(255, 222, 212, 123)),
@@ -379,7 +322,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                     });
                   },
                 ),
-              if (project.isNotEmpty)
+              if (!isEmpty)
                 ListTile(
                   leading: Icon(Icons.zoom_in, color: Colors.blue),
                   title: Text('詳細情報を見る'),
@@ -464,5 +407,25 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
     setState(() {
       isModal = flag;
     });
+  }
+
+  void pressAssignButton(Map<String,dynamic> machine){
+    //割り当てロジック-------------------------------------------------------------------------
+    widget.onScrollDown(100);
+
+    showModalBottomSheet(
+      //モーダル表示
+      context: context,
+      isScrollControlled: true,
+      enableDrag: false,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+              top: Radius.circular(20))),
+      builder:(context) => MyModal(onScrollUp: widget.onScrollUp, machine: machine),
+    ).whenComplete(() {
+      // ここでモーダルが閉じられた際の追加処理を実行します
+        widget.onScrollUp(100);
+    });
+    //---------------------------------------------------------------------------------------
   }
 }

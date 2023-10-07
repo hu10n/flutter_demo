@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 //入力フォーム---------------------------------------------------------------------
 
 //入力タイトル＋テキストフィールド＋必須マーク
-Container InputField(String title, bool isRequired, TextEditingController controller, FocusNode focus) {
+Container InputField(String title, TextEditingController controller, FocusNode focus,
+ {bool isRequired = false, bool isNumOnly = false} ) {
   return Container(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start, // 子ウィジェットを左揃えにする
@@ -49,7 +50,7 @@ Container InputField(String title, bool isRequired, TextEditingController contro
         SizedBox(height: 4,),
         //テキストフィールド-------------------------------------------
         TextField(
-          keyboardType: TextInputType.number,
+          keyboardType: isNumOnly ? TextInputType.number: null,
           focusNode: focus,
           controller: controller,
           decoration: InputDecoration(

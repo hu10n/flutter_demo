@@ -27,6 +27,7 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
   List<FocusNode> _focuses = List.generate(1, (index) => FocusNode());
 
   bool _isLoading = false; //ローディング画面用
+  bool _isButtonEnabled = false; //提出ボタンの制御
 
   void _submitData(update_state, step, BuildContext context) async {
     setState(() {
@@ -49,7 +50,7 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
           "データが最新ではありません。更新してから、もう一度お試しください");
     } else if (res == 1) {
       showCustomDialog(context, widget.onScrollUp, "完了", "データは正常に送信されました。");
-    } else {
+} else {
       print(res);
       showCustomDialog(context, widget.onScrollUp, "エラー",
           "予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
@@ -59,6 +60,21 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
   void _unfocus() {
     for (var focus in _focuses) {
       focus.unfocus();
+    }
+  }
+
+   _onTextChanged() {
+    bool allFieldsFilled = _controllers[0].text.isNotEmpty;
+    setState(() {
+      _isButtonEnabled = allFieldsFilled;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    for (var controller in _controllers) {
+      controller.addListener(_onTextChanged);
     }
   }
 
@@ -139,8 +155,8 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
                                     SizedBox(
                                       height: 60,
                                     ),
-                                    InputField("作業者名", true, _controllers[0],
-                                        _focuses[0]),
+                                    InputField("作業者名", _controllers[0],
+                                        _focuses[0], isRequired: true),
                                   ],
                                 ),
                               ),
@@ -165,7 +181,7 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
-                      onPressed: () async {
+                      onPressed: !_isButtonEnabled ? null: () async {
                         //print(widget.stepStatus['stepToStart']);
                         int update_status = -1;
                         Map<String, dynamic> step = Map.from(step_to_edit);

@@ -26,8 +26,6 @@ class ModalContentForChangeStatus extends StatefulWidget {
 class _ModalContentForChangeStatus extends State<ModalContentForChangeStatus> {
 
   bool _isLoading = false; //ローディング画面用
-  List<String> _dropdownItems = ['正常', '停止', '異常停止','メンテナンス'];  // ここに選択項目を追加します
-  String? _selectedItem;
 
   void _submitData(machine, status, BuildContext context) async {
     setState(() {

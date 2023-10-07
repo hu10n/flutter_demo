@@ -35,7 +35,7 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
         itemBuilder: (context, index, realIdx) {
           return GestureDetector(
             onTap: () {
-              print(DateTime.now());
+              //print(DateTime.now());
               widget.controller.animateToPage(index);
             },
             child: Column(
@@ -66,7 +66,7 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
           enableInfiniteScroll: false,
           initialPage: 0,
           onPageChanged: (index, reason) {
-            print("pagechange:$index");
+            //print("pagechange:$index");
             _updateCurrentIndex(index);
           },
         ),
@@ -85,7 +85,7 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
       //print("update");
       if (!Provider.of<DataNotifier>(context, listen: false).isScrollView) {
         //スクロールによるカルーセル遷移では発火しない。
-        print("do");
+        //print("do");
         Provider.of<DataNotifier>(context, listen: false)
             .turnSelectedFlag(true);
       }

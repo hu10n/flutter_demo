@@ -184,7 +184,7 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
         ),
         Align(
           alignment: Alignment.centerLeft,
-          child: Text("・ステップステータス：${step['step_status']}"),
+          child: Text("・ステップステータス：${step['prject_status']}"),
         ),
         Align(
           alignment: Alignment.centerLeft,

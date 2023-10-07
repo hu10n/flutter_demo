@@ -30,14 +30,18 @@ class _BottNaviBarState extends State<BottNaviBar> {
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(3, (index) {
+              children: List.generate(2, (index) {
                 final isSelected = widget.selectedIndex == index;
                 final iconData = isSelected
-                    ? [Icons.home, Icons.qr_code_scanner, Icons.settings][index]
+                    ? [
+                      Icons.home, 
+                      Icons.qr_code_scanner, 
+                      //Icons.settings
+                      ][index]
                     : [
                         Icons.home_outlined,
                         Icons.qr_code_scanner_rounded,
-                        Icons.settings_outlined
+                        //Icons.settings_outlined
                       ][index];
                 final color = isSelected ? Colors.black : Colors.grey[700];
 

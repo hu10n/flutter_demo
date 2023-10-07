@@ -19,7 +19,7 @@ class _BasePageState extends State<BasePage> {
   final _pageKeys = [
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
-    GlobalKey<NavigatorState>(),
+    //GlobalKey<NavigatorState>(),
   ];
   //---------------------------------------------------------
 
@@ -58,7 +58,7 @@ class _BasePageState extends State<BasePage> {
               children: [
                 _buildNavigatorPage(0),
                 _buildNavigatorPage(1),
-                _buildNavigatorPage(2),
+                //_buildNavigatorPage(2),
               ],
             ),
             //-----------------------------------

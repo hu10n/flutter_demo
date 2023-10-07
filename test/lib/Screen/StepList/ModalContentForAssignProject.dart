@@ -7,6 +7,8 @@ import 'package:test/GlobalWidget/LoadingModal.dart';
 import 'package:test/GlobalWidget/ShowCusomDialog.dart';
 import 'package:test/GlobalWidget/BuildTitleForModal.dart';
 
+//入力項目が増えると書き直す部分が多いためハードコードを少なめにしたい
+
 class MyModal extends StatefulWidget {
   final Function onScrollUp;
   final Map<String, dynamic> machine;
@@ -27,6 +29,8 @@ class _MyModalState extends State<MyModal> {
 
   bool _isLoading = false; //ローディング画面用
 
+  bool _isButtonEnabled = false; //提出ボタンの制御
+
   void _plusCounter() {
     setState(() {
       _counter++;
@@ -41,10 +45,13 @@ class _MyModalState extends State<MyModal> {
 
   void _addStepField() {
     setState(() {
-      _controllers.add(TextEditingController());
+      _isButtonEnabled = false;
+      TextEditingController newController = TextEditingController();
+      _controllers.add(newController);
+      newController.addListener(_onTextChanged);
       _focuses.add(FocusNode());
-      stepFields.add(InputField("ステップ${_counter + 1}", true,
-          _controllers[_counter + 7], _focuses[_counter + 7]));
+      stepFields.add(InputField("ステップ${_counter + 1}",
+          _controllers[_counter + 7], _focuses[_counter + 7], isRequired: true));
       stepFields.add(SizedBox(
         height: 20,
       ));
@@ -57,6 +64,8 @@ class _MyModalState extends State<MyModal> {
       stepFields.removeAt(stepFields.length - 1);
       _controllers.removeAt(_counter + 8);
       _focuses.removeAt(_counter + 8);
+
+      _isButtonEnabled = _controllers.every((controller) => controller.text.isNotEmpty);
     });
   }
 
@@ -90,17 +99,30 @@ class _MyModalState extends State<MyModal> {
     }
   }
 
+  _onTextChanged() {
+    bool allFieldsFilled = _controllers.every((controller) => controller.text.isNotEmpty);
+    setState(() {
+      _isButtonEnabled = allFieldsFilled;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     // initStateの中でstepFieldsを初期化
     _controllers.add(TextEditingController());
     _focuses.add(FocusNode());
-    stepFields.add(InputField("ステップ1", true, _controllers[7], _focuses[7]));
+    stepFields.add(InputField("ステップ1", _controllers[7], _focuses[7], isRequired: true));
     stepFields.add(SizedBox(
       height: 20,
     ));
+
+    for (var controller in _controllers) {
+      controller.addListener(_onTextChanged);
+    }
   }
+
+  
 
   @override
   void dispose() {
@@ -154,27 +176,27 @@ class _MyModalState extends State<MyModal> {
                                       height: 20,
                                     ),
                                     InputField(
-                                        "品名", true, _controllers[0], _focuses[0]),
+                                        "品名", _controllers[0], _focuses[0], isRequired: true),
                                     SizedBox(
                                       height: 15,
                                     ),
                                     InputField(
-                                        "品番", true, _controllers[1], _focuses[1]),
+                                        "品番", _controllers[1], _focuses[1], isRequired: true),
                                     SizedBox(
                                       height: 15,
                                     ),
                                     InputField(
-                                        "材料", true, _controllers[2], _focuses[2]),
+                                        "材料", _controllers[2], _focuses[2], isRequired: true),
                                     SizedBox(
                                       height: 15,
                                     ),
                                     InputField(
-                                        "ロットNo.", true, _controllers[3], _focuses[3]),
+                                        "ロットNo.", _controllers[3], _focuses[3], isRequired: true),
                                     SizedBox(
                                       height: 15,
                                     ),
                                     InputField(
-                                        "生産数", true, _controllers[4], _focuses[4]),
+                                        "生産数", _controllers[4], _focuses[4], isRequired: true, isNumOnly: true),
                                     SizedBox(
                                       height: 80,
                                     ),
@@ -190,7 +212,7 @@ class _MyModalState extends State<MyModal> {
                                       height: 20,
                                     ),
                                     InputField(
-                                        "客先名", true, _controllers[5], _focuses[5]),
+                                        "客先名", _controllers[5], _focuses[5], isRequired: true),
                                     SizedBox(
                                       height: 80,
                                     ),
@@ -204,7 +226,7 @@ class _MyModalState extends State<MyModal> {
                                       height: 20,
                                     ),
                                     InputField(
-                                        "担当者名", true, _controllers[6], _focuses[6]),
+                                        "担当者名", _controllers[6], _focuses[6], isRequired: true),
                                     SizedBox(
                                       height: 80,
                                     ),
@@ -309,7 +331,7 @@ class _MyModalState extends State<MyModal> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
-                      onPressed: false ? null :() async {
+                      onPressed: !_isButtonEnabled ? null :() async {
                         // ボタンがタップされた時の処理を記述
                         //print(await postStepData("ok"));
                         //print(await assignProjectInfo(machine["machine_id"],machine["machine_status"]));
