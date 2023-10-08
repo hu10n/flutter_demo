@@ -12,6 +12,7 @@ import 'package:test/Screen/QRScanner/ModalContentForStart.dart';
 import 'package:test/Screen/QRScanner/DialogForScanningError.dart';
 import 'package:test/providers/DataProvider.dart';
 import 'package:test/GlobalMethod/utils.dart';
+import 'package:test/providers/NavigationData.dart';
 
 class QRScannerPage extends StatefulWidget {
   final Function onScrollUp;
@@ -147,14 +148,22 @@ class _QRScannerPageState extends State<QRScannerPage> {
     String key,
     Map stepInfoMap,
   ) {
+    final navigationData = NavigationData.of(context);
+    print("navigation data[QRPage]; $navigationData");
     final stepStatusToEdit = stepInfoMap['step_status_to_edit'];
 
     final modalContent = stepStatusToEdit == 0
         ? ModalContentForStart(
-            stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp)
+            stepInfoMap: stepInfoMap,
+            onScrollUp: widget.onScrollUp,
+            onScrollDown: widget.onScrollDown,
+          )
         : stepStatusToEdit == -1
             ? ModalContentForComplete(
-                stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp)
+                stepInfoMap: stepInfoMap,
+                onScrollUp: widget.onScrollUp,
+                onScrollDown: widget.onScrollDown,
+              )
             : stepStatusToEdit == null
                 ? ModalContentForClosed(
                     stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp)

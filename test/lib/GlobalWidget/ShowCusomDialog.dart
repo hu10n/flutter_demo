@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:test/GlobalMethod/utils.dart';
 
 void showCustomDialog(
     BuildContext mainContext, Function onScrollUp, String title, String text) {

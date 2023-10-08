@@ -12,10 +12,14 @@ import 'package:test/GlobalWidget/BuildTitleForModal.dart';
 
 class ModalContentForStart extends StatefulWidget {
   final Function onScrollUp;
+  final Function onScrollDown;
   final Map stepInfoMap;
 
   const ModalContentForStart(
-      {super.key, required this.stepInfoMap, required this.onScrollUp});
+      {super.key,
+      required this.stepInfoMap,
+      required this.onScrollUp,
+      required this.onScrollDown});
 
   @override
   _ModalContentForStartState createState() => _ModalContentForStartState();
@@ -45,11 +49,14 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
     setState(() {
       _isLoading = false;
     });
+
     if (res == 3) {
       print(res);
       showCustomDialog(context, widget.onScrollUp, "エラー",
           "データが最新ではありません。更新してから、もう一度お試しください");
     } else if (res == 1) {
+      navigateToHome(context, widget.stepInfoMap['machine_id'],
+          widget.onScrollUp, widget.onScrollDown);
       showCustomDialog(context, widget.onScrollUp, "完了", "データは正常に送信されました。");
     } else {
       print(res);

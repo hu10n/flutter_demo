@@ -169,30 +169,37 @@ Map<String, dynamic> getStepInfoMap(List dataList, String projectId) {
 }
 
 // 画面遷移 -------------------------------------------------------------
-void navigateToHome(BuildContext context) {
+void navigateToHome(BuildContext context, String machineId, Function onScrollUp,
+    Function onScrollDown) {
   final navigationData = NavigationData.of(context);
   Navigator.of(context).pop();
   if (navigationData != null) {
     final navigatorState = navigationData.pageKeys[0].currentState;
-
-    if (navigatorState != null && navigatorState.canPop()) {
+    if (navigatorState != null) {
       navigatorState.popUntil((route) => route.isFirst);
-      navigationData.onTabChange(1);
+      navigationData.onTabChange(0);
     }
+    navigateToStepListPage(
+        context, navigatorState, machineId, onScrollUp, onScrollDown);
   }
 }
 
-void navigateToStepListPage(BuildContext context, String machineId,
-    Function onScrollUp, Function onScrollDown) {
+void navigateToStepListPage(BuildContext context, navigatorState,
+    String machineId, Function onScrollUp, Function onScrollDown) {
   onScrollUp(0);
-  Navigator.of(context)
-      .push(MaterialPageRoute(
-          builder: (context) => StepListPage(
-                machineId: machineId,
-                onScrollDown: onScrollDown,
-                onScrollUp: onScrollUp,
-              )))
+  // 新しいページをプッシュします
+  navigatorState
+      .push(
+    MaterialPageRoute(
+      builder: (context) => StepListPage(
+        machineId: machineId,
+        onScrollDown: onScrollDown,
+        onScrollUp: onScrollUp,
+      ),
+    ),
+  )
       .then((dataUpdated) {
+    // 新しいページから戻った後に状態を更新する必要がある場合
     // setState(() {});
   });
 }

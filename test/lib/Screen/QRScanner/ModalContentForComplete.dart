@@ -9,13 +9,18 @@ import 'package:test/GlobalWidget/InputField.dart';
 import 'package:test/GlobalWidget/LoadingModal.dart';
 import 'package:test/GlobalWidget/ShowCusomDialog.dart';
 import 'package:test/GlobalWidget/BuildTitleForModal.dart';
+import 'package:test/providers/NavigationData.dart';
 
 class ModalContentForComplete extends StatefulWidget {
   final Function onScrollUp;
   final Map stepInfoMap;
+  final Function onScrollDown;
 
   const ModalContentForComplete(
-      {super.key, required this.stepInfoMap, required this.onScrollUp});
+      {super.key,
+      required this.stepInfoMap,
+      required this.onScrollUp,
+      required this.onScrollDown});
 
   @override
   _ModalContentForCompleteState createState() =>
@@ -56,6 +61,9 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
       showCustomDialog(context, widget.onScrollUp, "エラー",
           "データが最新ではありません。更新してから、もう一度お試しください");
     } else if (res == 1) {
+      navigateToHome(context, widget.stepInfoMap['machine_id'],
+          widget.onScrollUp, widget.onScrollDown);
+
       showCustomDialog(context, widget.onScrollUp, "完了", "データは正常に送信されました。");
     } else {
       print(res);
@@ -95,6 +103,8 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
   @override
   Widget build(BuildContext context) {
     final step_to_edit = widget.stepInfoMap['step_to_edit'];
+    final navigationData = NavigationData.of(context);
+    print("navigation data[modal_comp]; \n$navigationData");
     return GestureDetector(
       onTap: () {
         _unfocus(); //入力フィールド以外をタップするとフォーカスが外れる
