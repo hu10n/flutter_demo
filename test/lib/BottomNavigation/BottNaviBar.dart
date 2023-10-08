@@ -24,7 +24,7 @@ class _BottNaviBarState extends State<BottNaviBar> {
   Widget build(BuildContext context) {
     return Container(
       height: bottomBarHeightWithSafePadding(context),
-      color: Colors.grey[100],
+      color: Theme.of(context).colorScheme.background,
       child: Column(
         children: [
           Expanded(
@@ -43,7 +43,9 @@ class _BottNaviBarState extends State<BottNaviBar> {
                         Icons.qr_code_scanner_rounded,
                         //Icons.settings_outlined
                       ][index];
-                final color = isSelected ? Colors.black : Colors.grey[700];
+                final color = isSelected
+                    ? Theme.of(context).colorScheme.surfaceTint
+                    : Colors.grey[700];
 
                 return GestureDetector(
                   onTapDown: (_) {

@@ -157,6 +157,11 @@ class MachineListCard extends StatelessWidget {
             Row(
               children: [
                 Container(
+                  // child: Icon(
+                  //   Icons.check,
+                  //   size: 10,
+                  //   color: Colors.white,
+                  // ),
                   width: 30,
                   height: 15,
                   decoration: BoxDecoration(
@@ -166,7 +171,7 @@ class MachineListCard extends StatelessWidget {
                     color: status == 1
                         ? Theme.of(context).colorScheme.primary
                         : status == -1
-                            ? Color(0xff88F7E2)
+                            ? Theme.of(context).colorScheme.secondary
                             : Theme.of(context).colorScheme.background,
                   ),
                 ),

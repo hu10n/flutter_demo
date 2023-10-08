@@ -71,7 +71,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
         key: qrKey,
         onQRViewCreated: _onQRViewCreated,
         overlay: QrScannerOverlayShape(
-            borderColor: Colors.red,
+            borderColor: Theme.of(context).colorScheme.secondary,
             borderRadius: 10,
             borderLength: 20,
             borderWidth: 10,

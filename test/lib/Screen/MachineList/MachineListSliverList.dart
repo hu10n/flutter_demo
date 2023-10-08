@@ -135,7 +135,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
                       return MachineListCard(
                         machineId: machineId,
                         ontapAction: () =>
-                            _handleMachineCardTap(context, machineId),
+                            handleMachineCardTap(context, machineId),
                       );
                     }).toList(),
                   ),
@@ -151,7 +151,7 @@ class _MachineListSliverListState extends State<MachineListSliverList> {
     );
   }
 
-  void _handleMachineCardTap(BuildContext context, String machineId) {
+  void handleMachineCardTap(BuildContext context, String machineId) {
     widget.onScrollUp(0);
     Navigator.of(context)
         .push(MaterialPageRoute(

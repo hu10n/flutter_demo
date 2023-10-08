@@ -44,7 +44,7 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
                 Text(
                   alphabetList[index],
                   style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.black),
                 ),
@@ -52,8 +52,8 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
                   Container(
                     margin: EdgeInsets.only(top: 0.0),
                     height: 4.0,
-                    width: 70.0,
-                    color: Colors.blue,
+                    width: 50.0,
+                    color: Theme.of(context).colorScheme.primary,
                   )
               ],
             ),
@@ -61,7 +61,7 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
         },
         options: CarouselOptions(
           height: 42,
-          viewportFraction: 0.2,
+          viewportFraction: 0.175,
           enlargeCenterPage: false,
           enableInfiniteScroll: false,
           initialPage: 0,

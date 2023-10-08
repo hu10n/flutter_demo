@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:test/GlobalMethod/utils.dart';
 
 import 'MachineListSliverList.dart';
 import 'AppBar/AlphabetCarousel.dart';
@@ -53,7 +55,6 @@ class _MachineListPageState extends State<MachineListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final safePadding = MediaQuery.of(context).padding.bottom;
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if (notification.metrics.outOfRange) {
@@ -164,7 +165,7 @@ class _MachineListPageState extends State<MachineListPage> {
             SliverAppBar(
               //SliverAppBarの下段
               title: null,
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.background,
               expandedHeight: 30.0,
               floating: false,
               pinned: true,
@@ -173,6 +174,7 @@ class _MachineListPageState extends State<MachineListPage> {
                   controller: carouselController,
                 ),
               ],
+              systemOverlayStyle: SystemUiOverlayStyle.light,
             ),
             SliverPadding(
               //padding
@@ -187,8 +189,8 @@ class _MachineListPageState extends State<MachineListPage> {
             ),
             SliverPadding(
               //padding
-              padding:
-                  EdgeInsets.only(bottom: safePadding + kToolbarHeight + 500),
+              padding: EdgeInsets.only(
+                  bottom: bottomBarHeightWithSafePadding(context) + 600),
             ),
           ],
         ),

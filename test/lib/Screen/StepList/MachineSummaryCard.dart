@@ -250,7 +250,8 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
           width: circleRadius,
           child: CircularProgressIndicator(
             value: progressPercentage / 100,
-            backgroundColor: Theme.of(context).disabledColor,
+            color: Theme.of(context).colorScheme.primary,
+            backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
             strokeWidth: 9,
           ),
         ),

@@ -74,24 +74,32 @@ class StepListCard extends StatelessWidget {
 
   Widget _createStepStatusIcon(BuildContext context, int status) {
     Color iconColor;
+    IconData iconData;
     switch (status) {
+      // Disabled
       case 0:
         iconColor = Theme.of(context).disabledColor;
+        iconData = Icons.pending;
         break;
+      // On Going
       case -1:
-        iconColor = Colors.yellow;
+        iconColor = Theme.of(context).colorScheme.secondary;
+        iconData = Icons.play_circle_fill;
         break;
+      // Completed
       case 1:
-        iconColor = Colors.green;
+        iconColor = Theme.of(context).colorScheme.primary;
+        iconData = Icons.check_circle_rounded;
         break;
       default:
         iconColor = Theme.of(context).disabledColor;
+        iconData = Icons.check_circle_rounded;
     }
 
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Icon(
-        Icons.check_circle_rounded,
+        iconData,
         color: iconColor,
         size: 25.0,
       ),
@@ -120,12 +128,12 @@ class StepListCard extends StatelessWidget {
           child: _createSubtitleWithIcon(Icons.person, worker),
         ),
         Flexible(
-          flex: 5,
+          flex: 4,
           child: _createSubtitleWithIcon(
               Icons.inventory, productionVolume.toString()),
         ),
         Flexible(
-          flex: 6,
+          flex: 5,
           child: _createSubtitleWithIcon(Icons.update, updatedAt),
         ),
       ],

@@ -72,10 +72,6 @@ class _StepListSliverListState extends State<StepListSliverList> {
   // カード発行ボタンのアクション
   Future<void> _handleIssueButton(
       BuildContext context, Map<String, dynamic> machine) async {
-    // デバッグ用---------------------------------------------------------------
-    //final navigationData = NavigationData.of(context);
-    //print(navigationData);
-    //------------------------------------------------------------------------
     final pdf = pw.Document();
     createAndPrintPdf(
       pdf,
