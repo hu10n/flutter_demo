@@ -91,7 +91,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
             ],
           ),
           _createBottomButtonBox(context, machine, isEmpty, isComplete,
-              isEmpty ? {} : projects[0], 200, 120, 55),
+              isEmpty ? {} : projects[0], 200, 150, 55),
         ],
       ),
     );
