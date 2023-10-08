@@ -166,7 +166,7 @@ class MachineListCard extends StatelessWidget {
                     color: status == 1
                         ? Theme.of(context).colorScheme.primary
                         : status == -1
-                            ? Theme.of(context).colorScheme.primaryContainer
+                            ? Color(0xff88F7E2)
                             : Theme.of(context).colorScheme.background,
                   ),
                 ),
