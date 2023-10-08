@@ -51,7 +51,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
           ),
           body: _buildQrView(context),
         ),
-        if (_isLoading) LoadingDialogForScan()
+        if (_isLoading) LoadingDialogForScan(),
       ],
     );
   }

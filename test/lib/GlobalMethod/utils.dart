@@ -173,11 +173,11 @@ void navigateToHome(BuildContext context) {
   final navigationData = NavigationData.of(context);
   Navigator.of(context).pop();
   if (navigationData != null) {
-    final navigatorState = navigationData.pageKeys[1].currentState;
+    final navigatorState = navigationData.pageKeys[0].currentState;
 
     if (navigatorState != null && navigatorState.canPop()) {
       navigatorState.popUntil((route) => route.isFirst);
-      navigationData.onTabChange(0);
+      navigationData.onTabChange(1);
     }
   }
 }
