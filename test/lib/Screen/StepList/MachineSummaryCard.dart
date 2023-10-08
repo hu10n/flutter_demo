@@ -91,20 +91,23 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
             ],
           ),
           _createBottomButtonBox(context, machine, isEmpty, isComplete,
-              isEmpty ? {} : projects[0]),
+              isEmpty ? {} : projects[0], 200, 120, 55),
         ],
       ),
     );
   }
 
   Widget _createBottomButtonBox(
-      BuildContext context,
-      Map<String, dynamic> machine,
-      bool isEmpty,
-      bool isComplete,
-      Map<String, dynamic> project) {
+    BuildContext context,
+    Map<String, dynamic> machine,
+    bool isEmpty,
+    bool isComplete,
+    Map<String, dynamic> project,
+    double issueWidth,
+    double assignWidth,
+    double actionWidth,
+  ) {
     //final modalPage = ModalPage();
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -112,29 +115,32 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
         child: Stack(
           alignment: Alignment.center,
           children: [
+            // 1st button is positioned center
             SizedBox(
-                child: ElevatedButton(
-                    onPressed: [2, 3, 4].contains(machine["machine_status"])
-                        ? null
-                        : () => isEmpty
-                            ? pressAssignButton(machine)
-                            : widget.onPressAction(),
-                    child: SizedBox(
-                        width: isEmpty ? 200 : 100,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              isEmpty ? "プロジェクト割り当て" : "カード発行",
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w600),
-                            ),
-                          ],
-                        )))),
+              width: isEmpty ? issueWidth : assignWidth,
+              child: ElevatedButton(
+                  onPressed: [2, 3, 4].contains(machine["machine_status"])
+                      ? null
+                      : () => isEmpty
+                          ? pressAssignButton(machine)
+                          : widget.onPressAction(),
+                  child: Center(
+                    child: Text(
+                      isEmpty ? "プロジェクト割り当て" : "カード発行",
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                  )),
+            ),
+            // 2nd Button
             Positioned(
-              right: 50,
+              right: MediaQuery.of(context).size.width / 2 -
+                  (isEmpty ? issueWidth : assignWidth) / 2 -
+                  actionWidth -
+                  8 - // padding
+                  10, // margin between buttons
               child: SizedBox(
-                  width: 55,
+                  width: actionWidth,
                   child: ElevatedButton(
                     onPressed: () {
                       widget.onScrollDown(100);
@@ -142,8 +148,8 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                           context, machine, project, isEmpty, isComplete);
                     },
                     child: Icon(
-                      Icons.more_horiz, // ここで「・・・」のアイコンを設定します。
-                      color: Colors.white, // アイコンの色を設定します。
+                      Icons.more_horiz, // 「・・・」のアイコンを設定
+                      color: Colors.white,
                     ),
                   )),
             ),
