@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:test/Screen/StepList/StepListPage.dart';
 import 'package:test/providers/NavigationData.dart';
 
 // format large Number
@@ -172,13 +173,28 @@ void navigateToHome(BuildContext context) {
   final navigationData = NavigationData.of(context);
   Navigator.of(context).pop();
   if (navigationData != null) {
-    final navigatorState = navigationData.pageKeys[0].currentState;
+    final navigatorState = navigationData.pageKeys[1].currentState;
 
     if (navigatorState != null && navigatorState.canPop()) {
       navigatorState.popUntil((route) => route.isFirst);
-      navigationData.onTabChange(2);
+      navigationData.onTabChange(0);
     }
   }
+}
+
+void navigateToStepListPage(BuildContext context, String machineId,
+    Function onScrollUp, Function onScrollDown) {
+  onScrollUp(0);
+  Navigator.of(context)
+      .push(MaterialPageRoute(
+          builder: (context) => StepListPage(
+                machineId: machineId,
+                onScrollDown: onScrollDown,
+                onScrollUp: onScrollUp,
+              )))
+      .then((dataUpdated) {
+    // setState(() {});
+  });
 }
 
 // Bottom Naviに関するPaddingを提供 -----------------------------------------
@@ -188,5 +204,6 @@ double bottomSafePaddingHeight(BuildContext context) {
 
 double bottomBarHeightWithSafePadding(BuildContext context) {
   final safePadding = bottomSafePaddingHeight(context);
+
   return kToolbarHeight + safePadding;
 }

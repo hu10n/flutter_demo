@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:test/GlobalWidget/MachineStatusIndicator.dart';
 
 class QRErrorDialog extends StatelessWidget {
   final String errorMessage;

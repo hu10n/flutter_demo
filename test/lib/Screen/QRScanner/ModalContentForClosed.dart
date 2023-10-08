@@ -116,10 +116,9 @@ class _ModalContentForClosedState extends State<ModalContentForClosed> {
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context); // この行を追加
-                        // widget.resumeScan();
-                        widget.onScrollUp(bottomSafePaddingHeight(context)
-                            .toInt()); //下部ナビゲーションを戻す
+                        // Navigator.pop(context);
+                        widget.onScrollUp(100);
+                        navigateToHome(context);
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all<Size>(Size(

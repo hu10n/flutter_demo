@@ -58,7 +58,7 @@ class InvalidMachineStatusDialog extends StatelessWidget {
       actions: <Widget>[
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: Colors.redAccent,
+            backgroundColor: Colors.redAccent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:test/GlobalMethod/utils.dart';
 
 import 'package:test/providers/DataProvider.dart';
 import 'MachineSummaryCard.dart';
 import 'StepListCard.dart';
+import 'package:test/Screen/MachineList/MachineListSliverList.dart';
 //import 'package:test/providers/NavigationData.dart';
 import 'package:test/Screen/JobCard/PrintingJob.dart';
 
@@ -57,7 +59,7 @@ class _StepListSliverListState extends State<StepListSliverList> {
             return StepListCard(
               machineId: widget.machineId,
               stepId: stepId,
-              tapAction: () => _handleStepCardTap(context, stepId),
+              tapAction: () => _handleStepCardTap(context, widget.machineId),
             );
           }
           return null;
@@ -85,19 +87,13 @@ class _StepListSliverListState extends State<StepListSliverList> {
 // Step Card Listをtapした時の動作
   void _handleStepCardTap(
     BuildContext context,
-    String stepId,
+    String machineId,
   ) {
-    //Navigator.push(
-    //  context,
-    //  MaterialPageRoute(builder: (context) => Placeholder()
-    // StepPreviewPage(
-    //   machineNumber: machineNumber,
-    //   stepId: stepId,
-    // ),
-    //      ),
-    //).then((dataUpdated) {
-    //  setState(() {}); // 常にtrueを渡して、再レンダリングさせる
-    //});
+    // -----------------------------テスト用----------------------
+    // navigateToHome(context);
+    // transToStepListPage(
+    //     context, machineId, widget.onScrollUp, widget.onScrollDown);
+    // -----------------------------------------------------------
   }
 
   List<String> _getAllStepIds(Map<String, dynamic> machine) {

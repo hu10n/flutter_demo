@@ -20,7 +20,7 @@ Container BuildTitleForModal(
         IconButton(
           onPressed: () {
             Navigator.pop(context); // ここでBottom Sheetを閉じます
-            onScrollUp(bottomSafePaddingHeight(context).toInt()); //下部ナビゲーションを戻す
+            onScrollUp(100); //下部ナビゲーションを戻す
           },
           icon: Icon(Icons.close),
         ),

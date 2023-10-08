@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:test/GlobalMethod/utils.dart';
 
-
-void showCustomDialog(BuildContext mainContext, Function onScrollUp, String title, String text) {
+void showCustomDialog(
+    BuildContext mainContext, Function onScrollUp, String title, String text) {
   showDialog(
     context: mainContext,
     builder: (BuildContext context) {
