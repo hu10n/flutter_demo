@@ -4,11 +4,12 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:test/Screen/QRScanner/InvalidMachineStatusDialog.dart';
+import 'package:test/Screen/QRScanner/DialogForInvalidMachineStatus.dart';
 import 'package:test/Screen/QRScanner/LoadingModalForScan.dart';
 import 'package:test/Screen/QRScanner/ModalContentForClosed.dart';
 import 'package:test/Screen/QRScanner/ModalContentForComplete.dart';
 import 'package:test/Screen/QRScanner/ModalContentForStart.dart';
+import 'package:test/Screen/QRScanner/DialogForScanningError.dart';
 import 'package:test/providers/DataProvider.dart';
 import 'package:test/GlobalMethod/utils.dart';
 
@@ -128,15 +129,15 @@ class _QRScannerPageState extends State<QRScannerPage> {
         return; //
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("不正なQRコードです\n$e")),
-      );
-      _resumeScan();
+      // Show Error Dialog
+      _showQRErrorDialog(context, e.toString()).then((_) => _resumeScan());
+      return; //
     } finally {
-      setState(() {
-        _isLoading = false; // End Loading
-        // _resumeScan();
-      });
+      if (_isLoading) {
+        setState(() {
+          _isLoading = false; // End Loading
+        });
+      }
     }
   }
 
@@ -178,6 +179,13 @@ class _QRScannerPageState extends State<QRScannerPage> {
     );
   }
 
+  Future<dynamic> _showQRErrorDialog(context, e) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) => QRErrorDialog(errorMessage: e),
+    );
+  }
+
   void _resumeScan() {
     Future.delayed(Duration(milliseconds: 500), () {
       controller?.resumeCamera(); // Restart scanner after delay.
@@ -185,6 +193,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
     setState(() {
       _text = '';
+      _isLoading = false;
     });
   }
 
