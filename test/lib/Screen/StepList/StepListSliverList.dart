@@ -91,8 +91,8 @@ class _StepListSliverListState extends State<StepListSliverList> {
   ) {
     // -----------------------------テスト用----------------------
     // navigateToHome(context);
-    // transToStepListPage(
-    //     context, machineId, widget.onScrollUp, widget.onScrollDown);
+    // navigateToStepListPage(context, "4d789eb5-00bc-4404-8b1f-36e93387598c",
+    //     widget.onScrollUp, widget.onScrollDown);
     // -----------------------------------------------------------
   }
 

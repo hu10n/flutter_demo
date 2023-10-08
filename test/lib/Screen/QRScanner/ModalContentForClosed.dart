@@ -116,9 +116,9 @@ class _ModalContentForClosedState extends State<ModalContentForClosed> {
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Navigator.pop(context);
+                        Navigator.pop(context);
                         widget.onScrollUp(100);
-                        navigateToHome(context);
+                        // navigateToHome(context);
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all<Size>(Size(
