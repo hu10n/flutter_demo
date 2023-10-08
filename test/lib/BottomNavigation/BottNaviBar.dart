@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test/GlobalMethod/utils.dart';
 
 class BottNaviBar extends StatefulWidget {
   final Function(int) onTap;
@@ -21,9 +22,8 @@ class _BottNaviBarState extends State<BottNaviBar> {
 
   @override
   Widget build(BuildContext context) {
-    final safePadding = MediaQuery.of(context).padding.bottom;
     return Container(
-      height: kToolbarHeight + safePadding,
+      height: bottomBarHeightWithSafePadding(context),
       color: Colors.grey[100],
       child: Column(
         children: [
@@ -34,9 +34,9 @@ class _BottNaviBarState extends State<BottNaviBar> {
                 final isSelected = widget.selectedIndex == index;
                 final iconData = isSelected
                     ? [
-                      Icons.home, 
-                      Icons.qr_code_scanner, 
-                      //Icons.settings
+                        Icons.home,
+                        Icons.qr_code_scanner,
+                        //Icons.settings
                       ][index]
                     : [
                         Icons.home_outlined,
@@ -78,7 +78,7 @@ class _BottNaviBarState extends State<BottNaviBar> {
             ),
           ),
           SizedBox(
-            height: safePadding,
+            height: bottomSafePaddingHeight(context),
           )
         ],
       ),

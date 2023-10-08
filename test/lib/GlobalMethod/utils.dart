@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:test/providers/NavigationData.dart';
 
 // format large Number
 String formatNumber(int? number) {
@@ -163,4 +165,28 @@ Map<String, dynamic> getStepInfoMap(List dataList, String projectId) {
   }
 
   return stepInfoMap;
+}
+
+// 画面遷移 -------------------------------------------------------------
+void navigateToHome(BuildContext context) {
+  final navigationData = NavigationData.of(context);
+  Navigator.of(context).pop();
+  if (navigationData != null) {
+    final navigatorState = navigationData.pageKeys[0].currentState;
+
+    if (navigatorState != null && navigatorState.canPop()) {
+      navigatorState.popUntil((route) => route.isFirst);
+      navigationData.onTabChange(2);
+    }
+  }
+}
+
+// Bottom Naviに関するPaddingを提供 -----------------------------------------
+double bottomSafePaddingHeight(BuildContext context) {
+  return MediaQuery.of(context).padding.bottom;
+}
+
+double bottomBarHeightWithSafePadding(BuildContext context) {
+  final safePadding = bottomSafePaddingHeight(context);
+  return kToolbarHeight + safePadding;
 }

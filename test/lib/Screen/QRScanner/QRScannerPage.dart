@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:test/GlobalWidget/MachineStatusIndicator.dart';
+import 'package:test/Screen/QRScanner/InvalidMachineStatusDialog.dart';
 import 'package:test/Screen/QRScanner/LoadingModalForScan.dart';
 import 'package:test/Screen/QRScanner/ModalContentForClosed.dart';
 import 'package:test/Screen/QRScanner/ModalContentForComplete.dart';
@@ -56,16 +56,26 @@ class _QRScannerPageState extends State<QRScannerPage> {
   }
 
   Widget _buildQrView(BuildContext context) {
-    return QRView(
-      key: qrKey,
-      onQRViewCreated: _onQRViewCreated,
-      overlay: QrScannerOverlayShape(
-        borderColor: Colors.red,
-        borderRadius: 10,
-        borderLength: 30,
-        borderWidth: 10,
+    // デバイスの幅または高さが400未満=>scanArea=150.0
+    // それ以外300.0
+    var scanArea = (MediaQuery.of(context).size.width < 500 ||
+            MediaQuery.of(context).size.height < 500)
+        ? 150.0
+        : 300.0;
+
+    return Transform.translate(
+      offset: Offset(0, -bottomSafePaddingHeight(context)), //safePadding分上に移動
+      child: QRView(
+        key: qrKey,
+        onQRViewCreated: _onQRViewCreated,
+        overlay: QrScannerOverlayShape(
+            borderColor: Colors.red,
+            borderRadius: 10,
+            borderLength: 20,
+            borderWidth: 10,
+            cutOutSize: scanArea),
+        onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
       ),
-      onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
     );
   }
 
@@ -135,27 +145,26 @@ class _QRScannerPageState extends State<QRScannerPage> {
     String key,
     Map stepInfoMap,
   ) {
+    final stepStatusToEdit = stepInfoMap['step_status_to_edit'];
+
+    final modalContent = stepStatusToEdit == 0
+        ? ModalContentForStart(
+            stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp)
+        : stepStatusToEdit == -1
+            ? ModalContentForComplete(
+                stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp)
+            : stepStatusToEdit == null
+                ? ModalContentForClosed(
+                    stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp)
+                : Container(child: Text("Error:SCAN_QR_E-1"));
+
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       enableDrag: false,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (context) {
-        if (stepInfoMap['step_status_to_edit'] == 0)
-          return ModalContentForStart(
-              stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp);
-        if (stepInfoMap['step_status_to_edit'] == -1)
-          return ModalContentForComplete(
-              stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp);
-        if (stepInfoMap['step_status_to_edit'] == null)
-          return ModalContentForClosed(
-              stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp);
-        else
-          return Container(
-            child: Text("Error:SCAN_QR_E-1"),
-          );
-      },
+      builder: (context) => modalContent,
     ).then((_) => _resumeScan());
   }
 
@@ -163,41 +172,13 @@ class _QRScannerPageState extends State<QRScannerPage> {
       context, machineStatus, machineName) {
     return showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('作業機の状態を確認'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize:
-                  MainAxisSize.min, // force it to take only the space it needs
-              children: [
-                Text('・機番: $machineName'),
-                Row(
-                  children: [
-                    Text('・状態: '),
-                    MachineStatusIndicator(
-                        context: context, machineStatus: machineStatus)
-                  ],
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              child: Text('閉じる'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
+      builder: (BuildContext context) => InvalidMachineStatusDialog(
+          machineStatus: machineStatus, machineName: machineName),
     );
   }
 
   void _resumeScan() {
-    Future.delayed(Duration(milliseconds: 1000), () {
+    Future.delayed(Duration(milliseconds: 500), () {
       controller?.resumeCamera(); // Restart scanner after delay.
     });
 

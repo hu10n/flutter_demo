@@ -48,7 +48,7 @@ class StepListCard extends StatelessWidget {
     return Card(
       clipBehavior: Clip.hardEdge,
       child: InkWell(
-        onTap: tapAction,
+        onTap: () => tapAction(),
         child: SizedBox(
           width: screenWidth,
           height: 70,
