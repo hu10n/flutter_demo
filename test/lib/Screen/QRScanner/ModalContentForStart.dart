@@ -1,6 +1,7 @@
 //開始報告用入力フォーム
 
 import 'package:flutter/material.dart';
+import 'package:test/GlobalMethod/utils.dart';
 
 import 'package:test/api/api.dart';
 import 'package:test/GlobalMethod/updateLocaldbWithErrorHandle.dart';
@@ -50,7 +51,7 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
           "データが最新ではありません。更新してから、もう一度お試しください");
     } else if (res == 1) {
       showCustomDialog(context, widget.onScrollUp, "完了", "データは正常に送信されました。");
-} else {
+    } else {
       print(res);
       showCustomDialog(context, widget.onScrollUp, "エラー",
           "予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
@@ -63,7 +64,7 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
     }
   }
 
-   _onTextChanged() {
+  _onTextChanged() {
     bool allFieldsFilled = _controllers[0].text.isNotEmpty;
     setState(() {
       _isButtonEnabled = allFieldsFilled;
@@ -155,8 +156,9 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
                                     SizedBox(
                                       height: 60,
                                     ),
-                                    InputField("作業者名", _controllers[0],
-                                        _focuses[0], isRequired: true),
+                                    InputField(
+                                        "作業者名", _controllers[0], _focuses[0],
+                                        isRequired: true),
                                   ],
                                 ),
                               ),
@@ -169,7 +171,7 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
 
             // スクロール可能なウィジェットの上に配置される固定ボタン--------
             Positioned.fill(
-              bottom: 20,
+              bottom: bottomSafePaddingHeight(context),
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -181,25 +183,28 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
-                      onPressed: !_isButtonEnabled ? null: () async {
-                        //print(widget.stepStatus['stepToStart']);
-                        int update_status = -1;
-                        Map<String, dynamic> step = Map.from(step_to_edit);
-                        step["worker"] = _controllers[0].text;
-                        // step["free_text"] = _controllers[0].text;
-                        // List status_list =
-                        //     widget.stepInfoMap['step_status_to_edit'];
+                      onPressed: !_isButtonEnabled
+                          ? null
+                          : () async {
+                              //print(widget.stepStatus['stepToStart']);
+                              int update_status = -1;
+                              Map<String, dynamic> step =
+                                  Map.from(step_to_edit);
+                              step["worker"] = _controllers[0].text;
+                              // step["free_text"] = _controllers[0].text;
+                              // List status_list =
+                              //     widget.stepInfoMap['step_status_to_edit'];
 
-                        //print(step);
+                              //print(step);
 
-                        //print(project);
-                        _unfocus();
-                        _submitData(
-                          update_status,
-                          step,
-                          context,
-                        );
-                      },
+                              //print(project);
+                              _unfocus();
+                              _submitData(
+                                update_status,
+                                step,
+                                context,
+                              );
+                            },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all<Size>(Size(
                             MediaQuery.of(context).size.width * 0.9,

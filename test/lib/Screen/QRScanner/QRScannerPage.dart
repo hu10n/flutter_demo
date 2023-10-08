@@ -116,7 +116,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
       if (machineStatus == 1) {
         // showModalBottomSheet
-        widget.onScrollDown(100);
+        widget.onScrollDown(bottomSafePaddingHeight(context).toInt());
         await _showModalBottomSheet(
           key,
           stepInfoMap,
@@ -131,6 +131,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("不正なQRコードです\n$e")),
       );
+      _resumeScan();
     } finally {
       setState(() {
         _isLoading = false; // End Loading

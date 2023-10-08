@@ -1,6 +1,7 @@
 //開始完了用入力フォーム
 
 import 'package:flutter/material.dart';
+import 'package:test/GlobalMethod/utils.dart';
 
 import 'package:test/api/api.dart';
 import 'package:test/GlobalMethod/updateLocaldbWithErrorHandle.dart';
@@ -177,13 +178,14 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
                                     SizedBox(
                                       height: 60,
                                     ),
-                                    InputField("生産数", _controllers[0],
-                                        _focuses[0], isRequired: true, isNumOnly: true),
+                                    InputField(
+                                        "生産数", _controllers[0], _focuses[0],
+                                        isRequired: true, isNumOnly: true),
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    InputField("備考", _controllers[1],
-                                        _focuses[1]),
+                                    InputField(
+                                        "備考", _controllers[1], _focuses[1]),
                                   ],
                                 ),
                               ),
@@ -196,7 +198,7 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
 
             // スクロール可能なウィジェットの上に配置される固定ボタン--------
             Positioned.fill(
-              bottom: 20,
+              bottom: bottomSafePaddingHeight(context),
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -208,25 +210,28 @@ class _ModalContentForCompleteState extends State<ModalContentForComplete> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
-                      onPressed: !_isButtonEnabled ? null: () async {
-                        //print(widget.stepStatus['stepToStart']);
-                        int update_status = 1;
-                        Map<String, dynamic> step = Map.from(step_to_edit);
+                      onPressed: !_isButtonEnabled
+                          ? null
+                          : () async {
+                              //print(widget.stepStatus['stepToStart']);
+                              int update_status = 1;
+                              Map<String, dynamic> step =
+                                  Map.from(step_to_edit);
 
-                        //step["worker"] = _controllers[0].text;
-                        step["production_volume"] = _controllers[0].text;
-                        step["free_text"] = _controllers[1].text;
+                              //step["worker"] = _controllers[0].text;
+                              step["production_volume"] = _controllers[0].text;
+                              step["free_text"] = _controllers[1].text;
 
-                        print(step);
+                              print(step);
 
-                        //print(project);
-                        _unfocus();
-                        _submitData(
-                          update_status,
-                          step,
-                          context,
-                        );
-                      },
+                              //print(project);
+                              _unfocus();
+                              _submitData(
+                                update_status,
+                                step,
+                                context,
+                              );
+                            },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all<Size>(Size(
                             MediaQuery.of(context).size.width * 0.9,
