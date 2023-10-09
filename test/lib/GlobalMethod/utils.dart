@@ -169,8 +169,8 @@ Map<String, dynamic> getStepInfoMap(List dataList, String projectId) {
 }
 
 // 画面遷移 -------------------------------------------------------------
-void navigateToHome(BuildContext context, String machineId, Function onScrollUp,
-    Function onScrollDown) {
+void navigateToStepListPage(BuildContext context, String machineId,
+    Function onScrollUp, Function onScrollDown) {
   final navigationData = NavigationData.of(context);
   Navigator.of(context).pop();
   if (navigationData != null) {
@@ -179,12 +179,12 @@ void navigateToHome(BuildContext context, String machineId, Function onScrollUp,
       navigatorState.popUntil((route) => route.isFirst);
       navigationData.onTabChange(0);
     }
-    navigateToStepListPage(
+    navigateFromMachinToStepPage(
         context, navigatorState, machineId, onScrollUp, onScrollDown);
   }
 }
 
-void navigateToStepListPage(BuildContext context, navigatorState,
+void navigateFromMachinToStepPage(BuildContext context, navigatorState,
     String machineId, Function onScrollUp, Function onScrollDown) {
   onScrollUp(0);
   // 新しいページをプッシュします

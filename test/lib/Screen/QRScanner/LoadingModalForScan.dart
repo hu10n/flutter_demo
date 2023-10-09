@@ -6,7 +6,8 @@ AlertDialog LoadingDialogForScan() {
   return AlertDialog(
     content: Row(
       children: [
-        CircularProgressIndicator(),
+        CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Color(0xff02A676))),
         SizedBox(width: 20),
         Text('読み込み中...'),
       ],

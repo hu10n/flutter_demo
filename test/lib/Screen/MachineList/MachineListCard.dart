@@ -36,6 +36,7 @@ class MachineListCard extends StatelessWidget {
     // print("$sumOfProjectStatus/$totalSteps");
 
     return Card(
+      color: Colors.white,
       margin: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
       clipBehavior: Clip.hardEdge,
       child: InkWell(
@@ -169,10 +170,10 @@ class MachineListCard extends StatelessWidget {
                         color: Theme.of(context).disabledColor, width: 1),
                     borderRadius: BorderRadius.circular(2),
                     color: status == 1
-                        ? Theme.of(context).colorScheme.primary
+                        ? Theme.of(context).colorScheme.secondary
                         : status == -1
-                            ? Theme.of(context).colorScheme.secondary
-                            : Theme.of(context).colorScheme.background,
+                            ? Theme.of(context).colorScheme.tertiary
+                            : Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 SizedBox(

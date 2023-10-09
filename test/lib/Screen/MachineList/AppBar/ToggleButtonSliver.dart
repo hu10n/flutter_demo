@@ -18,7 +18,7 @@ class YourHeaderDelegate extends SliverPersistentHeaderDelegate {
     //double topPadding = max(30.0 - shrinkOffset, 0);
     //double bottomPadding = max(10.0 - shrinkOffset, 0);
     return Container(
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).colorScheme.primary,
       padding: EdgeInsets.only(top: 20),
       child: Row(
         children: <Widget>[

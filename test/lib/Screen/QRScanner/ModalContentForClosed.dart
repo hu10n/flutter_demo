@@ -8,10 +8,14 @@ import 'package:test/GlobalWidget/BuildTitleForModal.dart';
 
 class ModalContentForClosed extends StatefulWidget {
   final Function onScrollUp;
+  final Function onScrollDown;
   final Map stepInfoMap;
 
   const ModalContentForClosed(
-      {super.key, required this.stepInfoMap, required this.onScrollUp});
+      {super.key,
+      required this.stepInfoMap,
+      required this.onScrollUp,
+      required this.onScrollDown});
 
   @override
   _ModalContentForClosedState createState() => _ModalContentForClosedState();
@@ -116,16 +120,25 @@ class _ModalContentForClosedState extends State<ModalContentForClosed> {
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        navigateToStepListPage(
+                            context,
+                            widget.stepInfoMap['machine_id'],
+                            widget.onScrollUp,
+                            widget.onScrollDown);
                         widget.onScrollUp(100);
-                        // navigateToHome(context);
                       },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all<Size>(Size(
                             MediaQuery.of(context).size.width * 0.9,
                             40.0)), // ここで幅と高さを指定
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Theme.of(context)
+                                .colorScheme
+                                .secondary), // 背景色を赤に指定
+                        foregroundColor: MaterialStateProperty.all<Color>(
+                            Colors.white), // テキストの色を白に指定
                       ),
-                      child: Text('閉じる'),
+                      child: Text('詳細を確認'),
                     ),
                   ),
                 ),

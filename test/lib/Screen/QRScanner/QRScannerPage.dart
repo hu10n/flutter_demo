@@ -47,7 +47,10 @@ class _QRScannerPageState extends State<QRScannerPage> {
       children: [
         Scaffold(
           appBar: AppBar(
-            title: Text('QRコードをスキャン'),
+            title: Text(
+              'QRコードをスキャン',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             centerTitle: true,
           ),
           body: _buildQrView(context),
@@ -71,7 +74,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
         key: qrKey,
         onQRViewCreated: _onQRViewCreated,
         overlay: QrScannerOverlayShape(
-            borderColor: Theme.of(context).colorScheme.secondary,
+            borderColor: Theme.of(context).colorScheme.tertiary,
             borderRadius: 10,
             borderLength: 20,
             borderWidth: 10,
@@ -114,7 +117,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
       final Map stepInfoMap = getStepInfoMap(dataList, projectId);
 
       final int machineStatus = stepInfoMap['machine_status'];
-      final String machineName = stepInfoMap['machine_name'];
 
       if (machineStatus == 1) {
         // showModalBottomSheet
@@ -125,7 +127,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
         );
       } else {
         // Show AlertDialog (when Stats is not 1[稼働中])
-        _showInvalidMachStatsDialog(context, machineStatus, machineName)
+        _showInvalidMachStatsDialog(context, stepInfoMap)
             .then((_) => _resumeScan());
         return; //
       }
@@ -166,7 +168,9 @@ class _QRScannerPageState extends State<QRScannerPage> {
               )
             : stepStatusToEdit == null
                 ? ModalContentForClosed(
-                    stepInfoMap: stepInfoMap, onScrollUp: widget.onScrollUp)
+                    stepInfoMap: stepInfoMap,
+                    onScrollUp: widget.onScrollUp,
+                    onScrollDown: widget.onScrollDown)
                 : Container(child: Text("Error:SCAN_QR_E-1"));
 
     return showModalBottomSheet(
@@ -179,12 +183,13 @@ class _QRScannerPageState extends State<QRScannerPage> {
     ).then((_) => _resumeScan());
   }
 
-  Future<dynamic> _showInvalidMachStatsDialog(
-      context, machineStatus, machineName) {
+  Future<dynamic> _showInvalidMachStatsDialog(context, Map stepInfoMap) {
     return showDialog(
       context: context,
       builder: (BuildContext context) => InvalidMachineStatusDialog(
-          machineStatus: machineStatus, machineName: machineName),
+          stepInfoMap: stepInfoMap,
+          onScrollUp: widget.onScrollUp,
+          onScrollDown: widget.onScrollDown),
     );
   }
 

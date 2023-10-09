@@ -165,7 +165,7 @@ class _MachineListPageState extends State<MachineListPage> {
             SliverAppBar(
               //SliverAppBarの下段
               title: null,
-              backgroundColor: Theme.of(context).colorScheme.background,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               expandedHeight: 30.0,
               floating: false,
               pinned: true,

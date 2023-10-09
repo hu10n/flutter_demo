@@ -78,6 +78,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
     }
 
     return Card(
+      color: Colors.white,
       child: Column(
         children: [
           _createTitleBox(machineNumber, machineName, productNumber),
@@ -119,6 +120,10 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
             SizedBox(
               width: isEmpty ? issueWidth : assignWidth,
               child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                  ),
                   onPressed: [2, 3, 4].contains(machine["machine_status"])
                       ? null
                       : () => isEmpty
@@ -127,8 +132,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                   child: Center(
                     child: Text(
                       isEmpty ? "プロジェクト割り当て" : "カード発行",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.labelLarge,
                     ),
                   )),
             ),
@@ -150,6 +154,10 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                     child: Icon(
                       Icons.more_horiz, // 「・・・」のアイコンを設定
                       color: Colors.white,
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
                   )),
             ),
@@ -250,7 +258,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
           width: circleRadius,
           child: CircularProgressIndicator(
             value: progressPercentage / 100,
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).colorScheme.secondary,
             backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
             strokeWidth: 9,
           ),
@@ -267,7 +275,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               Container(
@@ -283,7 +291,7 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
-                    color: Theme.of(context).colorScheme.primary),
+                    color: Theme.of(context).colorScheme.secondary),
               ),
             ],
           ),

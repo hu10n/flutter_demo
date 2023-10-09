@@ -53,7 +53,7 @@ class _AlphabetCarouselState extends State<AlphabetCarousel> {
                     margin: EdgeInsets.only(top: 0.0),
                     height: 4.0,
                     width: 50.0,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.secondary,
                   )
               ],
             ),

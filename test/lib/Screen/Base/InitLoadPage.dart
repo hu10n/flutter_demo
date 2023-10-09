@@ -34,7 +34,8 @@ class _InitLoadSplashScreenState extends State<InitLoadSplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Color(0xff02A676))),
       ),
     );
   }

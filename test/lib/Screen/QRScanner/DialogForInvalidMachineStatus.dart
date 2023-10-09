@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:test/GlobalMethod/utils.dart';
 import 'package:test/GlobalWidget/MachineStatusIndicator.dart';
 
-class InvalidMachineStatusDialog extends StatelessWidget {
-  final int machineStatus;
-  final String machineName;
+class InvalidMachineStatusDialog extends StatefulWidget {
+  final Function onScrollUp;
+  final Map stepInfoMap;
+  final Function onScrollDown;
 
-  InvalidMachineStatusDialog(
-      {required this.machineStatus, required this.machineName});
+  const InvalidMachineStatusDialog(
+      {super.key,
+      required this.stepInfoMap,
+      required this.onScrollUp,
+      required this.onScrollDown});
 
+  @override
+  State<InvalidMachineStatusDialog> createState() =>
+      _InvalidMachineStatusDialogState();
+}
+
+class _InvalidMachineStatusDialogState
+    extends State<InvalidMachineStatusDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -19,46 +31,68 @@ class InvalidMachineStatusDialog extends StatelessWidget {
         style: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.bold,
-          color: Colors.redAccent,
+          color: Theme.of(context).colorScheme.error,
         ),
       ),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            '・機名: $machineName',
-            style: TextStyle(
-              fontSize: 18,
-            ),
-          ),
-          SizedBox(height: 15), // スペースを追加
-          Row(
+          Column(
+            // New Column wrapper
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '・状態: ',
+                '・機名: ${widget.stepInfoMap['machine_name']}',
                 style: TextStyle(
                   fontSize: 18,
                 ),
               ),
-              MachineStatusIndicator(
-                  context: context, machineStatus: machineStatus)
+              SizedBox(height: 15),
+              Row(
+                children: [
+                  Text(
+                    '・状態: ',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                  MachineStatusIndicator(
+                      context: context,
+                      machineStatus: widget.stepInfoMap['step_status_to_edit'])
+                ],
+              ),
+              SizedBox(height: 20),
+              Text(
+                "報告を作成できません",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
             ],
           ),
-          SizedBox(height: 20), // スペースを追加
-          Text(
-            "報告を作成できません",
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.red, // 警告メッセージの色を赤にする
-            ),
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: [
+          //     ElevatedButton(
+          //       onPressed: () {
+          //         navigateToStepListPage(
+          //             context,
+          //             widget.stepInfoMap['machine_id'],
+          //             widget.onScrollUp,
+          //             widget.onScrollDown);
+          //       },
+          //       child: Text('確認'),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
       actions: <Widget>[
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.redAccent,
+            backgroundColor: Theme.of(context).colorScheme.error,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),

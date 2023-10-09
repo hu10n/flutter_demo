@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:test/GlobalMethod/utils.dart';
 import 'StepListSliverList.dart';
 import 'ModalContentForHistory.dart';
 
@@ -34,7 +34,6 @@ class _StepListPageState extends State<StepListPage> {
   @override
   Widget build(BuildContext context) {
     // print("S");
-    final safePadding = MediaQuery.of(context).padding.bottom;
     return NotificationListener<ScrollUpdateNotification>(
       onNotification: (notification) {
         if (notification.metrics.outOfRange) {
@@ -61,6 +60,13 @@ class _StepListPageState extends State<StepListPage> {
           controller: scrollController,
           slivers: [
             SliverAppBar(
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back,
+                    color: Theme.of(context).colorScheme.secondary), // ここで色を変更
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
               expandedHeight: 50.0,
               floating: true,
               pinned: false,
@@ -74,7 +80,10 @@ class _StepListPageState extends State<StepListPage> {
                 ),
               ],
               flexibleSpace: FlexibleSpaceBar(
-                title: Text('作業工程一覧'),
+                title: Text(
+                  '作業工程一覧',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
             ),
             StepListSliverList(
@@ -83,7 +92,8 @@ class _StepListPageState extends State<StepListPage> {
               onScrollUp: widget.onScrollUp,
             ),
             SliverPadding(
-              padding: EdgeInsets.only(bottom: safePadding + kToolbarHeight),
+              padding: EdgeInsets.only(
+                  bottom: bottomBarHeightWithSafePadding(context)),
             ),
           ],
         ),

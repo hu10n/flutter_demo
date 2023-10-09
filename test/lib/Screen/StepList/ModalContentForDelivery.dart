@@ -12,23 +12,20 @@ class ModalContentForDelivery extends StatefulWidget {
   final Function setIsModal;
   final Map<String, dynamic> machine;
   final Map<String, dynamic> project;
-  const ModalContentForDelivery({
-    Key? key, 
-    required this.onScrollUp,
-    required this.setIsModal,
-    required this.machine, 
-    required this.project
-    })  : super(key: key);
+  const ModalContentForDelivery(
+      {Key? key,
+      required this.onScrollUp,
+      required this.setIsModal,
+      required this.machine,
+      required this.project})
+      : super(key: key);
 
   @override
   _ModalContentForDelivery createState() => _ModalContentForDelivery();
 }
 
 class _ModalContentForDelivery extends State<ModalContentForDelivery> {
-
   bool _isLoading = false; //ローディング画面用
-
-
 
   void _submitData(machine, BuildContext context) async {
     setState(() {
@@ -36,27 +33,28 @@ class _ModalContentForDelivery extends State<ModalContentForDelivery> {
     });
 
     final res = await completeProject(machine); //データを送信
-    if(res == 1){
-      await deleteProjectWithErrorHandle(context, machine["project"][0]["project_id"]);
+    if (res == 1) {
+      await deleteProjectWithErrorHandle(
+          context, machine["project"][0]["project_id"]);
     }
     await updateLocaldbWithErrorHandle(context);
-    
 
     setState(() {
       _isLoading = false;
     });
-  
-    if(res == 3){
+
+    if (res == 3) {
       print(res);
-      showCustomDialog(context, widget.onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
-    }else if(res == 1){
-      showCustomDialog(context, widget.onScrollUp,"完了","データは正常に送信されました。");
-    }else{
+      showCustomDialog(context, widget.onScrollUp, "エラー",
+          "データが最新ではありません。更新してから、もう一度お試しください");
+    } else if (res == 1) {
+      showCustomDialog(context, widget.onScrollUp, "完了", "データは正常に送信されました。");
+    } else {
       print(res);
-      showCustomDialog(context, widget.onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp, "エラー",
+          "予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +73,8 @@ class _ModalContentForDelivery extends State<ModalContentForDelivery> {
               Expanded(
                   child: Padding(
                       padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom +
-                              70.0),
+                          bottom:
+                              MediaQuery.of(context).viewInsets.bottom + 70.0),
                       child: ListView(
                         //controller: scrollController,
                         children: [
@@ -90,16 +88,13 @@ class _ModalContentForDelivery extends State<ModalContentForDelivery> {
                                   horizontal:
                                       25.0), //上下左右のパディング設定。できれば数値指定したくない
                               child: Column(
-                                children: [
-                                  
-                                ],
+                                children: [],
                               ),
                             ),
                           ),
                         ],
                       ))),
               //--------------------------------------------------
-              
             ],
           ),
           // スクロール可能なウィジェットの上に配置される固定ボタン--------
@@ -120,20 +115,25 @@ class _ModalContentForDelivery extends State<ModalContentForDelivery> {
                   minimumSize: MaterialStateProperty.all<Size>(Size(
                       MediaQuery.of(context).size.width * 0.9,
                       40.0)), // ここで幅と高さを指定
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Theme.of(context).colorScheme.secondary), // 背景色を赤に指定
+                  foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // テキストの色を白に指定
                 ),
-                child: Text('納品する'),
+                child: Text(
+                  '納品する',
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
               ),
             ),
           ),
           //------------------------------------------------------
-          
+
           //ローディング画面-----------------------------------------
           if (_isLoading) LoadingModal()
           //------------------------------------------------------
         ],
-      ),     
+      ),
     );
   }
-
-  
 }

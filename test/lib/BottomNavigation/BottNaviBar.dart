@@ -24,7 +24,7 @@ class _BottNaviBarState extends State<BottNaviBar> {
   Widget build(BuildContext context) {
     return Container(
       height: bottomBarHeightWithSafePadding(context),
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).colorScheme.primary,
       child: Column(
         children: [
           Expanded(

@@ -18,7 +18,7 @@ class QRErrorDialog extends StatelessWidget {
         style: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.bold,
-          color: Colors.redAccent,
+          color: Theme.of(context).colorScheme.error,
         ),
       ),
       content: Column(
@@ -29,7 +29,7 @@ class QRErrorDialog extends StatelessWidget {
             children: [
               Icon(
                 Icons.error_outline,
-                color: Colors.redAccent,
+                color: Theme.of(context).colorScheme.error,
               ),
               SizedBox(width: 10),
               Expanded(

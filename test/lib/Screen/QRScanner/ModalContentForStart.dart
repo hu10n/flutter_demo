@@ -55,7 +55,7 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
       showCustomDialog(context, widget.onScrollUp, "エラー",
           "データが最新ではありません。更新してから、もう一度お試しください");
     } else if (res == 1) {
-      navigateToHome(context, widget.stepInfoMap['machine_id'],
+      navigateToStepListPage(context, widget.stepInfoMap['machine_id'],
           widget.onScrollUp, widget.onScrollDown);
       showCustomDialog(context, widget.onScrollUp, "完了", "データは正常に送信されました。");
     } else {
@@ -214,10 +214,21 @@ class _ModalContentForStartState extends State<ModalContentForStart> {
                             },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all<Size>(Size(
-                            MediaQuery.of(context).size.width * 0.9,
-                            40.0)), // ここで幅と高さを指定
+                            MediaQuery.of(context).size.width * 0.9, 40.0)),
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>((states) {
+                          if (states.contains(MaterialState.disabled)) {
+                            return Colors.grey; // ボタンが非アクティブなときの色
+                          }
+                          return Theme.of(context)
+                              .colorScheme
+                              .secondary; // 通常の色
+                        }),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
                       ),
-                      child: Text('作業開始'),
+                      child: Text('作業開始',
+                          style: Theme.of(context).textTheme.labelLarge),
                     ),
                   ),
                 ),

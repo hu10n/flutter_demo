@@ -18,7 +18,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(useMaterial3: false, colorScheme: lightColorScheme),
+      theme: ThemeData(
+        useMaterial3: false,
+        colorScheme: lightColorScheme,
+        textTheme: TextTheme(
+          titleLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+          bodyMedium: TextStyle(fontSize: 14.0),
+          labelLarge: TextStyle(
+              color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600),
+        ),
+      ),
       home: InitLoadSplashScreen(),
     );
   }

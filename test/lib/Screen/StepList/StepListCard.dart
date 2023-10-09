@@ -83,12 +83,12 @@ class StepListCard extends StatelessWidget {
         break;
       // On Going
       case -1:
-        iconColor = Theme.of(context).colorScheme.secondary;
+        iconColor = Theme.of(context).colorScheme.tertiary;
         iconData = Icons.play_circle_fill;
         break;
       // Completed
       case 1:
-        iconColor = Theme.of(context).colorScheme.primary;
+        iconColor = Theme.of(context).colorScheme.secondary;
         iconData = Icons.check_circle_rounded;
         break;
       default:
