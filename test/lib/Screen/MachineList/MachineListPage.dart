@@ -42,6 +42,7 @@ class _MachineListPageState extends State<MachineListPage> {
   int selectedStatus = -1;
 
   _onToggleSelected(int index) async {
+    
     // フィルタリング時にページ上部にジャンプ
     await carouselController.animateToPage(0,
         duration: Duration(microseconds: 1));
@@ -98,13 +99,17 @@ class _MachineListPageState extends State<MachineListPage> {
           // Ensure that the list isn't empty and the desired index is valid.
           if (entries.isNotEmpty && index < entries.length) {
             if (scrollController.offset > entries[index].value["height"]) {
-              carouselController.animateToPage(
-                index + 1,
-                duration: Duration(
-                  milliseconds: 1,
-                ),
-              );
-              //print("+1");
+              if(scrollController.offset > entries[entries.length - 1].value["height"]){
+
+              }else{
+                carouselController.animateToPage(
+                  index + 1,
+                  duration: Duration(
+                    milliseconds: 1,
+                  ),
+                );
+                //print("+1");
+              }
             }
 
             if (index != 0 && index - 1 < entries.length) {

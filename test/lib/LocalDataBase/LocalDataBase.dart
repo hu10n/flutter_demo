@@ -6,7 +6,7 @@ import 'package:test/api/api.dart';
 
 class DatabaseHelper {
   static final _dbName = 'Database.db';
-  static final _dbVersion = 3;
+  static final _dbVersion = 1;
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -65,6 +65,7 @@ class DatabaseHelper {
         project_status INTEGER NOT NULL,
         worker TEXT,
         free_text TEXT,
+        production_volume INTEGER,
         step_num INTEGER NOT NULL,
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
