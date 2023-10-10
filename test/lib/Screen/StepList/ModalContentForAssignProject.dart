@@ -51,7 +51,8 @@ class _MyModalState extends State<MyModal> {
       newController.addListener(_onTextChanged);
       _focuses.add(FocusNode());
       stepFields.add(InputField("ステップ${_counter + 1}",
-          _controllers[_counter + 7], _focuses[_counter + 7], isRequired: true));
+          _controllers[_counter + 7], _focuses[_counter + 7],
+          isRequired: true));
       stepFields.add(SizedBox(
         height: 20,
       ));
@@ -65,31 +66,37 @@ class _MyModalState extends State<MyModal> {
       _controllers.removeAt(_counter + 8);
       _focuses.removeAt(_counter + 8);
 
-      _isButtonEnabled = _controllers.every((controller) => controller.text.isNotEmpty);
+      _isButtonEnabled =
+          _controllers.every((controller) => controller.text.isNotEmpty);
     });
   }
 
-  void _submitData(machine, project, BuildContext context,) async {
+  void _submitData(
+    machine,
+    project,
+    BuildContext context,
+  ) async {
     setState(() {
       _isLoading = true;
     });
 
     final res = await assignProjectInfo(machine, project); //データを送信
     await updateLocaldbWithErrorHandle(context);
-    
 
     setState(() {
       _isLoading = false;
     });
-  
-    if(res == 3){
+
+    if (res == 3) {
       print(res);
-      showCustomDialog(context, widget.onScrollUp,"エラー","データが最新ではありません。更新してから、もう一度お試しください");
-    }else if(res == 1){
-      showCustomDialog(context, widget.onScrollUp,"完了","データは正常に送信されました。");
-    }else{
+      showCustomDialog(context, widget.onScrollUp, "エラー",
+          "データが最新ではありません。更新してから、もう一度お試しください");
+    } else if (res == 1) {
+      showCustomDialog(context, widget.onScrollUp, "完了", "データは正常に送信されました。");
+    } else {
       print(res);
-      showCustomDialog(context, widget.onScrollUp,"エラー","予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
+      showCustomDialog(context, widget.onScrollUp, "エラー",
+          "予期せぬエラーが発生しました。しばらくしてから、もう一度お試しください");
     }
   }
 
@@ -100,7 +107,8 @@ class _MyModalState extends State<MyModal> {
   }
 
   _onTextChanged() {
-    bool allFieldsFilled = _controllers.every((controller) => controller.text.isNotEmpty);
+    bool allFieldsFilled =
+        _controllers.every((controller) => controller.text.isNotEmpty);
     setState(() {
       _isButtonEnabled = allFieldsFilled;
     });
@@ -112,7 +120,8 @@ class _MyModalState extends State<MyModal> {
     // initStateの中でstepFieldsを初期化
     _controllers.add(TextEditingController());
     _focuses.add(FocusNode());
-    stepFields.add(InputField("ステップ1", _controllers[7], _focuses[7], isRequired: true));
+    stepFields.add(
+        InputField("ステップ1", _controllers[7], _focuses[7], isRequired: true));
     stepFields.add(SizedBox(
       height: 20,
     ));
@@ -121,8 +130,6 @@ class _MyModalState extends State<MyModal> {
       controller.addListener(_onTextChanged);
     }
   }
-
-  
 
   @override
   void dispose() {
@@ -176,27 +183,32 @@ class _MyModalState extends State<MyModal> {
                                       height: 20,
                                     ),
                                     InputField(
-                                        "品名", _controllers[0], _focuses[0], isRequired: true),
+                                        "品名", _controllers[0], _focuses[0],
+                                        isRequired: true),
                                     SizedBox(
                                       height: 15,
                                     ),
                                     InputField(
-                                        "品番", _controllers[1], _focuses[1], isRequired: true),
+                                        "品番", _controllers[1], _focuses[1],
+                                        isRequired: true),
                                     SizedBox(
                                       height: 15,
                                     ),
                                     InputField(
-                                        "材料", _controllers[2], _focuses[2], isRequired: true),
+                                        "材料", _controllers[2], _focuses[2],
+                                        isRequired: true),
                                     SizedBox(
                                       height: 15,
                                     ),
                                     InputField(
-                                        "ロットNo.", _controllers[3], _focuses[3], isRequired: true),
+                                        "ロットNo.", _controllers[3], _focuses[3],
+                                        isRequired: true),
                                     SizedBox(
                                       height: 15,
                                     ),
                                     InputField(
-                                        "生産数", _controllers[4], _focuses[4], isRequired: true, isNumOnly: true),
+                                        "生産数", _controllers[4], _focuses[4],
+                                        isRequired: true, isNumOnly: true),
                                     SizedBox(
                                       height: 80,
                                     ),
@@ -212,7 +224,8 @@ class _MyModalState extends State<MyModal> {
                                       height: 20,
                                     ),
                                     InputField(
-                                        "客先名", _controllers[5], _focuses[5], isRequired: true),
+                                        "客先名", _controllers[5], _focuses[5],
+                                        isRequired: true),
                                     SizedBox(
                                       height: 80,
                                     ),
@@ -226,7 +239,8 @@ class _MyModalState extends State<MyModal> {
                                       height: 20,
                                     ),
                                     InputField(
-                                        "担当者名", _controllers[6], _focuses[6], isRequired: true),
+                                        "担当者名", _controllers[6], _focuses[6],
+                                        isRequired: true),
                                     SizedBox(
                                       height: 80,
                                     ),
@@ -331,34 +345,47 @@ class _MyModalState extends State<MyModal> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
-                      onPressed: !_isButtonEnabled ? null :() async {
-                        // ボタンがタップされた時の処理を記述
-                        //print(await postStepData("ok"));
-                        //print(await assignProjectInfo(machine["machine_id"],machine["machine_status"]));
-                        Map<String, dynamic> project = {
-                          "product_name": _controllers[0].text,
-                          "product_num": _controllers[1].text,
-                          "material": _controllers[2].text,
-                          "lot_num": _controllers[3].text,
-                          "production_volume": _controllers[4].text,
-                          "client_name": _controllers[5].text,
-                          "supervisor": _controllers[6].text,
-                          "step": []
-                        };
+                      onPressed: !_isButtonEnabled
+                          ? null
+                          : () async {
+                              // ボタンがタップされた時の処理を記述
+                              //print(await postStepData("ok"));
+                              //print(await assignProjectInfo(machine["machine_id"],machine["machine_status"]));
+                              Map<String, dynamic> project = {
+                                "product_name": _controllers[0].text,
+                                "product_num": _controllers[1].text,
+                                "material": _controllers[2].text,
+                                "lot_num": _controllers[3].text,
+                                "production_volume": _controllers[4].text,
+                                "client_name": _controllers[5].text,
+                                "supervisor": _controllers[6].text,
+                                "step": []
+                              };
 
-                        for (var i = 0; i < _controllers.length; i++) {
-                          if (i < 7) continue; // _controllers[6]以降のみ処理する。
-                          project["step"]
-                              .add({"step_name": _controllers[i].text});
-                        }
-                        //print(project);
-                        _unfocus();
-                        _submitData(widget.machine, project, context);
-                      },
+                              for (var i = 0; i < _controllers.length; i++) {
+                                if (i < 7) continue; // _controllers[6]以降のみ処理する。
+                                project["step"]
+                                    .add({"step_name": _controllers[i].text});
+                              }
+                              //print(project);
+                              _unfocus();
+                              _submitData(widget.machine, project, context);
+                            },
                       style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all<Size>(Size(
                             MediaQuery.of(context).size.width * 0.9,
                             40.0)), // ここで幅と高さを指定
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>((states) {
+                          if (states.contains(MaterialState.disabled)) {
+                            return Colors.grey; // ボタンが非アクティブなときの色
+                          }
+                          return Theme.of(context)
+                              .colorScheme
+                              .secondary; // 通常の色
+                        }),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
                       ),
                       child: Text('割り当て'),
                     ),

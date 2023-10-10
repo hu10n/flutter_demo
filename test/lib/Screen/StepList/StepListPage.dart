@@ -72,7 +72,8 @@ class _StepListPageState extends State<StepListPage> {
               pinned: false,
               actions: [
                 IconButton(
-                  icon: Icon(Icons.history),
+                  icon: Icon(Icons.history,
+                      color: Theme.of(context).colorScheme.secondary),
                   onPressed: () {
                     // アイコンを押したときの処理（ここではSnackBarを表示）
                     _handleHistoryIconTap(context, widget.machineId);
