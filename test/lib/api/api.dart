@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 //全データ取得-----------------------------------------------------------------------------
@@ -8,8 +9,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 //lambda関数：getAllData
 //エラーが返ってくる場合、データベースのエラーのみなので、lambda側ではエラーハンドリングなし。
 Future<Map<String,dynamic>> getAllDataGrobal() async {
+  String api_key = dotenv.env['API_KEY'] ?? "";
   try{
-    final response = await http.get(Uri.parse('https://c9sz8hr268.execute-api.ap-northeast-1.amazonaws.com/getAllData'));
+    final response = await http.get(Uri.parse('https://c9sz8hr268.execute-api.ap-northeast-1.amazonaws.com/getAllData'),
+    headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
+        // 'Authorization': 'Bearer YOUR_API_TOKEN',
+        'x-api-key': api_key
+      },);
     return json.decode(utf8.decode(response.bodyBytes)); //utf8デコードしないと日本語が文字化け
   }catch(e){
     print(e);
@@ -23,11 +30,13 @@ Future<Map<String,dynamic>> getAllDataGrobal() async {
 //lambda側でエラーハンドリングなし。
 //この関数がよばれる際にローカルDBの前回更新時間も更新されるため引数で渡した方が効率的
 Future<Map<String,dynamic>> postJSONData(lastUpdated) async {
+  String api_key = dotenv.env['API_KEY'] ?? "";
   final response = await http.post(
       Uri.parse('https://2kwgnatgue.execute-api.ap-northeast-1.amazonaws.com/testconnectDB'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
         // 'Authorization': 'Bearer YOUR_API_TOKEN',
+        'x-api-key': api_key
       },
       body: jsonEncode(<String, dynamic>{
         'last_updated': lastUpdated,
@@ -50,6 +59,7 @@ Future<Map<String,dynamic>> postJSONData(lastUpdated) async {
 //入力フォームに記入がないと、そのカラムはnull値で更新される。
 //マシンステータスが稼働中かつステップのステータスリストが一致しないとデータ不一致となる。
 Future<int> updateStepData(update_status,step,status_list,machine_id) async {
+  String api_key = dotenv.env['API_KEY'] ?? "";
   final prefs = await SharedPreferences.getInstance();
   final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
 
@@ -59,6 +69,7 @@ Future<int> updateStepData(update_status,step,status_list,machine_id) async {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
         // 'Authorization': 'Bearer YOUR_API_TOKEN',
+        'x-api-key': api_key
       },
       body: jsonEncode(<String, dynamic>{
         'last_updated': last_updated,
@@ -86,6 +97,7 @@ Future<int> updateStepData(update_status,step,status_list,machine_id) async {
 //lambda関数：CompleteProject
 //マシンステータスが稼働中かつステップのステータスリストが全て１でないと不一致。リストの長さも一致する必要あり。
 Future<int> completeProject(machine) async {
+  String api_key = dotenv.env['API_KEY'] ?? "";
   final prefs = await SharedPreferences.getInstance();
   final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
 
@@ -101,6 +113,7 @@ Future<int> completeProject(machine) async {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
         // 'Authorization': 'Bearer YOUR_API_TOKEN',
+        'x-api-key': api_key
       },
       body: jsonEncode(<String, dynamic>{
         'last_updated': last_updated,
@@ -122,6 +135,7 @@ Future<int> completeProject(machine) async {
 //lambda関数：AssignProject
 //マシンステータスが未稼働でないとデータ不一致。
 Future<int> assignProjectInfo(machine,project) async {
+  String api_key = dotenv.env['API_KEY'] ?? "";
   final prefs = await SharedPreferences.getInstance();
   final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
 
@@ -131,6 +145,7 @@ Future<int> assignProjectInfo(machine,project) async {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
         // 'Authorization': 'Bearer YOUR_API_TOKEN',
+        'x-api-key': api_key
       },
       body: jsonEncode(<String, dynamic>{
         'last_updated': last_updated,
@@ -159,6 +174,7 @@ Future<int> assignProjectInfo(machine,project) async {
 //lambda関数：changeMachineStatus
 //RDSとLDBでマシンステータスが一致してないとデータ不一致。
 Future<int> changeMachineStatus(machine,status) async {
+  String api_key = dotenv.env['API_KEY'] ?? "";
   final prefs = await SharedPreferences.getInstance();
   final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
 
@@ -168,6 +184,7 @@ Future<int> changeMachineStatus(machine,status) async {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
         // 'Authorization': 'Bearer YOUR_API_TOKEN',
+        'x-api-key': api_key
       },
       body: jsonEncode(<String, dynamic>{
         'last_updated': last_updated,
@@ -184,3 +201,34 @@ Future<int> changeMachineStatus(machine,status) async {
   }
 }
 //--------------------------------------------------------------------------------------------
+
+//任意のマシンの過去のプロジェクトリストを取得------------------------------------------------------------------------
+
+//lambda関数：GetHistoryData
+//lambda側でエラーハンドリングなし。
+Future<Map<String,dynamic>> getHistoryData(machine_id) async {
+  String api_key = dotenv.env['API_KEY'] ?? "";
+  final prefs = await SharedPreferences.getInstance();
+  final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z";
+  final response = await http.post(
+      Uri.parse('https://xusop2u0c3.execute-api.ap-northeast-1.amazonaws.com/getHistoryData/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
+        // 'Authorization': 'Bearer YOUR_API_TOKEN',
+        'x-api-key': api_key
+      },
+      body: jsonEncode(<String, dynamic>{
+        'last_updated': last_updated,
+        'machine_id': machine_id
+      }
+    ),
+  );
+  if (response.statusCode == 200) {
+    return json.decode(utf8.decode(response.bodyBytes));// as List<Map<String, dynamic>>;
+  } else {
+    print(response.body);
+    print(response.statusCode);
+    throw Exception('Failed to load data from the server');
+  }
+}
+//---------------------------------------------------------------------------------------

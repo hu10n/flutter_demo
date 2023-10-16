@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:test/GlobalMethod/utils.dart';
+import 'package:test/Screen/HistoryList/HistorySliverList.dart';
 
 class HistoryListPage extends StatefulWidget {
   final String machineId;
@@ -31,7 +33,6 @@ class _HistoryListPageState extends State<HistoryListPage> {
   @override
   Widget build(BuildContext context) {
     // print("S");
-    final safePadding = MediaQuery.of(context).padding.bottom;
     return NotificationListener<ScrollUpdateNotification>(
       onNotification: (notification) {
         if (notification.metrics.outOfRange) {
@@ -58,15 +59,31 @@ class _HistoryListPageState extends State<HistoryListPage> {
           controller: scrollController,
           slivers: [
             SliverAppBar(
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back,
+                    color: Theme.of(context).colorScheme.secondary), // ここで色を変更
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
               expandedHeight: 50.0,
               floating: true,
               pinned: false,
               flexibleSpace: FlexibleSpaceBar(
-                title: Text('Machine ${widget.machineId} History List'),
+                title: Text(
+                  '稼働履歴',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
             ),
+            HistoryListSliverList(
+              machineId: widget.machineId,
+              onScrollDown: widget.onScrollDown,
+              onScrollUp: widget.onScrollUp,
+            ),
             SliverPadding(
-              padding: EdgeInsets.only(bottom: safePadding + kToolbarHeight),
+              padding: EdgeInsets.only(
+                  bottom: bottomBarHeightWithSafePadding(context)),
             ),
           ],
         ),

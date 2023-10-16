@@ -314,7 +314,12 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                 leading: Icon(Icons.local_shipping,
                     color: Color.fromARGB(255, 222, 212, 123)),
-                title: Text('部品を納品する'),
+                title: Text(
+                  '部品を納品する',
+                  style: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold
+                  ),
+                ),
                 trailing: Icon(Icons.chevron_right),
                 onTap: () {
                   Navigator.pop(context);
@@ -341,7 +346,12 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                 leading: Icon(Icons.zoom_in, color: Colors.blue),
-                title: Text('詳細情報を見る'),
+                title: Text(
+                  '詳細情報を見る',
+                  style: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold
+                  ),
+                ),
                 trailing: Icon(Icons.chevron_right),
                 onTap: () {
                   Navigator.pop(context);
@@ -368,7 +378,12 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
             ListTile(
               contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
               leading: Icon(Icons.swap_horiz, color: Colors.green),
-              title: Text('作業機のステータスを変更する'),
+              title: Text(
+                '作業機のステータスを変更する',
+                style: TextStyle(
+                  color: Colors.black, fontWeight: FontWeight.bold
+                ),
+              ),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.pop(context);
@@ -395,7 +410,12 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
             ListTile(
               contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
               leading: Icon(Icons.cancel, color: Colors.red),
-              title: Text('キャンセル'),
+              title: Text(
+                'キャンセル',
+                style: TextStyle(
+                  color: Colors.black, fontWeight: FontWeight.bold
+                ),
+              ),
               onTap: () {
                 Navigator.pop(context);
               },
