@@ -1,70 +1,116 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:test/GlobalMethod/utils.dart';
 
-import 'package:test/providers/DataProvider.dart';
+import 'ModalForDetailInHistory.dart';
 
 class HistoryListCard extends StatelessWidget {
-  final String machineId; // 追加されたプロパティ
-  final String stepId; // 追加されたプロパティ
-  final VoidCallback tapAction;
+  final machine;
+  final Function onScrollDown;
+  final Function onScrollUp;
 
   const HistoryListCard({
-    required this.machineId, // コンストラクタでmachineIdを要求
-    required this.stepId, // コンストラクタでstepIdを要求
-    required this.tapAction,
+    required this.machine,
+    required this.onScrollDown,
+    required this.onScrollUp
   });
 
   @override
   Widget build(BuildContext context) {
+    //print(machine);
     double screenWidth = MediaQuery.of(context).size.width;
 
-    final dataList = Provider.of<DataNotifier>(context).dataList;
-    //print(dataList[2]);
-    Map<String, dynamic> machine = dataList.firstWhere(
-      (element) => element['machine_id'] == machineId,
-    );
+    final project = machine["project"];
 
-    String stepTitle = '';
-    int? stepStatus;
-    String worker = '';
-    String updatedAt = '';
-    String productionVolume = '';
-
-    for (var project in (machine['project'] as List)) {
-      for (var s in (project['step'] as List)) {
-        if (s['step_id'] == stepId) {
-          stepTitle = s['step_name'] ?? '';
-          stepStatus = s['project_status'] as int?;
-          // stepStatus = 1; //test
-          worker = s['worker'] ?? '';
-          updatedAt = formatTime(s['updated_at'] ?? '');
-          productionVolume = formatNumber(s['production_volume']) ?? '';
-        }
-      }
-    }
+    final product_name = project["product_name"];
+    final product_num = project["product_num"];
+    final client_name = project["client_name"];
+    final finished_at = project["updated_at"];
 
     return Card(
+      
       clipBehavior: Clip.hardEdge,
       child: InkWell(
-        onTap: () => tapAction(),
+        onTap: () {
+          onScrollDown(100);
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            enableDrag: false,
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.vertical(top: Radius.circular(20))),
+            builder: (context) => ModalContentForDetail_History(
+              onScrollUp: onScrollUp,
+              machine: machine,
+              project: project,
+            ),
+          ).whenComplete(() {
+            
+            onScrollUp(100);
+          });
+        },
         child: SizedBox(
           width: screenWidth,
-          height: 70,
+          //height: 70,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _createStepStatusIcon(context, stepStatus!),
-              Expanded(
+              Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _createStepTitleLabel(stepTitle),
-                    _createStepListSubtitle(
-                        worker, updatedAt, productionVolume),
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        Text(
+                          "商品：",
+                          style: TextStyle(
+                            color: Theme.of(context).disabledColor, fontWeight: FontWeight.bold, fontSize: 12,
+                          ),
+                        ),
+                        SizedBox(width: 10,),
+                        Text(
+                          "$product_name ($product_num)",
+                          style: TextStyle(
+
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Text(
+                          "客先名：",
+                          style: TextStyle(
+                            color: Theme.of(context).disabledColor, fontWeight: FontWeight.bold, fontSize: 12,
+                          ),
+                        ),
+                        SizedBox(width: 10,),
+                        Text("$client_name")
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Text(
+                          "納品日：",
+                          style: TextStyle(
+                            color: Theme.of(context).disabledColor, fontWeight: FontWeight.bold, fontSize: 12,
+                          ),
+                        ),
+                        SizedBox(width: 10,),
+                        Text("$finished_at")
+                      ],
+                    ),             
                   ],
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Icon(Icons.chevron_right),
+              )
+              
             ],
           ),
         ),

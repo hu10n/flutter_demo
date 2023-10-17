@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:test/GlobalWidget/BuildTitleForModal.dart';
 import 'package:test/GlobalMethod/utils.dart';
 
-class ModalContentForDetail extends StatefulWidget {
+class ModalContentForDetail_History extends StatefulWidget {
   final Function onScrollUp;
   //final Function setIsModal;
-  final Map<String, dynamic> machine;
-  final Map<String, dynamic> project;
-  const ModalContentForDetail(
+  final Map<dynamic, dynamic> machine;
+  final Map<dynamic, dynamic> project;
+  const ModalContentForDetail_History(
       {Key? key,
       required this.onScrollUp,
       //required this.setIsModal,
@@ -17,10 +17,10 @@ class ModalContentForDetail extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ModalContentForDetail createState() => _ModalContentForDetail();
+  _ModalContentForDetail_History createState() => _ModalContentForDetail_History();
 }
 
-class _ModalContentForDetail extends State<ModalContentForDetail> {
+class _ModalContentForDetail_History extends State<ModalContentForDetail_History> {
   @override
   Widget build(BuildContext context) {
     final machine = widget.machine;
@@ -170,7 +170,7 @@ class _ModalContentForDetail extends State<ModalContentForDetail> {
     );
   }
 
-  Widget stepInfoWidget(int index, Map<String, dynamic> step) {
+  Widget stepInfoWidget(int index, Map<dynamic, dynamic> step) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -39,7 +39,7 @@ class _HistoryListSliverListState extends State<HistoryListSliverList> {
   }
   Future<void> _loadDataAndNavigate() async {
     // ローディング中の処理--------------------------------
-    print("load start");
+    //print("load start");
     await Future.delayed(Duration(milliseconds: 500));
     final data = await getHistoryData(widget.machineId);
     
@@ -54,23 +54,6 @@ class _HistoryListSliverListState extends State<HistoryListSliverList> {
   // SliverListを返す ----------------------------------------------
   @override
   Widget build(BuildContext context) {
-    final dataNotifier = Provider.of<DataNotifier>(context, listen: false);
-    final dataList = dataNotifier.dataList;
-
-    Map<String, dynamic> machine = dataList.firstWhere(
-        (element) => element['machine_id'] == widget.machineId,
-        orElse: () => {
-              'machine_id': '',
-              'machine_num': 'N/A',
-              'machine_status': 0,
-              'updated_at': 'N/A',
-              'project': []
-            });
-
-    List<String> stepIds = _getAllStepIds(machine);
-
-    print(stepIds);
-
     if(_isLoading){ //データを読むまではローディング
       return SliverFillRemaining(
         child: Container(
@@ -81,57 +64,20 @@ class _HistoryListSliverListState extends State<HistoryListSliverList> {
       return SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {       
-            if (index < stepIds.length) {
-              String stepId = stepIds[index];
+            if (index < machine["project"].length) {
+              Map<dynamic,dynamic> _machine = Map.of(machine);
+              _machine["project"] = _machine["project"][index];
               return HistoryListCard(
-                machineId: widget.machineId,
-                stepId: stepId,
-                tapAction: () => _handleStepCardTap(context, widget.machineId),
+                machine: _machine,
+                onScrollDown: widget.onScrollDown,
+                onScrollUp: widget.onScrollUp,
               );
             }
             return null;             
           },
-          childCount: stepIds.length + 1, // Adjusted childCount
+          childCount: machine["project"].length, // Adjusted childCount
         ),
       );
     }
-  }
-
-// Step Card Listをtapした時の動作
-  void _handleStepCardTap(
-    BuildContext context,
-    String machineId,
-  ) async{
-    // -----------------------------テスト用----------------------
-    // navigateToHome(context);
-    // navigateToStepListPage(context, "4d789eb5-00bc-4404-8b1f-36e93387598c",
-    //     widget.onScrollUp, widget.onScrollDown);
-    // -----------------------------------------------------------
-
-    
-  }
-
-  List<String> _getAllStepIds(Map<String, dynamic> machine) {
-    List<String> stepIds = [];
-
-    if (machine['project'] is List) {
-      for (var project in machine['project']) {
-        if (project['step'] is List) {
-          List<dynamic> steps = project['step'];
-
-          // Sort the steps following each step_num
-          steps.sort(
-              (a, b) => (a['step_num'] ?? 0).compareTo(b['step_num'] ?? 0));
-
-          for (var step in steps) {
-            if (step['step_id'] is String) {
-              stepIds.add(step['step_id']);
-            }
-          }
-        }
-      }
-    }
-
-    return stepIds;
   }
 }

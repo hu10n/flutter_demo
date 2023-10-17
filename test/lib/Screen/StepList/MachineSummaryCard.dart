@@ -367,7 +367,6 @@ class _MachineSummaryCardState extends State<MachineSummaryCard> {
                       onScrollUp: widget.onScrollUp,
                       machine: machine,
                       project: project,
-                      setIsModal: setIsModal,
                     ),
                   ).whenComplete(() {
                     setIsModal(false);
