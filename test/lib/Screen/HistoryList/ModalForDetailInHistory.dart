@@ -62,88 +62,27 @@ class _ModalContentForDetail_History extends State<ModalContentForDetail_History
                                       height: 20,
                                     ),
                                     // 作業機情報----------------------------------------------------
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text("作業機情報"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "・機番：${machine['machine_group']}-${machine['machine_num']}"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "・機名：${machine['machine_name']}"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "・機械ステータス：${machine['machine_status']}"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "・作成日時：${formatTime(machine['created_at'])}"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "・更新日時：${formatTime(machine['updated_at'])}"),
-                                    ),
+                                    _createAlign("作業機情報"),
+                                    _createAlign("・機番：${machine['machine_group']}-${machine['machine_num']}"),
+                                    _createAlign("・機名：${machine['machine_name']}"),
+                                    _createAlign("・機械ステータス：${machine['machine_status']}"),
+                                    _createAlign("・作成日時：${formatTime(machine['created_at'])}"),
+                                    _createAlign("・更新日時：${formatTime(machine['updated_at'])}"),
                                     //--------------------------------------------------------------
                                     SizedBox(
                                       height: 20,
                                     ),
                                     // 商品情報----------------------------------------------------
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text("部品情報"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child:
-                                          Text("・品番：${project['product_num']}"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "・品名：${project['product_name']}"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "・プロジェクトステータス：${project['project_status']}"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text("・材料：${project['material']}"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child:
-                                          Text("・ロット番号：${project['lot_num']}"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "・生産量：${project['production_volume']}"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child:
-                                          Text("・担当者：${project['supervisor']}"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "・作成日時：${formatTime(project['created_at'])}"),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "・更新日時：${formatTime(project['updated_at'])}"),
-                                    ),
+                                    _createAlign("部品情報"),
+                                    _createAlign("・品番：${project['product_num']}"),
+                                    _createAlign("・品名：${project['product_name']}"),
+                                    _createAlign("・プロジェクトステータス：${project['project_status']}"),
+                                    _createAlign("・材料：${project['material']}"),
+                                    _createAlign("・ロット番号：${project['lot_num']}"),
+                                    _createAlign("・生産量：${project['production_volume']}"),
+                                    _createAlign("・担当者：${project['supervisor']}"),
+                                    _createAlign("・作成日時：${formatTime(project['created_at'])}"),
+                                    _createAlign("・更新日時：${formatTime(project['updated_at'])}"),
                                     //--------------------------------------------------------------
                                     SizedBox(
                                       height: 20,
@@ -174,47 +113,23 @@ class _ModalContentForDetail_History extends State<ModalContentForDetail_History
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text("工程${index + 1}"),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text("・作業名：${step['step_name']}"),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text("・ステップステータス：${step['prject_status']}"),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text("・作業者名：${step['worker']}"),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text("・生産数：${step['production_volume']}"),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text("・備考：${step['free_text']}"),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text("・開始日時：${formatTime(step['started_at'])}"),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text("・完了日時：${formatTime(step['finished_at'])}"),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text("・作成日時：${formatTime(step['created_at'])}"),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text("・更新日時：${formatTime(step['updated_at'])}"),
-        ),
+        _createAlign("工程${index + 1}"),
+        _createAlign("・作業名：${step['step_name']}"),
+        _createAlign("・ステップステータス：${step['prject_status']}"),
+        _createAlign("・作業者名：${step['worker']}"),
+        _createAlign("・生産数：${step['production_volume']}"),
+        _createAlign("・備考：${step['free_text']}"),
+        _createAlign("・開始日時：${formatTime(step['started_at'])}"),
+        _createAlign("・完了日時：${formatTime(step['finished_at'])}"),
+        _createAlign("・作成日時：${formatTime(step['created_at'])}"),
+        _createAlign("・更新日時：${formatTime(step['updated_at'])}")
       ],
+    );
+  }
+  Widget _createAlign(text){
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(text),
     );
   }
 }

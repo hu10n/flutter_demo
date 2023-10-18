@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:test/GlobalMethod/utils.dart';
-import 'package:provider/provider.dart';
 
 import 'package:test/providers/DataProvider.dart';
-import 'package:test/providers/DataProvider.dart';
-import 'HistoryListCard.dart';
-import 'package:test/Screen/MachineList/MachineListSliverList.dart';
-//import 'package:test/providers/NavigationData.dart';
-import 'package:test/Screen/JobCard/PrintingJob.dart';
+import 'package:test/Screen/HistoryList/HistoryListCard.dart';
 import 'package:test/GlobalWidget/LoadingModal.dart';
 
 import 'package:test/api/api.dart';

@@ -20,10 +20,10 @@ class _InitLoadSplashScreenState extends State<InitLoadSplashScreen> {
     // ローディング中の処理--------------------------------
     print("load start");
     await Future.delayed(Duration(milliseconds: 1000));
-    await Provider.of<DataNotifier>(context, listen: false)
-        .loadFont(); //日本語フォントをロード
-    await Provider.of<DataNotifier>(context, listen: false)
-        .getAllData(); //ローカルDBからproviderへデータ送信
+    
+    final datanotifier = Provider.of<DataNotifier>(context, listen: false);
+    await datanotifier.loadFont(); //日本語フォントをロード
+    await datanotifier.getAllData(); //ローカルDBからproviderへデータ送信
     //-------------------------------------------------
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => BasePage()),
