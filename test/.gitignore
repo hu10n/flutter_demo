@@ -45,3 +45,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# すべてのファイルを無視するが lib ディレクトリ内のファイルは除外
+/*
+!/lib/
