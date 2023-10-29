@@ -26,7 +26,8 @@ class DatabaseHelper {
   Future _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE machine (
-        machine_id TEXT PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
+        machine_id TEXT NOT NULL UNIQUE,
         machine_group TEXT NOT NULL,
         machine_num INTEGER NOT NULL,
         machine_name TEXT NOT NULL,
@@ -38,7 +39,8 @@ class DatabaseHelper {
 
     await db.execute('''
       CREATE TABLE project (
-        project_id TEXT PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
+        project_id TEXT NOT NULL UNIQUE,
         project_status INTEGER NOT NULL,
         client_name TEXT,
         product_name TEXT,
@@ -58,7 +60,8 @@ class DatabaseHelper {
 
     await db.execute('''
       CREATE TABLE step (
-        step_id TEXT PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
+        step_id TEXT NOT NULL UNIQUE,
         step_name TEXT,
         finished_at TEXT,
         started_at TEXT,

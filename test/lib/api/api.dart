@@ -10,8 +10,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 //エラーが返ってくる場合、データベースのエラーのみなので、lambda側ではエラーハンドリングなし。
 Future<Map<String,dynamic>> getAllDataGrobal() async {
   String api_key = dotenv.env['API_KEY'] ?? "";
+  String url = dotenv.env['getAllData'] ?? "";
   try{
-    final response = await http.get(Uri.parse('https://c9sz8hr268.execute-api.ap-northeast-1.amazonaws.com/getAllData'),
+    final response = await http.get(Uri.parse(url),
     headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
         // 'Authorization': 'Bearer YOUR_API_TOKEN',
@@ -31,8 +32,9 @@ Future<Map<String,dynamic>> getAllDataGrobal() async {
 //この関数がよばれる際にローカルDBの前回更新時間も更新されるため引数で渡した方が効率的
 Future<Map<String,dynamic>> postJSONData(lastUpdated) async {
   String api_key = dotenv.env['API_KEY'] ?? "";
+  String url = dotenv.env['TestConnectDB'] ?? "";
   final response = await http.post(
-      Uri.parse('https://2kwgnatgue.execute-api.ap-northeast-1.amazonaws.com/testconnectDB'),
+      Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
         // 'Authorization': 'Bearer YOUR_API_TOKEN',
@@ -60,12 +62,13 @@ Future<Map<String,dynamic>> postJSONData(lastUpdated) async {
 //マシンステータスが稼働中かつステップのステータスリストが一致しないとデータ不一致となる。
 Future<int> updateStepData(update_status,step,status_list,machine_id) async {
   String api_key = dotenv.env['API_KEY'] ?? "";
+  String url = dotenv.env['submitStep'] ?? "";
   final prefs = await SharedPreferences.getInstance();
   final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
 
   try{
     final response = await http.post(
-      Uri.parse('https://khsph63fwl.execute-api.ap-northeast-1.amazonaws.com/SubmitStep/'),
+      Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
         // 'Authorization': 'Bearer YOUR_API_TOKEN',
@@ -98,6 +101,7 @@ Future<int> updateStepData(update_status,step,status_list,machine_id) async {
 //マシンステータスが稼働中かつステップのステータスリストが全て１でないと不一致。リストの長さも一致する必要あり。
 Future<int> completeProject(machine) async {
   String api_key = dotenv.env['API_KEY'] ?? "";
+  String url = dotenv.env['CompleteProject'] ?? "";
   final prefs = await SharedPreferences.getInstance();
   final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
 
@@ -109,7 +113,7 @@ Future<int> completeProject(machine) async {
 
   try{
     final response = await http.post(
-      Uri.parse('https://aohgd352mg.execute-api.ap-northeast-1.amazonaws.com/completeProject/'),
+      Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
         // 'Authorization': 'Bearer YOUR_API_TOKEN',
@@ -136,12 +140,13 @@ Future<int> completeProject(machine) async {
 //マシンステータスが未稼働でないとデータ不一致。
 Future<int> assignProjectInfo(machine,project) async {
   String api_key = dotenv.env['API_KEY'] ?? "";
+  String url = dotenv.env['AssignProject'] ?? "";
   final prefs = await SharedPreferences.getInstance();
   final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
 
   try{
     final response = await http.post(
-      Uri.parse('https://b7xglncdlj.execute-api.ap-northeast-1.amazonaws.com/AssignProjectFunc/'),
+      Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
         // 'Authorization': 'Bearer YOUR_API_TOKEN',
@@ -175,12 +180,13 @@ Future<int> assignProjectInfo(machine,project) async {
 //RDSとLDBでマシンステータスが一致してないとデータ不一致。
 Future<int> changeMachineStatus(machine,status) async {
   String api_key = dotenv.env['API_KEY'] ?? "";
+  String url = dotenv.env['changeMachineStatus'] ?? "";
   final prefs = await SharedPreferences.getInstance();
   final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z"; // int値の取得、値がない場合は0001~を返す
 
   try{
     final response = await http.post(
-      Uri.parse('https://btf2yqv7s4.execute-api.ap-northeast-1.amazonaws.com/changeMachineStatus/'),
+      Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
         // 'Authorization': 'Bearer YOUR_API_TOKEN',
@@ -208,10 +214,11 @@ Future<int> changeMachineStatus(machine,status) async {
 //lambda側でエラーハンドリングなし。
 Future<Map<String,dynamic>> getHistoryData(machine_id) async {
   String api_key = dotenv.env['API_KEY'] ?? "";
+  String url = dotenv.env['GetHistoryData'] ?? "";
   final prefs = await SharedPreferences.getInstance();
   final last_updated = prefs.getString('last_updated') ?? "0001-01-01T00:00:00Z";
   final response = await http.post(
-      Uri.parse('https://xusop2u0c3.execute-api.ap-northeast-1.amazonaws.com/getHistoryData/'),
+      Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8', // 必要に応じてヘッダーを追加
         // 'Authorization': 'Bearer YOUR_API_TOKEN',
